@@ -1,0 +1,1105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>The Barbecue Model</title>
+<style type="text/css">
+	a:hover { background:yellow; }
+	body { line-height: 150%; font-size: 14px; font-family:Tahoma,sans-serif; }
+	.nav li { list-style:none; }
+   pre { margin-left: 2em; white-space: pre-wrap; }
+   h1, h2, h3, h4, h5, h6 { font-family:微软雅黑,宋体,sans-serif; font-weight:normal; }
+   h2 { margin: 3em 0 1em 0; }
+   h3 { margin: 2.5em 0 1em 0; }
+   h4 { margin: 2.5em 0 0.75em 0; }
+   h5, h6 { margin: 2.5em 0 1em; }
+   h1 + h2, h1 + h2 + h2 { margin: 0.75em 0 0.75em; }
+   h2 + h3, h3 + h4, h4 + h5, h5 + h6 { margin-top: 0.5em; }
+   p { margin: 1em 0; }
+   hr:not(.top) { display: block; background: none; border: none; padding: 0; margin: 2em 0; height: auto; }
+   dl, dd { margin-top: 0; margin-bottom: 0; }
+   dt { margin-top: 0.75em; margin-bottom: 0.25em; clear: left; }
+   dt + dt { margin-top: 0; }
+   dd dt { margin-top: 0.25em; margin-bottom: 0; }
+   dd p { margin-top: 0; }
+   dd dl + p { margin-top: 1em; }
+   dd table + p { margin-top: 1em; }
+   p + * > li, dd li { margin: 1em 0; }
+   dt, dfn { font-weight: bold; font-style: normal; }
+   dt dfn { font-style: italic; }
+   pre, code { font-size: inherit; font-family: monospace; font-variant: normal; }
+   pre strong { color: black; font: inherit; font-weight: bold; background: yellow; }
+   pre em { font-weight: bolder; font-style: normal; }
+   @media screen { code { color: orangered; } code :link, code :visited { color: inherit; } }
+   var sub { vertical-align: bottom; font-size: smaller; position: relative; top: 0.1em; }
+   table { border-collapse: collapse; border-style: hidden hidden none hidden; }
+   table thead, table tbody { border-bottom: solid; }
+   table tbody th:first-child { border-left: solid; }
+   table tbody th { text-align: left; }
+   table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
+   blockquote { margin: 0 0 0 2em; border: 0; padding: 0; font-style: italic; }
+
+   .bad, .bad *:not(.XXX) { color: gray; border-color: gray; background: transparent; }
+   .matrix, .matrix td { border: none; text-align: right; }
+   .matrix { margin-left: 2em; }
+   .dice-example { border-collapse: collapse; border-style: hidden solid solid hidden; border-width: thin; margin-left: 3em; }
+   .dice-example caption { width: 30em; font-size: smaller; font-style: italic; padding: 0.75em 0; text-align: left; }
+   .dice-example td, .dice-example th { border: solid thin; width: 1.35em; height: 1.05em; text-align: center; padding: 0; }
+
+   .toc dfn, h1 dfn, h2 dfn, h3 dfn, h4 dfn, h5 dfn, h6 dfn { font: inherit; }
+   img.extra { float: right; }
+   pre.idl { border: solid thin; background: #EEEEEE; color: black; padding: 0.5em 1em; }
+   pre.idl :link, pre.idl :visited { color: inherit; background: transparent; }
+   pre.css { border: solid thin; background: #FFFFEE; color: black; padding: 0.5em 1em; }
+   pre.css:first-line { color: #AAAA50; }
+   dl.domintro { color: green; margin: 2em 0 2em 2em; padding: 0.5em 1em; border: none; background: #DDFFDD; }
+   hr + dl.domintro, div.impl + dl.domintro { margin-top: 2.5em; margin-bottom: 1.5em; }
+   dl.domintro dt, dl.domintro dt * { color: black; text-decoration: none; }
+   dl.domintro dd { margin: 0.5em 0 1em 2em; padding: 0; }
+   dl.domintro dd p { margin: 0.5em 0; }
+   dl.switch { padding-left: 2em; }
+   dl.switch > dt { text-indent: -1.5em; }
+   dl.switch > dt:before { content: '\21AA'; padding: 0 0.5em 0 0; display: inline-block; width: 1em; text-align: right; line-height: 0.5em; }
+   dl.triple { padding: 0 0 0 1em; }
+   dl.triple dt, dl.triple dd { margin: 0; display: inline }
+   dl.triple dt:after { content: ':'; }
+   dl.triple dd:after { content: '\A'; white-space: pre; }
+   .diff-old { text-decoration: line-through; color: silver; background: transparent; }
+   .diff-chg, .diff-new { text-decoration: underline; color: green; background: transparent; }
+   a .diff-new { border-bottom: 1px blue solid; }
+
+   h2 { page-break-before: always; }
+   h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
+   h1 + h2, hr + h2.no-toc { page-break-before: auto; }
+
+   p  > span:not([title=""]):not([class="XXX"]):not([class="impl"]):not([class="note"]),
+   li > span:not([title=""]):not([class="XXX"]):not([class="impl"]):not([class="note"]), { border-bottom: solid #9999CC; }
+
+   div.head { margin: 0 0 1em; padding: 1em 0 0 0; }
+   div.head p { margin: 0; }
+   div.head h1 { margin: 0; }
+   div.head .logo { float: right; margin: 0 1em; }
+   div.head .logo img { border: none } /* remove border from top image */
+   div.head dl { margin: 1em 0; }
+   div.head p.copyright, div.head p.alt { font-size: x-small; font-style: oblique; margin: 0; }
+
+   body > .toc > li { margin-top: 1em; margin-bottom: 1em; }
+   body > .toc.brief > li { margin-top: 0.35em; margin-bottom: 0.35em; }
+   body > .toc > li > * { margin-bottom: 0.5em; }
+   body > .toc > li > * > li > * { margin-bottom: 0.25em; }
+   .toc, .toc li { list-style: none; }
+
+   .brief { margin-top: 1em; margin-bottom: 1em; line-height: 1.1; }
+   .brief li { margin: 0; padding: 0; }
+   .brief li p { margin: 0; padding: 0; }
+
+   .category-list { margin-top: -0.75em; margin-bottom: 1em; line-height: 1.5; }
+   .category-list::before { content: '\21D2\A0'; font-size: 1.2em; font-weight: 900; }
+   .category-list li { display: inline; }
+   .category-list li:not(:last-child)::after { content: ', '; }
+   .category-list li > span, .category-list li > a { text-transform: lowercase; }
+   .category-list li * { text-transform: none; } /* don't affect <code> nested in <a> */
+
+   .XXX { color: #E50000; background: white; border: solid red; padding: 0.5em; margin: 1em 0; }
+   .XXX > :first-child { margin-top: 0; }
+   p .XXX { line-height: 3em; }
+   .annotation { border: solid thin black; background: #0C479D; color: white; position: relative; margin: 8px 0 20px 0; }
+   .annotation:before { position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 6px -6px -6px 6px; background: #333333; z-index: -1; content: ''; }
+   .annotation :link, .annotation :visited { color: inherit; }
+   .annotation :link:hover, .annotation :visited:hover { background: transparent; }
+   .annotation span { border: none ! important; }
+   .note { color: green; background: transparent; font-family: sans-serif; }
+   .warning { color: red; background: transparent; }
+   .note, .warning { font-weight: bolder; }
+   p.note, div.note { padding: 0.5em 2em; }
+   span.note { padding: 0 2em; }
+   .note p:first-child, .warning p:first-child { margin-top: 0; }
+   .note p:last-child, .warning p:last-child { margin-bottom: 0; }
+   .warning:before { font-style: normal; }
+   p.note:before { content: 'Note: '; }
+   p.warning:before { content: '\26A0 Warning! '; }
+
+   .bookkeeping:before { display: block; content: 'Bookkeeping details'; font-weight: bolder; font-style: italic; }
+   .bookkeeping { font-size: 0.8em; margin: 2em 0; }
+   .bookkeeping p { margin: 0.5em 2em; display: list-item; list-style: square; }
+   .bookkeeping dt { margin: 0.5em 2em 0; }
+   .bookkeeping dd { margin: 0 3em 0.5em; }
+
+   h4 { position: relative; z-index: 3; }
+   h4 + .element, h4 + div + .element { margin-top: -2.5em; padding-top: 2em; }
+   .element {
+     background: #EEEEFF;
+     color: black;
+     margin: 0 0 1em 0.15em;
+     padding: 0 1em 0.25em 0.75em;
+     border-left: solid #9999FF 0.25em;
+     position: relative;
+     z-index: 1;
+   }
+   .element:before {
+     position: absolute;
+     z-index: 2;
+     top: 0;
+     left: -1.15em;
+     height: 2em;
+     width: 0.9em;
+     background: #EEEEFF;
+     content: ' ';
+     border-style: none none solid solid;
+     border-color: #9999FF;
+     border-width: 0.25em;
+   }
+
+   .example { display: block; color: #222222; background: #FCFCFC; border-left: double; margin-left: 2em; padding-left: 1em; }
+   td > .example:only-child { margin: 0 0 0 0.1em; }
+
+   ul.domTree, ul.domTree ul { padding: 0 0 0 1em; margin: 0; }
+   ul.domTree li { padding: 0; margin: 0; list-style: none; position: relative; }
+   ul.domTree li li { list-style: none; }
+   ul.domTree li:first-child::before { position: absolute; top: 0; height: 0.6em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+   ul.domTree li:not(:last-child)::after { position: absolute; top: 0; bottom: -0.6em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+   ul.domTree span { font-style: italic; font-family: serif; }
+   ul.domTree .t1 code { color: purple; font-weight: bold; }
+   ul.domTree .t2 { font-style: normal; font-family: monospace; }
+   ul.domTree .t2 .name { color: black; font-weight: bold; }
+   ul.domTree .t2 .value { color: blue; font-weight: normal; }
+   ul.domTree .t3 code, .domTree .t4 code, .domTree .t5 code { color: gray; }
+   ul.domTree .t7 code, .domTree .t8 code { color: green; }
+   ul.domTree .t10 code { color: teal; }
+
+   body.dfnEnabled dfn { cursor: pointer; }
+   .dfnPanel {
+     display: inline;
+     position: absolute;
+     z-index: 10;
+     height: auto;
+     width: auto;
+     padding: 0.5em 0.75em;
+     font: small sans-serif, Droid Sans Fallback;
+     background: #DDDDDD;
+     color: black;
+     border: outset 0.2em;
+   }
+   .dfnPanel * { margin: 0; padding: 0; font: inherit; text-indent: 0; }
+   .dfnPanel :link, .dfnPanel :visited { color: black; }
+   .dfnPanel p { font-weight: bolder; }
+   .dfnPanel * + p { margin-top: 0.25em; }
+   .dfnPanel li { list-style-position: inside; }
+
+   #configUI { position: absolute; z-index: 20; top: 10em; right: 1em; width: 11em; font-size: small; }
+   #configUI p { margin: 0.5em 0; padding: 0.3em; background: #EEEEEE; color: black; border: inset thin; }
+   #configUI p label { display: block; }
+   #configUI #updateUI, #configUI .loginUI { text-align: center; }
+   #configUI input[type=button] { display: block; margin: auto; }
+
+   fieldset { margin: 1em; padding: 0.5em 1em; }
+   fieldset > legend + * { margin-top: 0; }
+   fieldset > :last-child { margin-bottom: 0; }
+   fieldset p { margin: 0.5em 0; }
+
+   .stability {
+     position: fixed;
+     bottom: 0;
+     left: 0; right: 0;
+     margin: 0 auto 0 auto;
+     width: 50%;
+     background: maroon; color: yellow;
+     -webkit-border-radius: 1em 1em 0 0;
+     -moz-border-radius: 1em 1em 0 0;
+     border-radius: 1em 1em 0 0;
+     -moz-box-shadow: 0 0 1em #500;
+     -webkit-box-shadow: 0 0 1em #500;
+     box-shadow: 0 0 1em red;
+     padding: 0.5em 1em;
+     text-align: center;
+   }
+   .stability strong {
+     display: block;
+   }
+   .stability input {
+     appearance: none; margin: 0; border: 0; padding: 0.25em 0.5em; background: transparent; color: black;
+     position: absolute; top: -0.5em; right: 0; font: 1.25em sans-serif; text-align: center;
+   }
+   .stability input:hover {
+     color: white;
+     text-shadow: 0 0 2px black;
+   }
+   .stability input:active {
+     padding: 0.3em 0.45em 0.2em 0.55em;
+   }
+   .stability :link, .stability :visited,
+   .stability :link:hover, .stability :visited:hover {
+     background: transparent;
+     color: white;
+   }
+   </style>
+   <link href="data:text/css,.impl%20{%20display:%20none;%20}%0Ahtml%20{%20border:%20solid%20yellow;%20}%20.domintro:before%20{%20display:%20none;%20}"
+id="author" rel="alternate stylesheet" title="Author documentation only">
+<link href="data:text/css,.impl%20{%20background:%20%23FFEEEE;%20}%20.domintro:before%20{%20background:%20%23FFEEEE;%20}"
+id="highlight" rel="alternate stylesheet" title="Highlight implementation
+requirements">
+   <style type="text/css">
+   .applies thead th > * { display: block; }
+   .applies thead code { display: block; }
+   .applies tbody th { whitespace: nowrap; }
+   .applies td { text-align: center; }
+   .applies .yes { background: yellow; }
+
+   .matrix, .matrix td { border: hidden; text-align: right; }
+   .matrix { margin-left: 2em; }
+
+   .dice-example { border-collapse: collapse; border-style: hidden solid solid hidden; border-width: thin; margin-left: 3em; }
+   .dice-example caption { width: 30em; font-size: smaller; font-style: italic; padding: 0.75em 0; text-align: left; }
+   .dice-example td, .dice-example th { border: solid thin; width: 1.35em; height: 1.05em; text-align: center; padding: 0; }
+
+   td.eg { border-width: thin; text-align: center; }
+
+   #table-example-1 { border: solid thin; border-collapse: collapse; margin-left: 3em; }
+   #table-example-1 * { font-family: "Essays1743", serif; line-height: 1.01em; }
+   #table-example-1 caption { padding-bottom: 0.5em; }
+   #table-example-1 thead, #table-example-1 tbody { border: none; }
+   #table-example-1 th, #table-example-1 td { border: solid thin; }
+   #table-example-1 th { font-weight: normal; }
+   #table-example-1 td { border-style: none solid; vertical-align: top; }
+   #table-example-1 th { padding: 0.5em; vertical-align: middle; text-align: center; }
+   #table-example-1 tbody tr:first-child td { padding-top: 0.5em; }
+   #table-example-1 tbody tr:last-child td { padding-bottom: 1.5em; }
+   #table-example-1 tbody td:first-child { padding-left: 2.5em; padding-right: 0; width: 9em; }
+   #table-example-1 tbody td:first-child::after { content: leader(". "); }
+   #table-example-1 tbody td { padding-left: 2em; padding-right: 2em; }
+   #table-example-1 tbody td:first-child + td { width: 10em; }
+   #table-example-1 tbody td:first-child + td ~ td { width: 2.5em; }
+   #table-example-1 tbody td:first-child + td + td + td ~ td { width: 1.25em; }
+
+   .apple-table-examples { border: none; border-collapse: separate; border-spacing: 1.5em 0em; width: 40em; margin-left: 3em; }
+   .apple-table-examples * { font-family: "Times", serif; }
+   .apple-table-examples td, .apple-table-examples th { border: none; white-space: nowrap; padding-top: 0; padding-bottom: 0; }
+   .apple-table-examples tbody th:first-child { border-left: none; width: 100%; }
+   .apple-table-examples thead th:first-child ~ th { font-size: smaller; font-weight: bolder; border-bottom: solid 2px; text-align: center; }
+   .apple-table-examples tbody th::after, .apple-table-examples tfoot th::after { content: leader(". ") }
+   .apple-table-examples tbody th, .apple-table-examples tfoot th { font: inherit; text-align: left; }
+   .apple-table-examples td { text-align: right; vertical-align: top; }
+   .apple-table-examples.e1 tbody tr:last-child td { border-bottom: solid 1px; }
+   .apple-table-examples.e1 tbody + tbody tr:last-child td { border-bottom: double 3px; }
+   .apple-table-examples.e2 th[scope=row] { padding-left: 1em; }
+   .apple-table-examples sup { line-height: 0; }
+
+   .details-example img { vertical-align: top; }
+
+   #base64-table {
+     white-space: nowrap;
+     font-size: 0.6em;
+     column-width: 6em;
+     column-count: 5;
+     column-gap: 1em;
+     -moz-column-width: 6em;
+     -moz-column-count: 5;
+     -moz-column-gap: 1em;
+     -webkit-column-width: 6em;
+     -webkit-column-count: 5;
+     -webkit-column-gap: 1em;
+   }
+   #base64-table thead { display: none; }
+   #base64-table * { border: none; }
+   #base64-table tbody td:first-child:after { content: ':'; }
+   #base64-table tbody td:last-child { text-align: right; }
+
+   #named-character-references-table {
+     white-space: nowrap;
+     font-size: 0.6em;
+     column-width: 30em;
+     column-gap: 1em;
+     -moz-column-width: 30em;
+     -moz-column-gap: 1em;
+     -webkit-column-width: 30em;
+     -webkit-column-gap: 1em;
+   }
+   #named-character-references-table > table > tbody > tr > td:first-child + td,
+   #named-character-references-table > table > tbody > tr > td:last-child { text-align: center; }
+   #named-character-references-table > table > tbody > tr > td:last-child:hover > span { position: absolute; top: auto; left: auto; margin-left: 0.5em; line-height: 1.2; font-size: 5em; border: outset; padding: 0.25em 0.5em; background: white; width: 1.25em; height: auto; text-align: center; }
+   #named-character-references-table > table > tbody > tr#entity-CounterClockwiseContourIntegral > td:first-child { font-size: 0.5em; }
+
+   .glyph.control { color: red; }
+
+    .domintro:before { display: table; margin: -1em -0.5em -0.5em auto; width: auto; content: 'This box is non-normative. Implementation requirements are given below this box.'; color: black; font-style: italic; border: solid 2px; background: white; padding: 0 0.25em; }
+</style>
+</head>
+<body>
+<h1>烧烤模式：格物网构想与实现</h1>
+<h2>The Barbecue Model: Fundamentals of Gewu Network</h2>
+<!-- UNDER NO CIRCUMSTANCES IS THE FOLLOWING PARAGRAPHS TO BE REMOVED OR EDITED WITHOUT TALKING TO BOJIE LI FIRST -->
+<p>Gewu Working Draft (Revision 1: 2011-06-18)
+<p>This is a confidential file. No part of this specification may be reproduced or distributed in any form or by any means, without the prior written permission of the Gewu Team.
+<p>This is a work in progress! Implementors should be aware that this specification is not stable.
+<p>Copyright &copy; Gewu Team (2011). All Rights Reserved.</p>
+<!-- UNDER NO CIRCUMSTANCES IS THE PRECEDING PARAGRAPHS TO BE REMOVED OR EDITED WITHOUT TALKING TO BOJIE LI FIRST -->
+<h2 id="contents">目录</h2>
+<ol class="nav">
+ <li><a href="#introduction">1 引言</a>
+  <ol>
+   <li><a href="#structure-of-specification">1.1 本文档结构</a></li>
+   <li><a href="#how-to-read">1.2 如何阅读本文档</a></li>
+   <li><a href="#convensions">1.3 排版约定</a></li>
+   <li><a href="#terminology">1.4 概念约定</a></li>
+  </ol></li>
+ <li><a href="#priciples">Part I 理念</a></li>
+ <li><a href="#design-priciples">2 设计理念</a>
+  <ol>
+   <li><a href="#web-development-history">2.1 纵观Web发展</a></li>
+   <li><a href="#current-web-product-difficulties">2.2 现有Web产品的本质困难</a></li>
+   <li><a href="#free-from-restrictions">2.3 从必然王国到自由王国</a></li>
+   <li><a href="#barbecue-model">2.4 烧烤模式</a></li>
+   <li><a href="#smart-network">2.5 智能网络畅想</a></li>
+   <li><a href="#creative-everyone">2.6 创新每个人</a></li>
+   <li><a href="#profit-assignment">2.7 利益分配机制</a></li>
+  </ol></li>
+ <li><a href="#software-engineering">3 软件工程</a>
+  <ol>
+   <li><a href="#concept-integrity">3.1 概念完整性</a></li>
+   <li><a href="#surgery-team">3.2 外科手术团队</a></li>
+   <li><a href="#think-twice-cut-once">3.3 三思而后行</a></li>
+   <li><a href="#iterative-development">3.4 迭代式开发</a></li>
+   <li><a href="#software-testing">3.5 测试与审查</a></li>
+   <li><a href="#maintainance-and-feedback">3.6 维护与反馈</a></li>
+  </ol></li>
+ <li><a href="#coding-recommendation">4 代码规范</a>
+  <ol>
+   <li><a href="#KISS">4.1 KISS原则</a></li>
+   <li><a href="#modulization">4.2 模块化</a></li>
+   <li><a href="#text-stream-interface">4.3 面向文本流的接口</a></li>
+   <li><a href="#information-hidding">4.4 信息隐藏</a></li>
+   <li><a href="#self-explaining-code">4.5 自解释代码</a></li>
+   <li><a href="#defensive-programming">4.6 防御式编程</a></li>
+  </ol></li>
+ <li><a href="#user-interface">5 用户界面</a>
+  <ol>
+   <li><a href="#usability-vs-functionality">5.1 易用性与功能性</a></li>
+   <li><a href="#perceivable">5.2 可获取性</a></li>
+   <li><a href="#operable">5.3 可操作性</a></li>
+   <li><a href="#understandable">5.4 可理解性</a></li>
+   <li><a href="#robust">5.5 健壮性</a></li>
+   <li><a href="#CRAP">5.6 CRAP原则</a>
+    <ol>
+	 <li><a href="#proximity">5.6.1 亲密性</a></li>
+	 <li><a href="#alignment">5.6.2 对齐</a></li>
+	 <li><a href="#repeatation">5.6.3 重复</a></li>
+	 <li><a href="#contrast">5.6.4 对比</a></li>
+	</ol></li>
+  </ol></li>
+ <li><a href="#specification">Part II 系统说明</a></li>
+ <li><a href="#requirement-analysis">6 需求分析</a>
+  <ol>
+   <li><a href="#target-customers">6.1 目标用户群</a></li>
+   <li><a href="#group-internal-need">6.2 组织内部交流需要</a></li>
+   <li><a href="#group-external-need">6.3 组织对外发布需要</a></li>
+   <li><a href="#scientfic-need">6.4 科学在线公式、画图等需要</a></li>
+   <li><a href="#personal-management-need">6.5 个人管理内容需要</a></li>
+  </ol></li>
+ <li><a href="#basic-concepts">7 基本概念</a>
+  <ol>
+   <li><a href="#basic-principles">7.1 基本原则</a></li>
+   <li><a href="#object-model">7.2 对象模型</a></li>
+   <li><a href="#user-group-class">7.3 用户、组织、群体</a></li>
+  </ol></li>
+ <li><a href="#executing-mechanism">8 运行机制</a>
+  <ol>
+   <li><a href="#privilege-mechanism">8.1 权限机制</a></li>
+   <li><a href="#attributes-calculation">8.2 属性计算</a></li>
+   <li><a href="#event-mechanism">8.3 事件机制</a></li>
+   <li><a href="#message-mechanism">8.4 消息机制</a></li>
+  </ol></li>
+ <li><a href="#transfer-protocol">9 通信协议</a>
+  <ol>
+    <li><a href="#client-server">9.1 客户机、服务器</a></li>
+	<li><a href="#message-format">9.2 通信格式</a></li>
+	<li><a href="#connections">9.3 连接</a></li>
+	<li><a href="#method-definition">9.4 方法定义</a></li>
+	<li><a href="#status-code-definition">9.5 状态码定义</a></li>
+	<li><a href="#locationing">9.6 寻址</a></li>
+	<li><a href="#caching">9.7 缓存</a></li>
+	<li><a href="#prefetch">9.8 预取</a></li>
+	<li><a href="#combine-fetch">9.9 合取</a></li>
+	<li><a href="#mirroring">9.10 镜像</a></li>
+	<li><a href="#header-definition">9.11 状态码定义</a></li>
+	<li><a href="#authentication">9.12 安全认证</a></li>
+  </ol></li>
+ <li><a href="#system-attributes">10 系统属性</a>
+ </li>
+ <li><a href="#system-functions">11 系统函数</a>
+ </li>
+ <li><a href="#rule-list">12 规则表</a>
+ </li>
+ <li><a href="#markup-language">13 标记语言</a>
+ </li>
+ <li><a href="#script">14 脚本</a>
+ </li>
+ <li><a href="#system-modules">15 系统模块</a>
+  <ol>
+   <li><a href="#version-control">15.1 版本控制</a></li>
+   <li><a href="#recycler">15.2 回收站</a></li>
+   <li><a href="#content-censoring">15.3 内容审核</a></li>
+   <li><a href="#draft-box">15.4 草稿箱</a></li>
+   <li><a href="#feedback-box">15.5 意见箱</a></li>
+   <li><a href="#webpage-note">15.6 批注</a></li>
+   <li><a href="#vote">15.7 投票</a></li>
+   <li><a href="#election">15.8 选举</a></li>
+   <li><a href="#questionaire">15.9 调查</a></li>
+  </ol></li>
+ <li><a href="#functions">Part III 功能</a></li>
+ <li><a href="#user-management">16 用户管理</a>
+  <ol>
+   <li><a href="#register">16.1 注册</a></li>
+   <li><a href="#login">16.2 登录</a></li>
+   <li><a href="#forget-password">16.3 找回密码</a></li>
+   <li><a href="#multiple-passwords">16.4 多密码</a></li>
+   <li><a href="#nickname">16.5 昵称</a></li>
+   <li><a href="#friend">16.6 好友</a></li>
+   <li><a href="#listen">16.7 关注</a></li>
+   <li><a href="#privilege-giving">16.8 权限授予</a></li>
+   <li><a href="#credit-rule">16.9 积分规则</a></li>
+   <li><a href="#punishment">16.10 处分条例</a></li>
+  </ol></li>
+ <li><a href="#user-center">17 用户中心</a>
+  <ol>
+   <li><a href="#ucenter-overall-design">17.1 总体设计</a></li>
+   <li><a href="#control-panel">17.2 控制面板</a></li>
+   <li><a href="#chatting-building">17.3 聊天大厦</a></li>
+   <li><a href="#user-announcements">17.4 小字报</a></li>
+   <li><a href="#today-headline">17.5 今日热点</a></li>
+   <li><a href="#floating-bottle">17.6 漂流瓶</a></li>
+   <li><a href="#event-noticing">17.7 事件提醒</a></li>
+   <li><a href="#content-recommandation">17.8 内容推荐</a></li>
+   <li><a href="#schedule">17.9 日程安排</a></li>
+   <li><a href="#user-defined-modules">17.10 自定义模块</a></li>
+  </ol></li>
+ <li><a href="#publishing-platform">18 发布平台</a>
+  <ol>
+   <li><a href="#blog-cms-wiki">18.1 博客，CMS，百科的结合</a></li>
+   <li><a href="#leveled-management-system">18.2 分级管理系统</a></li>
+   <li><a href="#tag-tree">18.3 标签树</a></li>
+   <li><a href="#article-content-type">18.4 文章内容类型</a></li>
+   <li><a href="#content-and-comment">18.5 内容与评论</a></li>
+   <li><a href="#sidebar">18.6 边栏</a></li>
+   <li><a href="#directory">18.7 分类目录</a></li>
+   <li><a href="#protection">18.8 保护与审核</a></li>
+   <li><a href="#edit-conflict">18.9 编辑冲突</a></li>
+   <li><a href="#history-versions">18.10 历史版本</a></li>
+   <li><a href="#page-redirection">18.11 页面重定向</a></li>
+   <li><a href="#subscribe">18.12 订阅</a></li>
+   <li><a href="#user-panel">18.13 用户平台</a></li>
+   <li><a href="#backend-management">18.14 后台管理</a></li>
+   <li><a href="#online-activities">18.15 在线活动</a></li>
+  </ol></li>
+ <li><a href="#group-platform">19 组织合作平台</a>
+  <ol>
+   <li><a href="#leveled-management">19.1 分级管理</a></li>
+   <li><a href="#task-status">19.2 任务状态</a></li>
+   <li><a href="#whiteboard">19.3 白板</a></li>
+   <li><a href="#discuss-group">19.4 讨论组</a></li>
+   <li><a href="#table-generation">19.5 表格生成</a></li>
+   <li><a href="#document-logging">19.6 档案存储</a></li>
+   <li><a href="#group-event-noticing">19.7 事件提醒</a></li>
+  </ol></li>
+ <li><a href="#public-forum">20 公共论坛</a>
+  <ol>
+   <li><a href="#forum-overall-design">20.1 与发布系统的区别</a></li>
+   <li><a href="#moderators">20.2 版主</a></li>
+   <li><a href="#medal">20.3 勋章</a></li>
+   <li><a href="#property">20.4 道具</a></li>
+  </ol></li>
+ <li><a href="#assistance-functions">21 辅助功能</a>
+  <ol>
+   <li><a href="#wysiwyg-document">21.1 可视化文档编辑</a></li>
+   <li><a href="#wysiwyg-page">21.2 可视化网页编辑</a></li>
+   <li><a href="#document-preview">21.3 文档在线预览</a></li>
+   <li><a href="#math-online-edit">21.4 公式在线编辑</a></li>
+   <li><a href="#math-online-view">21.5 公式在线显示</a></li>
+   <li><a href="#online-draw">21.6 在线画图</a></li>
+   <li><a href="#online-math-draw">21.7 在线数学作图</a></li>
+   <li><a href="#online-physics-draw">21.8 在线物理作图</a></li>
+   <li><a href="#online-dictionary">21.9 在线小词典</a></li>
+   <li><a href="#cheatsheet">21.10 速查手册</a></li>
+   <li><a href="#math-evaluate">21.11 数学计算器</a></li>
+  </ol></li>
+ <li><a href="#learning-system">22 导学系统</a>
+  <ol>
+   <li><a href="#learn-overall-design">22.1 总体设计</a></li>
+   <li><a href="#learn-problem-set">22.2 题库</a></li>
+   <li><a href="#learn-problems">22.3 题目</a></li>
+   <li><a href="#learn-evaluating">22.4 评测</a></li>
+   <li><a href="#smart-evaluating">22.5 智能评分</a></li>
+   <li><a href="#learn-level-mode">22.6 关卡模式</a></li>
+   <li><a href="#learn-test">22.7 模拟考试</a></li>
+   <li><a href="#learn-directions">22.8 研发方向</a></li>
+  </ol></li>
+ <li><a href="#instant-message">23 即时通信</a>
+  <ol>
+   <li><a href="#im-overall-design">23.1 总体设计</a></li>
+   <li><a href="#im-client-ajax">23.2 客户端Ajax</a></li>
+   <li><a href="#im-server-ajax">23.3 服务器端Ajax</a></li>
+  </ol></li>
+ <li><a href="#backend-analysis-system">24 后台分析系统</a>
+ </li>
+ <li><a href="#search-engine">24 搜索系统</a>
+  <ol>
+   <li><a href="#search-overall-design">24.1 总体设计</a></li>
+   <li><a href="#word-segmenting">24.2 中文分词</a></li>
+   <li><a href="#ranking-algorithm">24.3 排名算法</a></li>
+   <li><a href="#indexing-algorithm">24.4 索引算法</a></li>
+  </ol></li>
+ <li><a href="#recommending-system">25 推荐系统</a>
+ </li>
+ <li><a href="#appendix">附录</a>
+  <ol>
+   <li><a href="#appendix-refence">A 参考文献</a></li>
+   <li><a href="#appendix-background">B 背景</a></li>
+   <li><a href="#appendix-contact">C 联系我们</a></li>
+   <li><a href="#appendix-copyright">D 版权声明</a></li>
+   <li><a href="#appendix-index">E 索引</a></li>
+  </ol></li>
+</ol><!-- END of Table of Contents -->
+
+<hr>
+<h2 id="introduction">1 引言</h2>
+
+<h3 id="structure-of-specification">1.1 本文档结构</h3>
+<p>本文档分为以下三部分，分别代表格物网的理念、技术、功能三个维度：
+<dl><dt><a href="#principles">理念</a></dt>
+<dd>格物网创始的动机、不同于传统网站的理论基础，开发过程中的统一规范。</dd>
+<dt><a href="#specification">技术</a></dt>
+<dd>格物网的系统架构、通信协议、标记语言、重要系统模块。</dd>
+<dt><a href="#functions">功能</a></dt>
+<dd>格物网从用户层面来看的各种功能。</dd></dl>
+<p>理解格物网，应当将理念、技术、功能视为一个整体。应当看到它们之间的联系、在各种矛盾之间的权衡。事实上，在设计过程中，功能是作为直接的用户需求被提出的，而技术则作为功能的“用户需求”被提出以实现所需的功能，理念则是在技术和功能的“进化”过程中逐步提炼、升华出来的，又反过来指导技术和功能的设计，以去粗取精，凸显最能体现核心价值的设计。
+
+<h3 id="how-to-read">1.2 如何阅读本文档</h3>
+<p>设计文档不是小说，它以集中的文字形式承载着系统设计者的思考与决策，也将基本确定整个网站未来的发展途径。设计文档中模糊、不一致、不恰当的陈述会影响最终产品的概念完整性，理念中的偏见与误解更会导致整个网站作为一个整体的隔阂甚至分裂。因此，本设计文档应在设计与开发过程中被逐步完善，在相应模块程序的开发前基本统一意见，并在网站正式发布前定稿。
+<p>正如其他设计文档一样，本文档应当至少被从头到尾读两遍，以掌握设计的总体框架；然后从尾到头反过来读至少一遍，力图发掘由功能到技术，再到理念的进化历程；最后阅读每节以超链接形式标明的交叉参考，以理解设计各部分间的相互关系。
+<p>对设计文档的审阅者而言，应当进一步关注语言描述的精确性与无歧义性，一些专有名词是否被正确使用，文档中的各项设计间有无理念上的冲突、概念上的冲突、实现上的不可能性、各种可能情况是否都被考虑到并被正确处理了。
+<p class="example">理念上的冲突：例如，如果在某一节中要求好友关系必须是双向的，在另一节中又允许了单向的好友关系，那么“好友”这个概念就存在理念上的冲突。<br />
+要解决这个问题，可以加入另一个概念“关注”来满足单向关系的需求，这样“好友”和“关注”两个概念都是定义明确的。
+<p class="example">
+概念上的冲突：例如，“字段”和“属性”两个概念在传统上分别用于数据库领域和对象系统、文件系统领域，而在本设计文档中数据库与文件系统均已纳入网络对象模型，这两种描述方式的并存很容易引起误解，那么应考虑将它们合并成同一概念。
+<p class="example">不可能实现：例如，要求浏览器使用服务器间通信的扩展HTTP协议，以实现通信协议的统一。<br />目前还没有技术能够改变浏览器所使用的网络协议，因此这个设计是不可行的。
+<p class="example">可能情况遗漏：例如，系统在多个层面进行了纵深防御，功能设计遵循了最小特权原则，核心模块避开了各种常见漏洞，因此整个系统在已知范围内是“安全的”。<br />
+但是，如果系统的一位核心管理员使用了弱密码，那么系统相当于没有安全性可言。此例中，认为系统已经安全的人忽略了非技术因素。
+
+<h3 id="conventions">1.3 排版约定</h3>
+<p class="note">This is a note.
+<p class="example">This is an example.
+<p class="XXX">This is an open issue.
+<p class="warning">This is a warning.
+<pre class="idl extract">function main() {
+	// this is a piece of code
+};</pre>
+<p>The defining instance of a term is marked up like <dfn id="x-this" title="x-this">this</dfn>. Uses of that term are marked up like
+  <a href="#x-this" title="x-this">this</a> or like <i title="x-this"><a href="#x-this">this</a></i>.<p>The defining instance of an element, attribute, or API is marked up like <dfn id="x-that" title="x-that"><code>this</code></dfn>. References to that element, attribute, or API are marked up like <code title="x-that"><a href="#x-that">this</a></code>.<p>Other code fragments are marked up <code title="">like this</code>.
+<p>Variables are marked up like <var title="">this</var>.
+
+<h3 id="terminology">1.4 概念约定</h3>
+<p>本文档的概念遵循最小立异原则，尽量遵循已被业界广泛接受的概念定义。如果有必要引入新的概念，应当不与其他众所周知的概念相冲突，尽量达到“望文生义”。
+<p><dfn>本说明(specification)</dfn>与<dfn>本文档</dfn>在适当的语境下，均指代本设计文档。
+<p><dfn>字段</dfn>、<dfn>属性(attribute)</dfn>、<dfn>变量(variable)</dfn>在本文档中意义相同，统一使用<dfn>属性</dfn>概念。
+<p class="note">This section is not completed.
+
+<h2 id="principles">Part I 理念</h2>
+<h2 id="design-principles">2 设计理念</h2>
+<h3 id="web-development-history">2.1 纵观Web发展</h3>
+<p>自从人类文明出现以来，人们一直致力于解决时空问题。人们发明轮子、汽车、火车、飞机、宇宙飞船，都是在克服空间障碍，节约人类有限的时间。互联网正是解决这样问题的新型工具，它最大限度地克服了空间障碍，使得天各一方的人们在理论上可以光速实现自由交流。
+<p>1969年12月，美国的分组交换网ARPANET投入运行，从此计算机网络进入了一个新的发展阶段，标志着现代通信时代的开始。
+<!-- These statements are wrong! 1978年，国际标准化组织ISO提出了著名的开放系统互联参考模型OSI，结束了各大网络体系“各自为政”的局面，开辟了计算机网络的新纪元。我国的公用分组交换网于1989年11月建成，可以认为是中国互联网的起跑线。-->
+<p>我国上网用户数在经历1998年的酝酿后，从1999年到2000年以每年两倍的速度狂飙，互联网泡沫沸腾，现在人们耳熟能详的几大网络公司多是那时起步的。2001年到2002年是中国互联网最痛苦的时代，大量网络公司因泡沫破灭而倒闭或转行。但随着新浪、搜狐、网易等公司宣布盈利，互联网熬过了第一次冬天，浴火重生的胜利者开始了第二次圈地运动。随着互联网春天的到来，更多的网站开通了，2005年7月时网站数量已达67.8万个，网民数量也突破1亿。
+<p>就在这时，高歌猛进的互联网界潜移默化地经历着一场革命。这场革命是如此平静，以至于连它们的发动者都没有意识到这将是怎样一个开天辟地的大事变。
+<p>2005年对互联网用户的调查，用户最反感的内容中，弹出广告以22.6%名列第二，与排名第一的病毒仅差3个百分点。也许当时的设计者们还没有意识到，弹出广告正是违背了“用户处于控制地位”的设计原则。
+<p>被今天的Web设计者称作Web 1.0的“网站处于控制地位”的信息发布网站，正是像传统媒体一样，不断改变花样让用户接受自己的信息。不过网站上允许发表评论了，至少些许实现了信息来源与信息接收端的互动，也算是一种进步吧。但从根本上，用户作为信息被动接受者的角色没有改变。
+<p>Google、百度等搜索引擎所做的工作可以相当于Web 1.5，它们使得用户可以选择查看某特定方面的信息，搜索一个关键词，机器就会把最相关的内容呈现出来，而不需要用户自己去浩如烟海的信息世界中搜寻。
+<p>为了方便大家共同讨论某个感兴趣的话题，百度出品了贴吧，猫扑、天涯等很多或综合或专业的论坛如雨后春笋般，冲击了几大网络巨头的垄断地位。Web建设者的个人英雄主义时代开始，2005年前后又有一批今天耳熟能详的网络公司从库房里、地下室里脱颖而出。以论坛为主导的新一场圈地运动对传统门户网站的理念是个重大的革新，它把用户从单纯的阅读者和评论者中解放出来，容许大家自由发表观点，每个人都是编辑、作者。用户参与网络活动的积极性提高了，用户在网站讨论中收获了自我满足的精神食粮，网站变得更有粘性。
+<p>希望在网上占有一席之地的技术爱好者纷纷架起自己的独立博客，新浪等大公司也紧抓商机，开通了免费blog服务。博客是完全自主的展现自我的平台，进一步深化了每个人都是作者和主人的观念。数以万计的个人站长跨越较低的技术和资金门槛，悄然掀开Web 2.0时代的序幕。
+事实上，这一阶段国外以Wikipedia（维基百科）为代表的wiki（百科）站点的兴起也是Web 2.0的重要组成部分，宗旨是由用户来完成自由开放的百科全书。国内也有百度百科、互动百科等影响力较大的wiki社区，但明显专业度与凝聚力不足。
+<p>“墙外开花墙内香”，大洋彼岸的Facebook，Youtube，Twitter等网站的兴起奏响了Web 2.0时代的最强音。这些统称为SNS（Social Network System，社交网络）的新型网络传播方式大大拉近了虚拟世界与现实世界的距离，使人们足不出户便可以与好友分享新鲜事、发表心得感言，把现实世界的朋友关系延伸到网络上。新浪、搜狐、网易等网站也曾推出过同学录服务，如Chinaren社区等。目前国内这方面最成熟的代表是人人（原2005年成立的校内网）、QQ（不完全算是）。同时，各大社交网络也纷纷推出了桌面客户端、移动客户端，以满足日益增长的使用移动设备上网聊天的需要。
+<p>Web 2.0时代，由于每个人都是内容的作者，因此长尾效应愈加凸显，大部分的流量不是来自百度、新浪等少数几个大网站，而是更多分流到规模小，但专业性强的垂直分类网站上了。事实上，由这些对专业知识更了解的人来解决本行业内的问题恰恰做到了现实生活中难以实现的资源优化调配，使得网络上的信息更具专业性、针对性、合理性，减少了权威性、垄断性。
+<p>另一方面，由于现实世界的群聚效应，名人效应也是愈加凸显的。近两年网络上爆出的“门”往往在几天内走红网络，并波及到传统媒体，其传播速度和影响力都是史无前例的。新浪微博并不是第一个在中国引入微博服务的，但凭借新浪博客上众多名人的推广效应，新浪微博在短短半年内风靡全国，并成为各大网站的“标配”。
+<p>在某种意义上，网络也是社会舆论监督的重要形式。网络言论的开放性使一大批社会的阴暗面露出冰山一角直至浮出水面，网络舆论的强大压力也左右了很多社会焦点问题的动向。
+<p>但不容忽视的是，如今的Web 2.0在带来经济、社会、文化生活巨大变革的背后，隐藏着深层的矛盾与危机。
+<p>虚拟性和分布性是网络自出现以来的基本特征。很多人也许津津乐道于虚拟世界的巨大自由，但谎言、虚假与诚信缺失却在动摇着社交网络的根基。在把现实世界的货币引入网络世界时，不得不考虑未曾谋面的双方在利益分配上可能出现的争执和互不信任的困局。因此，网络世界需要真实化，但不是全部真实化。在建立在互相信任基础上的、涉及现实生活的网络层面上实现全面的真实化，而在不需要信任关系维系的公共论坛等处，可继续享受匿名带来的自由。
+<p>再谈分布性。分布性的本意是将复杂的任务分解到每个人、每台计算机去完成，充分发挥每个人的能力和每台计算机的运算资源，但在实际运行中，由于网络是自由开放的，不可避免地将分布性异化成了“各自为政”，大量网站如分封的郡县，不但没有合理分工合作，反而为了自身的利益相互开战，损害绝大多数用户的利益，近期的QQ与360之战就是一例。
+<p>正如西方经济的发展以罗斯福新政为标志，经历了从完全自由到国家统筹规划的痛苦的蜕变，网络在经历Web 1.0的垄断、Web 2.0的完全自由后，到了民主集中的时候。很多人，尤其是生活在官僚压迫下的人，对“集中”往往误解成“独裁”。事实上，在现实世界中，不论国家，不论政体，都要有一套规范的自上而下的管理决策机制和完善的道德法律体系。没有规矩，不成方圆，从“网络水军”到网络诈骗，网络世界的种种乱象使得真正有技术、有理念的网络公司难以立足，而采取侵犯版权、虚假欺骗等不道德甚至违法措施的人却大发横财。靠行业自我约束是无法洗净自身的，必须引入一套完备的民主集中制的网络政治体系和利益分配机制来规范人们在虚拟世界的行为。或许随着技术的进步，虚拟世界这个名词在可以预见的将来将不复存在。
+<p>另外，合理的利益分配也是迄今为止网络发展未能解决的难题。不论是新浪博客还是人人空间，用户撰写再多的内容，也只是纯凭兴趣，可以获得精神上的满足，但不能取得物质上的收益。唯一有效的收益方式便是放置自己的广告，但这显然只是权宜之计。更严重的是，一个实体组织若要创建自己的网络平台，必须自己从头摸索，或者花大价钱请网络公司帮忙构建，而之后的收益方式又需要组织自己出人力物力来摸着石头过河。这样多次无意义的重复摸索降低了生产力，浪费了宝贵的技术力量。
+<p>因此有必要为希望创建网络平台的实体组织提供一个开放的开发平台和一套完善、合理的利益分配体系。开发平台足够易用使得组织无需凭借外力即可制作出实际的网络应用；足够可用使得能够充分发挥每个人的创造力，根据自己的意愿实现设计效果。利益分配体系建立在真实信任关系的基础上，引入现实社会中的仲裁机制和民主法制，公平合理地化解虚拟世界的利益纠纷，保证了开发者和使用者的共同利益。
+
+<h3 id="current-web-product-difficulties">2.2 现有Web产品的本质困难</h3>
+<p>尽管针对组织的Web模式有着诱人的前景，但互联网界的诸位大佬为何没有在其中分一杯羹呢？其中一定存在效益的考量。按照信息来源和使用方式，我们不妨对现有的以促进信息传播为主要目的的互联网产品进行分类。分类中列出的互联网产品往往是同类产品的代表，因篇幅所限不可能把所有产品全部列出。
+<table>
+<tr><th>信息来源</th><th>个人</th><th>组织</th><th>群体</th><th>社会</th></tr>
+<tr><th>交流</th><td>电子邮件<br />QQ单聊</td><td>QQ群<br />邮件列表<br />RTX<br />公共邮箱</td><td>论坛<br />豆瓣小组</td><td>综合社区<br />百度知道</td></tr>
+<tr><th>发布</th><td>博客<br />微博<br />人人状态</td><td>公共主页<br />CMS<br />群博<br />自建网站</td><td>垂直门户<br />垂直搜索<br />RSS<br />小众网站</td><td>门户网站<br />搜索引擎<br />百度百科<br /></td></tr>
+</table>
+<p>这个分类中没有区分大家耳熟能详的Web 1.0与Web 2.0，因为目前的网站越来越多地依赖用户创造内容，完全意义上的Web 1.0已经淡出主流。
+<p>目前最火的互联网产品居于分类的左右两侧（个人、社会），这是有历史必然性的。一个互联网产品盈利的多少等于重用率与单个效益的乘积。针对个人的应用往往比较简单，因此一个同样的应用可供无数人使用，重用率非常高；但SNS里的每个人带来的收益并不多，这采用了聚沙成塔模式。针对社会的应用往往比较复杂（例如制作一个新闻专题需要大量人力），且每次都要重新制作，但每个专题能被许多人看到，这样每个专题带来的收益也很可观。总之，普通的互联网应用不能指望“大客户”，而要靠庞大的用户基数逐步积累，那么一种模式是“一次制作，永久使用”，另一种是“每次重做，一鸣惊人”。
+<table>
+<tr><th>信息来源</th><th>个人</th><th>组织</th><th>群体</th><th>社会</th></tr>
+<tr><th>重用率</th><td>高</td><td>低</td><td>低</td><td>低</td></tr>
+<tr><th>单个效益</th><td>低</td><td>低</td><td>高</td><td>高</td></tr>
+</table>
+<p>由上表可见，针对个人和社会的互联网产品“性价比”最高，尤其是以SNS为代表的“一次制作，永久使用”的针对个人的互联网应用，降低了网络开发的进入门槛，因此近来越来越受到关注。而针对组织的互联网产品重用率和单个效益都不高，因此没有受到业界多大关注就是很自然的了。值得注意的是，上述例子中列出的QQ群、邮件列表、公共主页等确实重用率很高，但如同针对个人的产品一样功能确定，不能满足多样化的组织的各种复杂需求，因此这个领域还有很大的开发空间。
+<p>但是，不容忽视的是，人是生活在一个个组织（人际圈子）中的，根据职业不同还分属各种群体，而不是一个个孤立的人，也不是社会中毫无个性的茫茫一粒沙。SNS部分解决了这个问题，将现实世界的朋友关系复制到网络上，实现了人与人之间的信息互通，这是划时代的进步。然而，现实社会的人际关系错综复杂，决不能用一个简单的朋友圈子概括；客观存在的正式和非正式组织，也没有自然的到网络世界的映射。
+<p>如果考虑到中西方文化的差异，中国人更加重视集体主义，办事也较西方人更正式，起源于推崇个人主义和个人权利的西方的社交网络只能满足国人茶余饭后的娱乐需求，而无法大面积应用于真正“有用”的信息沟通。
+<p>因此，这部分需求经常被遗忘于网络世界的角落，有这种需求的人或组织只好求助于几种并不自然的替代方案：
+<ul><li>找懂计算机的人做一个刚好能达到要求的简陋的网站，我们开发团队经常做这种事；</li>
+<li>使用论坛、wiki、博客、CMS等现有的程序，拼拼凑凑弄出个勉强能用的网站，尽管功能和权限往往并不切合需求；</li>
+<li>依托更大的网络平台，如学校BBS、同城BBS、QQ群、公共邮箱等，使用那个并不是为当前需求而设计的强大的公共平台；（这是最多的选择）</li>
+<li>干脆不使用网络，直接采用群发短信、贴海报、发通知、线下交流等手段解决交流问题；</li>
+<li>交流成本太高，干脆不交流。（这不是开玩笑，很多潜在的交流和本应实现的信息沟通都因为工具的缺失而没有进行，这也是互联网出现多年后很多重要信息仍未实现网络化，信息壁垒仍然高耸的重要根源。）</li></ul>
+<p>需求客观存在与生产效益不高间的矛盾，使互联网的一个本质任务——促进信息交流遇到了本质困难。需求是客观存在的，改变的只能是成本，而降低成本、提高生产力，需要科学技术的支持。短短几十年，TCP/IP协议族结束了APARANET以来互联网体系结构的混战，HTTP奠定了B/S架构的通信协议基础，如今的W3C也在积极推动HTML、CSS等的标准化，可见规范与标准的重要。Ajax的历史告诉我们，有时一项很好的技术已经在实际应用中显露雏形，但将这些零散的best practice总结、升华，并赋予一个响亮的名字，能够极大地推动这项新技术的发展与应用。类似的，本文档所提出的“烧烤模式”并不是一种新的网络技术，而是一种新的思维方式和开发框架。
+
+<h3 id="free-from-restrictions">2.3 从必然王国到自由王国</h3>
+<p>现有的Web产品之所以出现重用率低、重复劳动多的死结，从根本上说是Web架构不够开放。主要的Web公司都没有开放核心源代码，更不要说开放数据库和账户体系了。如今被热炒的开放API不过是将表现层的一部分接口开放给第三方应用，核心技术和数据仍然由公司“严防死守”。因此，每个希望发展的Web产品只有四条路可走：
+<ul><li>不使用用户体系或使用很简单的用户体系，如博客的评论功能；</li>
+<li>开发自己的用户体系，每人来到这里都要注册一个账号，如discuz论坛，校园BBS等；</li>
+<li>使用大公司的开放API，成为第三方应用；</li>
+<li>被大公司收购，成为其产品体系的一部分。</li></ul>
+<p>从用户角度，这样的封闭开发体系必然会带来“用户名爆炸”，即一个用户需要在不同的网站记忆多个用户名和相应密码，还要担心钓鱼网站等安全问题。从开发者角度，开源产品的缺失迫使站长“重新发明轮子”，做出很多重复的、低质量的网站功能。
+<p>退一步，即使公司开放了开发体系，现有Web产品耦合紧密的技术架构决定了其不可能实现充分开放。
+<p class="example">Discuz!论坛曾被集体入侵，页面变成Hacked by ring04h, just for fun!，原因只是Discuz官方的更新服务器被域名劫持，劫持期间登陆论坛管理后台的论坛从被劫持的“更新服务器”下载了恶意代码，导致论坛瘫痪。<br />我们不惮以最坏的恶意推测，如果Discuz官方推出了某种恶意后门，那么如何保证论坛的敏感信息不被窃取呢？仅仅登陆了后台，就能悄无声息地远程下载并运行更新，也许是为了方便对网络技术一窍不通的站长，但这正是缺乏透明性导致安全问题的典型。
+<p class="example">我们希望利用现有的论坛平台（Discuz!X 2.0）架设一个类似Google Groups的内部讨论组，即设置一个只允许几个特定用户访问的私密板块。很好，论坛本身提供了这种功能。但论坛首页的显示模板并没有考虑到“几个特定用户访问”的功能，因此这个“私密板块”就堂而皇之地摆在了论坛首页，点击进入后才提示“没有权限”。究其原因，程序的内部边界不明确，权限控制分散在显示层而非集中于数据层，导致论坛中常常出现各种微妙的权限问题。
+<p class="example">继续以Discuz论坛为例，管理团队的权限分配很不方便，版主不能修改自己管辖版面的设置，界面设计人员不能修改页面显示的某些元素，最后大家都变成了“管理员”，而管理员的权限只能按功能分配，而不能按数据分配，导致管理团队的安全边界混乱，经常出现某位成员因相距十万八千里的另一处设置而没有权限。这种混乱的权限控制体系犹如设计拙劣的面向对象程序，由于分工不明，本来private的数据一个个public了，丧失了数据封装的优势。
+<p class="example">如果没有落实“做一件事，并把它做好” (do one thing, and do it well) 的信息隐藏和封装原则，即使是业务逻辑并不复杂的程序，也不能逃出bug的泥沼。例如学校选课系统的抽签功能，如果没有抽上，输入刚才的链接还能再抽一次，知道抽上为止。显然，选课系统的作者认为用户只会正常使用浏览器选课，而不会直接输入网址，但这就给了用户“钻空子”的机会。我们推测，选课系统可能维护了一个数据表“选课”，包括学号、课程号、状态（未抽签，未抽中，已选上），但在抽签时并没有检查当前的抽签状态。如果对好不容易抽中的课程再抽一次，说不定还能抽掉呢！
+<p class="note">上段不合主题</p>
+<p>Discuz!论坛在现有的开源论坛、CMS产品中，算是质量相当高的，其代码中确实有很多值得学习之处。但是，由于没有大胆地走出架构重构的第一步，依然没有逃脱传统的“硬编码”式风格，稍有问题就得麻烦管理员修改代码，不适于大型社区的分级授权管理。这反映了当今Web研发中“东拼西凑”的通病：没有仔细研究当前的需求到底需要什么技术，而去盲目应用现有的编程框架，将各种资料、框架、工具中提供的特性加上厚重的胶合层，拼凑在一起，只要“能用”便万事大吉。以至于很多人认为Web开发是个“技术含量不高”的领域。事实上，Web社区中出现的种种矛盾和混乱，期待着一个真正分布式的、模块化的、开放的开发体系。
+<p>我们把由少数人控制的封闭研发体系称为“必然王国”，而与之对应的充分开放的开发体系称为“自由王国”。自由王国并不是开放API这么简单，它具有以下几个基本特征：
+<ol>
+<li>天然就是分布式的系统架构
+<li>统一而便于扩展的文件格式和通信协议（先决条件：1）
+<li>完善的权限机制，拥有相应权限的用户对内容的读、写、展示、操作、授权可以任意控制（这模糊了用户与开发者的界限）
+<li>系统的所有操作对用户是透明的（先决条件：3）
+<li>可以方便地重用已有的功能、风格，并进行修改（这意味着非技术型用户可以不必成为开发者）（先决条件：4）
+<li>兼容经典的Web应用
+</ol>
+<p>显然，在经典的LAMP（Linux+Apache+MySQL+PHP）框架下，这些特征难以实现。
+<ul>
+<li>要充分而彻底地支持分布式系统架构，完全采用PHP脚本效率会很低，必须在HTTP协议层面进行扩展，需要高效的编译型语言编写的CGI，在Apache的基础上进行扩展。
+<li>要充分落实权限机制，必须将权限与数据绑定，而MySQL数据库内置的权限机制是表级别的，无法使用，因此需要在数据库通信接口进行限制。为提高效率，这也需要编译型语言编写的中间件。
+<li>要方便地重用已有功能，必须允许有权限的用户修改代码，这样在文件系统层面需要一个类似“版本控制系统”的机制。
+</ul>
+<p>事实上，在Apache、MySQL、Linux文件系统上各增加一个胶合层（中间件），再提供一个类似Smarty的PHP开发框架，已经能充分满足“自由王国”的基本特征了。但是，这样的东西总有一种“东拼西凑”的感觉，因此我们在本文档的第二部分提出了更为强大而统一的架构，当然也是一个宏伟的计划。
+<p>根据“不要重新发明轮子”的教导，这个架构的实现方式仍然是在现有基础上进行扩展，最大的区别是不再使用关系型数据库MySQL，而采用了树形结构的面向对象数据库。“数据结构决定算法”，我们架构的创新之处集中在数据的存储、访问和传输上。
+<p>不论如何，充分开放的开发体系在现有技术条件下是不难做到的。因此，我们更需要的事实上不是技术，而是开发理念。这仿佛是两难的：开发者需要CLI（命令行）模式的、功能强大的平台，能忍受陡峭的学习曲线；最终用户需要GUI（图形用户界面）模式的、简单易学的平台，对复杂度非常敏感。旷日持久的UNIX和Windows两大阵营混战的争论焦点就在这里。
+<p class="example">事情不会是绝对的。本文档是用HTML语言写成的，作者使用了GNU Notepad++编辑器，这是CLI的典型，方便强大；然而，不懂HTML的用户可以方便的使用网页浏览器查看网页，也可以使用各种所见即所得的网页编辑器来编辑本文档。<br />这就是一线希望所在：只要数据结构是透明的，都通过统一的基本访问层进行访问，那么在此基础上开发出CLI和GUI程序都是可行的。但MS Word这样的封闭而复杂的文件格式就难以开发第三方软件。
+<p>我们架构的关键之处就是将数据和表示分开，加强现有的“继承”机制，使得需要自定义的时候能够充分自定义，希望直接采用其他实现时又能方便地引用。
+
+<h3 id="barbecue-model">2.4 烧烤模式</h3>
+<p class="example">我们的很多设计都是在一起吃烧烤的讨论中产生的，这也是“烧烤模式”得名的原因之一。吃烧烤可以有几种选择：
+<ul><li>在烧烤店，服务员会根据我们的要求烧好肉串，送到我们桌前，这是最简单省事，也最少个性化的模式；
+<li>在野餐时，我们准备好烧烤架、木炭、现成的冰冻肉串等，点燃木炭就可以开始烧烤，不过烧烤的整个过程都在我们的掌控之中，可以任意掌握火候、风味等因素；
+<li>自己找柴生火，将肉穿成肉串，相当于自己准备烧烤设备，这样需要花费不少时间在前期准备中，但烧烤的自由度更大，也乐在其中。
+</ul>
+<p>烧烤之所以能被分为多种“层次”，是因为烧烤是个已经被高度模块化的“行业”，制作肉串、制作烧烤架、制作木炭、烧烤肉串等多个操作都已经高度成熟，由专人、用专用的设备来完成，因此想吃烧烤的用户可以让专业人士完成这些操作，也可以自行完成其中的任意一部分，将剩余部分留给专业人士完成，这就带来了很大的自由度，使用户自定义其中的任意操作成为可能。
+<p>“烧烤模式”的核心精神就是让互联网应用也成为像目前分工明确的工业化大生产一样，实现充分的层次化和模块化，这样用户可以从任意的现成通用模块开始，用最少的精力对其余模块进行定制，而无需重新编写整个系统。软件工程的终极目标之一就是实现代码复用，而代码复用的先决条件就是恰当的架构、明确的内部边界、逻辑紧凑的模块。
+<p>“烧烤模式”作为一个生动的名字，在“模块化”的基础上进一步强调了恰当的系统架构的重要性。如果系统架构不合理（如前例所述权限在显示层控制），模块化便是无本之木。
+<p class="example">现代操作系统是“烧烤模式”的生动典型。以Linux文件系统为例，一个文件如果只能被操作系统指定的应用程序访问，这个操作系统的可扩展性就很差。事实上，对一个文本文件，Linux文件系统至少有以下几种访问方式：
+<ul><li>使用图形界面下的gedit等编辑工具；
+<li>使用命令行下的编辑工具（ed，vi等）；
+<li>写一段脚本，调用emacs等工具；
+<li>写一段C程序，通过系统调用访问文件；
+<li>绕过Linux文件系统，直接访问硬盘的物理位置。
+</ul>
+<p>有些人可能会问，既然有了系统调用，为什么还允许绕过Linux文件系统直接访问物理硬盘？如果不是这样，Linux就只能允许存在“内置”的文件系统类型而排斥了其他扩展；即使是内置支持的文件系统（如ext2、ext3），也可能需要某些更底层的访问来提高效率（如数据库）或执行某些特殊操作（修复损坏的分区表）。文件系统的作者深知，尽管自己制作的文件系统缓存机制已经很高效了，但针对数据库等文件内组织结构复杂的应用，通用的缓存机制并不是最优的，不如把这个优化的机会留给数据库等应用的作者。
+<p>这就是“烧烤模式”的基本要求：不假定自己开发的机制适用于一切场合，将更底层的接口暴露出来，允许他人来开发。这也重述了UNIX哲学中的重要论断：机制，而不是策略。(Mechanism, not strategy.) 暴露出底层接口对开发者也是一种鞭策。分层次提供定义良好的接口，强迫开发者更好地封装程序的各个模块，将相互关联的操作尽量集中存放。
+<p class="example">Windows操作系统中的注册表便是机制与策略紧密结合的反面典型。注册表的二进制文件格式是微软专有的，需要访问注册表的程序必须使用Windows系统提供的接口。由于注册表集中存放了所有应用程序的配置设置，带来了“注册表蠕变”难题：应用程序越多，使用时间越长，注册表的信息越多，存放也越混乱，读取一个注册表项所需的时间也越长，最终拖慢了整个操作系统的运行速度。此外，运行于管理员权限下的程序可以对注册表任意修改，因此系统很容易被各种修改注册表的恶意程序破坏。由于“所有鸡蛋放在一个篮子里”，一个程序的故障（如注册表编辑器修改注册表时，系统突然断电）可能导致整个系统无法启动。
+<p class="example">MySQL数据库是“烧烤模式”的另一经典实例。作为开源数据库，MySQL并不是一个单一的实体，而划分为几个互相独立的层次：
+<ol><li>API层，面向应用，包括各种编程语言的接口、命令行操作接口；
+<li>连接池，面向连接，管理所有与数据库的连接、线程、权限控制等；
+<li>查询执行层，面向查询，包括视图生成、查询语言解析、查询优化、权限控制、日志记录、查询缓存等模块，这些模块又是相互独立的；
+<li>存储引擎层，面向数据，负责数据存储、索引、内存缓冲等，可从MyISAM、InnoDB、Memory等存储引擎中选择；
+<li>文件系统层，面向磁盘，数据库文件在物理磁盘上的具体存储位置。
+</ol>
+<p class="exmaple">如果MySQL数据库的所有层次都像连体婴儿一样集中起来会怎样？我们无法：
+<ul><li>对新的编程语言提供方便的访问接口；
+<li>对分布式数据库提供不同于本地数据库的网络连接、数据缓存等优化；
+<li>使用一种新的权限控制模型；
+<li>根据不同应用的特点，选用支持事务的、支持全文索引的、或者直接使用内存的存储引擎。
+</ul>
+<p>由此可见，模块化对一个要求重用性和可扩展性的软件是至关重要的。文件系统和数据库的例子都告诉我们，实现模块化的一条有效途径便是“层次化”：不同的层次面向不同的对象，低层为高层提供一致的抽象和接口。低层实现要完成且仅完成接口中定义的任务，而不能依赖高层应用的调用方式；高层应用要优雅地使用接口，而不能依赖低层的具体实现。这便达到了“做一件事，并把它做好”的目的，实现了封装，便于模块测试，也为代码复用提供了可能。如前所述，这便是“烧烤模式”的核心要义：层次化、模块化。
+
+<h3 id="smart-network">2.5 智能网络畅想</h3>
+<p>Web出现之前的主要矛盾是信息传递困难，Web 1.0解决了它，新的主要矛盾变为信息基本静态与用户参与的愿望之间的矛盾；Web 2.0解决了旧矛盾，又产生了信任体系和利益分配机制不完善和虚拟世界与现实世界快速融合的新矛盾。一个网络应用要成为Web 3.0，解决Web 2.0的遗留矛盾始终是不可淡忘的主题。
+<p>在Web 1.0中，用户是网站的访问者，可悲的是很多现有的网站仍然抱有类似的陈旧观念，仅仅通过页面点击率衡量得失，通过广告取得收益。在Web 2.0中，用户是网站的参与者，他们发表信息，交流知识，成为现实世界社交关系的便捷渠道和重要补充。在Web 3.0中，用户是网站的建设者，大家充分发挥各自的优势，将创新成果应用到自己的“地盘”，共同开发整个网站的程序和内容，共同享受网站发展的精神愉悦和物质利益。
+<p>总而言之，Web 3.0在两个核心理念上将是对传统网络模型的突破：
+<ul><li>通过实名制，结合真实的社会组织，将网络的虚拟性转化为真实性；</li>
+<li>通过网络政治和利益分配机制，将网络由完全分散的分布式转化为民主集中式。</li>
+</ul>
+<p>如果说Web 1.0是信息网络，Web 2.0是社交网络，那么Web 3.0则是智能网络。智能网络的基本特征是让每个人不再是孤立的人（Web 1.0），也不再是好友圈子里的人（Web 2.0），而是充分发挥自身主观能动性，投身到让整个互联网更美好的伟大事业中的人（Web 3.0）。
+<p>从技术角度来看，Web 3.0也有本质的突破。Web 1.0的中心是“网站”（Website），代表技术是海量信息管理系统和大型关系型数据库的服务器集群；Web 2.0的中心是“应用”（Applications），代表技术是大规模并发事务处理和大型非关系数据库的服务器集群；Web 3.0的中心是“云计算”（Cloud Computing），代表技术是大规模完全分布式处理的服务器集群。由此，Web 3.0并不是一个网站，而是一个服务体系，在这个架构下可以建立无数紧密相连的网站，让互联网真正触及生活的每个角落。
+<p>具有一定复杂程度的网络，便能产生一定程度的智能。这正是人工智能的重要分支“人工神经网络”研究的方向。“智能网络”有两层含义：
+<ul><li>每个用户都与现实的和虚拟的组织紧密联系，通过团队合作和信息共享，发挥着最大的创新潜能；</li>
+<li>每台服务器通过完全分布式的通信协议紧密联系，发挥集群运算的最大能力。</li>
+</ul>
+
+<h3 id="creative-everyone">2.6 创新每个人</h3>
+<p>多米诺骨牌效应最通常的形式，并不是逐级放大的神奇推演，而是点点滴滴的蔓延。尽管每一块的力量都同比例的微小，但是最终的伟大质变却是隐藏在不断积累的过程中。
+<p>每天15分钟是什么概念？如果是阅读，一分钟可达300字，15分钟就是4500字，一周可读3.15万字，一个月就是12.6万字。那么一年就是151.2万字。如果一本书以7.5万字算，每天读15分钟，一年可读20本书。有一个人这样坚持了半个世纪，共读了8235万字、1098本书。他就是加拿大籍的世界著名医生奥斯勒。
+<p>我们从网站维护谈起。在其他条件不变的前提下，花费在网站上的时间越多，取得的效果越好。
+<ul><li>管理员一个人维护网站，每天3小时，每周21小时；
+<li>15个人的团队维护网站，每周3小时，共45小时；
+<li>科大7500本科生每周登陆一次网站，一次10分钟，每周共1250小时。
+<li>按照平均每15秒点击一次网页的估计，每天的网站点击量为42857次。
+<li>受到中央电视台等多家媒体报道的大型科普网站科学松鼠会，每天点击量也只是在10万次的量级。
+<li>而这一切只考虑了科大一所高校！全国共有四千多所高校，人人网就是这样炼成的。
+</ul>
+<p>也许有人会问，这些推算都是不切实际的，7500学生凭什么每个人、每个星期都来这个网站？
+<p>这就是用户黏性的威力。例如科大的网上选课系统，每个学生必须登录，这是行政压力所驱使的。而我们前进的方向正是与真实的社会组织、学生社团等结合，一个人所加入的组织机构发布的信息只有在我们这里能够看到，他不就必须经常来我们网站查询新信息了吗？
+<p>那么为什么组织机构要选择在我们这里发布信息呢？这就是1.1节所述易用性、可用性和利益分配机制的厉害之处。组织机构不仅不需要为创办网站付出高额成本，还可以充分发挥创造力，满足自我实现的需要，同时还能从利益分配机制中取得今后的收益，何乐而不为呢？
+<p>一个团队的创新是有限的，人类的创新相对来说是无限的。人是创新的主体，是最宝贵的资源。要发挥每个人、每个组织的主观能动性，提供一个开放的平台，提高归属感和认同感，让他们不仅成为网站的访问者、参与者，更是网站的建设者。
+<p>一个有活力的技术团队是网站成功的必要条件。没有充足的技术资源，上文提到的易用性、可用性就无从谈起，没有足够的优势吸引到组织和个人的关注、认可和参与，也就没有后面的网络政治、利益分配机制了。
+<p>一个忠实的用户群体是网站成功的充分条件。有了领先的理念，又有一批数量可观的用户，推行新方法、推销新功能、推广新理念就如探囊取物了。例如，百度推出一个新功能，绝对比自己的小网站推出一个同样的功能能吸引更多人的关注和试用，也就会取得更大的成功。再如，“青年民意领袖”韩寒在博客上发表一篇文章，即使只有一个字，也会有数十万人关注他的“杰作”；相反，自己呕心沥血写的一篇万言长文，就算再有道理，只要没有炒作，也很难达到韩寒杂文的影响力。
+<p>QQ和360之战，如果没有工信部的调停，最后肯定两败俱伤，但相对而言腾讯的胜算显然很大。为什么？腾讯QQ拥有4亿多活跃用户，拥有中国最大的用户群体，且在即时聊天领域基本处于垄断地位，诸如MSN等聊天软件应用范围很窄，这种垄断酷似谷歌退出后百度在中国搜索引擎领域的垄断。离开了QQ，很多用户根本无法与人网上聊天，这简直成了网民生活的必需品。而360安全软件则不尽然。首先360的用户份额比QQ要小，另外最重要的是360在安全软件领域不占有垄断地位，不能做到让用户别无选择。没有360，还可以选择瑞星、金山、卡巴斯基等其他杀毒软件和浏览器安全软件。
+<p>以上归结起来，就是用户对QQ的忠诚度，或依赖度，大于对360的相应指标。一旦开战，忠诚度高的一方更容易获得认同。在平时网站间的竞争中，也存在着类似的“大鱼吃小鱼”的现象。曾几何时，各大网站的校友录功能群雄并起，但现在还有几家能跟人人网一决雌雄？
+<p>因此，格物致知网要在技术和理念上不断创新，把握好现有的忠实用户，稳健发展可能的忠实用户，团结一切可以团结的力量，至少在一个二级领域实现压倒性优势，凭借不断改善的用户体验，不断提升用户的忠诚度和信任度，甚至成为一些人上网的“必需品”，则发挥每个人的创新能力，领跑Web 3.0的理念突破，Nothing is impossible。
+<p class="note">本节摘自2011年1月《格物致知网构想与实现》，目前（7月）已融入“烧烤模式”和“智能网络”的更为宏大的架构中。
+
+<h3 id="profit-assignment">2.7 利益分配机制</h3>
+<p>虚拟货币结构图
+
+<h2 id="software-engineering">3 软件工程</h2>
+
+<h3 id="concept-integrity">3.1 概念完整性</h3>
+<p>软件的目的是使计算机更加容易使用。为了做到这一点，计算机装备了语言和各种工具，这些工具实际上也是被调用的程序，受到编程语言的控制。使用这些工具是有代价的：软件外部描述的规模大小是计算机系统本身说明的十倍。用户会发现寻找一个特定功能是很容易的，但相应却有太多的选择，要记住太多的选项和格式。<strong>只有当这些功能说明节约下来的时间，比用在学习、记忆和搜索手册上的时间要少时，易用性才会得到提高。</strong>
+<p>对于给定级别的功能，能用最简洁和直接的方式来指明事情的系统是最好的。仅有简洁是不够的。有些程序语言或软件要表达一件待完成的事情，常常需要对基本元素进行意料不到的复杂组合，而且除了了解基本要素和组合规则，还需要学习晦涩的用法，以及在实际工作中如何进行组合。这违反了直白的原则。
+<p><strong>简洁</strong>和<strong>直白</strong>来自概念的完整性。每个部分必须反映相同的原理、原则和一致的折衷机制。在语法上，每个部分应使用相同的技巧；在语义上，应具有同样的相似性。因此，易用性实际上需要设计的一致性和概念上的完整性。
+<p>概念的完整性要求设计必须由一个人，或者非常少数互有默契的人员来实现，而大型项目的进度压力却要求很多人员来开发系统。获得概念完整性有两个重要途径，一是体系结构与实现分离，二是外科手术队伍的开明专制。
+<p>对于非常大型的项目，将设计方法、体系结构方面的工作与具体实现相分离是获得概念完整性的强有力方法。
+<p>系统的体系结构指的是完整和详细的用户接口说明，是用户要完成自己全部工作所需参考的手册的集合。因此，系统的结构师，如同建筑的结构师一样，是用户的代理人，他们需要运用专业技术知识来维护<strong>用户的真正利益</strong>。
+<p>体系结构同实现必须仔细地区分开来。<strong>体系结构陈述的是发生了什么，而实现描述的是如何实现。</strong>一个简单的例子是时钟，它的结构包括表面、指针和上发条的旋钮。当一个小孩知道了时钟的外表结构，他很容易从手表或者教堂上的时钟辨认时间。而时钟的实现，描述了表壳中的事物——很多种动力提供装置中的一种，以及众多控制精度方案的一种。
+<p>当讨论专制与民主这个带有高度感情色彩的话题时，我们当然不认为首席程序员才有最好的设计与创意，最好的创意往往来自实现者与用户。但<strong>概念的完整性决定了系统的易用程度</strong>，一个设计良好的系统不应该是各种“优秀理念”的大杂烩，而应以一条主线串联所有模块与功能。不能与系统基本概念进行整合的良好想法和特色，最好放到一边，不予考虑。如果出现了很多非常重要但不兼容的构想，就应该抛弃原来的设计，对不同基本概念进行合并，在合并后的系统上重新开始。
+<p>“<strong>没有规矩，不成方圆</strong>”，外部的体系结构规定实际上是增强，而不是限制实现小组的创造性。一旦他们将注意力集中在没有人解决过的问题上，创意就开始奔涌而出。在毫无限制的实现小组中，在进行结构上的决策时，会出现大量的想法和争议，对具体实现的关注反而会比较少。
+<p>当建议由体系结构的团队来编写计算机和编程系统的所有外部技术说明时，编程人员可能提出三个反对意见：
+<ul><li>该说明中的功能过于繁多，而对实际情况中的成本考虑比较少；
+<li>结构师获得了所有创造发明的快乐，剥夺了实现人员的创造力；
+<li>当体系结构的队伍缓慢工作时，很多实现人员只能空闲地坐着等待。
+</ul>
+<p>第一个问题确实是一项危险。在开发第一个系统时，结构师倾向于精炼和简洁。他知道自己对正在进行的任务不够了解，所以他会谨慎仔细地工作。在设计第一个项目时，他会面对不断产生的装饰和润色功能。这些功能都被搁置在一边，作为“下一个”项目的内容。第一个项目迟早会结束，而此时的结构师，对这类系统充满了十足的信心，熟练掌握了相应的知识，并且时刻准备开发第二个系统。
+<p>第二个系统是设计师们所设计的最危险的系统，一种普遍倾向是过分地设计，向系统添加很多修饰功能和想法，形成一个庞大而不实用的恐龙。而当他着手第三个或第四个系统时，先前的经验会相互验证，得到此类系统通用特性的判断，而且系统之间的差异会帮助他识别出经验中不够通用的部分。
+<p>为避免第二系统效应，设计师可以有意识关注那些系统的特殊危险，运用特别的<strong>自我约束准则</strong>，来避免那些功能上的修饰；根据系统基本理念及目的变更，舍弃一些功能。
+<p>第二个问题纯粹是一项误解。整个创造性活动包括了三个独立的阶段：<strong>体系结构</strong>（architecture）、<strong>设计实现</strong>（implementation）、<strong>物理实现</strong>（realization）。在实际情况中，它们往往可以同时开始和并发地进行。
+<p>实现同样是一项高级别的创造性活动。在外部说明完成之前，设计实现人员有很多的事情可以做。只要有一些最终将并入外部说明的系统功能雏形，他就可以开始了。首先，必须设定良好定义的时间和空间目标，了解产品运行的平台配置。接着，他可以开始设计模块的边界、表结构、算法以及所有的工具。另外，还需要花费一些时间和体系结构师沟通。
+<p>具体实现中创造和发明的机会，并不会因为指定了外部技术说明而大为减少，相反<strong>创造性活动会因为规范化而得到增强</strong>，整个系统也一样。
+<p>关于第三个时间顺序和阶段性上的问题，回答很简单，在说明完成的时候，才开始使用编程实现人员，他们之前可以为其他项目服务。这也正是在搭建一座建筑时所采用的方法。
+<p>概念的完整性要求系统只反映<strong>唯一的设计理念</strong>，用户所见的技术说明来自<strong>少数人的思想</strong>。实际工作被划分成体系结构、设计实现和物理实现，但这并不意味着该开发模式下的系统需要更长的时间来创建。经验显示恰恰相反，整个系统将会开发得更快，所需要的测试时间将更少。同工作的水平分割相比，<strong>垂直划分</strong>从根本上大大减少了劳动量，结果是使交流彻底地简化，概念完整性得到大幅提高。
+
+<h3 id="surgery-team">3.2 外科手术团队</h3>
+<p>软件项目犹如盖大楼，如果10个人的施工队盖楼需要2年，显然20人不会将工期缩短到1年，7300人在一天内盖完楼更是神话。产生如此“非反比关系”的根本原因在于这些项目需要一定的顺序步骤才能完成，即使有再多的人，也不可能一拥而上。<strong>不论有多少个母亲，都需要十个月才能生出孩子。</strong>
+<p>另外，添加人手意味着<strong>更细的分工、更多的交流</strong>，大量宝贵的工作时间被浪费在开发者间的沟通与协商上了。一般来说，n个人“一拥而上”的团队两两需要交流，花费n(n-1)/2的交流时间，是大于人数的线性增长的。对于普通的软件项目，添加人手在开始时由于人数的增加确实可以提前工期，但人数增加到一定程度后由于互相交流等内耗，工期不会继续缩短，甚至还可能因内耗过大反而延长工期。另外，每个程序员对程序的架构与实现都有自己的想法，如果不能得到统一，很可能导致内部的不和谐，从而影响开发的积极性。
+<p>更严重的是，如果一个软件项目事先没有充分估计复杂度，而没有完成阶段性目标，从而中途添加一些人手，这样往往会导致<strong>迟到的项目越来越迟</strong>，因为新来的人需要原有的开发者腾出一部分时间对他们进行培训，使之熟悉整个软件的开发流程、设计文档和当前任务，在这段时间中原有的人被迫停下手中的工作，从而耽误了更多的时间。
+<p>优秀程序员与较差程序员之间的差异是广泛存在的，<strong>最优秀的程序员与平庸程序员的产出率（单位时间内完成的代码量、代码的时间与空间复杂度）之比可达10:1</strong>。因此，<strong>并不是所有会编程序的人都要参与代码的真正编写工作</strong>：一个优秀的程序员应该把全部精力投入到最擅长和最有效率的程序设计、代码编写工作中，而把测试、工具、文档、管理等其余琐事安排给其他人来做；普通的程序员则可以从事与程序开发相关，但并不要求最高水平的辅助性事务。
+<p>基于以上事实，我们必须避免“一拥而上”的开发方式，一个大型团队应由若干精干的小型队伍组成，<strong>每个队伍负责一个相对独立的模块</strong>。我们把这样的小团队称为“<dfn>外科手术队伍</dfn>”：
+<dl><dt><dfn>首席程序员（外科医生）</dfn></dt>
+<dd><strong>亲自</strong>定义功能和性能技术说明书，设计程序，编制源代码，测试以及书写技术文档。首席程序员需要极高的天分、充足的经验和应用数学、业务数据处理或其他方面的大量系统和应用知识。</dd>
+<dt><dfn>参谋（副手）</dfn></dt>
+<dd>设计的思考者、讨论者和评估人员。首席程序员与参谋沟通设计方案，但不受到参谋建议的限制。参谋在与其他团队的功能和接口讨论中代表自己的小组。他需要详细了解所有的代码，研究设计策略的备选方案，充当首席程序员的保险机制。</dd>
+<dt><dfn>管理员</dfn></dt>
+<dd>首席程序员是老板，必须在重大事件上具有决定权，但决不能在这些事务上浪费任何时间。因而，他需要一个控制财务、人员、工作地点安排和机器的专业管理人员，该管理员充当与组织中其他管理机构的接口。</dd>
+<dt><dfn>测试员</dfn></dt>
+<dd>首席程序员需要大量合适的测试用例，用来对他所编写的代码进行测试。因此，测试人员既是为他的各个功能设计系统测试用例的“挑刺者”，同时也是为他的日常调试设计测试数据的助手。他还负责计划测试的步骤和为测试搭建测试平台。</dd>
+<dt><dfn>辅助人员</dfn></dt>
+<dd>负责文档编辑、工具维护等。根据首席程序员的草稿，对设计文档进行分析和重新组织，形成可读性强的正式文件；向首席程序员提供各种参考信息和资料；保证所有基本服务的可靠性，构建、维护和升级团队必需的各种开发环境、开发工具与实用程序。</dd>
+</dl>
+<p>在实际项目中，一个管理员可以管理和协调3~5个外科手术队伍，除去管理员外每个外科手术队伍由首席程序员、参谋、测试员、辅助人员组成，由首席程序员牵头与拍板，避免了策略与接口的不一致性，维护了概念完整性，减少了多人反复交流争论的内耗。
+<p>此外，每个大型团队中总有一两个乐于掌握复杂编程语言的<dfn>语言专家</dfn>。这些天才不同于首席程序员，首席程序员主要是系统设计者以及考虑系统的整体表现。而语言专家则寻找一种简洁、有效的使用语言的方法来解决复杂、晦涩或者棘手的问题。他们可以为各开发小组提供程序语言支持。
+
+<h3 id="think-twice-cut-once">3.3 三思而后行</h3>
+<p>参见《代码大全》(Code Complete)（第二版）第3章。</p>
+
+<h3 id="iterative-development">3.4 迭代式开发</h3>
+<p>参见《敏捷开发的艺术》。</p>
+
+<h3 id="software-testing">3.5 测试与审查</h3>
+<p>此处给出一些基本原则。详细的测试方法参见《微软的软件测试之道》。</p>
+<p>大型程序系统的开发过程有两种：自上而下和自下而上。自上而下的方式意味着开始编写的系统就是一个“能用”的系统，但其中的功能都是假的（模拟出来的）；自下而上的方式犹如制造汽车，每个零件工人都在不知道汽车全貌的情况下开发、组装。计算机软件各组件之间耦合复杂、逻辑严密的特征决定了汽车制造式的完全“面向对象”开发是不现实的，同时也容易挫伤开发人员的积极性，容易引入接口和规范的不一致性，为整体组装带来极大的麻烦。
+<p>“自顶向下，逐步求精”是大型程序系统常用的开发方式。具体到Web应用程序，以下的开发模式是不错的：
+<ol><li>用纸笔画出每个页面的大致框架，并确定程序流程；
+<li>用HTML静态网页的形式实现，并完成CSS等页面设计；
+<li>对每个功能用程序实际实现；
+<li>将静态模板与动态程序结合在一起，成为可用产品。
+</ul>
+<p>其中第一步是编程开始前高层决策人员做出整体规划、明确设计文档的阶段。第二步和第三步可以同时互不影响的进行，第二步由页面设计与用户体验师完成，第三步由程序设计师完成，这个阶段也是开发流程中耗时最长的阶段，由于前台页面设计与后台程序设计两类性质不同的任务被分开，在提高任务并行性的同时减少了页面和程序人员对不熟悉的对方领域的盲目探索。如果第一步文档明确，设计合理，采用了逻辑与显示分离的策略，第四步将是一个很快的过程。
+<p>程序开发完毕，需要多少人来对其测试？开发者自身能否充当测试者的角色？第二个问题的回答是否定的。开发者往往考虑的是程序方面的整体性能，编程复杂度及应用某些“高级”方法的自我实现感觉；而用户关注的则是2.4节所述的易用性和可用性。因此普通终端用户是必须成为内部测试阶段的主力军的，且自视清高的开发者必须放下架子来认真听取他们的意见，根据用户价值取向作出改进，直到大部分用户满意。
+<p>网站的内部测试阶段并不像想象中的那样，需要很多人来测试。研究显示，5名负责任的普通用户就能发现80%的问题，而这80%的问题正是网站竞争力低下的关键因素。只要能把这些影响用户体验的瓶颈消除，剩余的问题其实并无大碍。
+<p>如果一个网站有某个功能非常难用，或存在严重的BUG，就可能出现屏蔽效应。用户在遇到这个非常不爽的严重问题后直接丧失了对网站的兴趣，从而也就无法发现后续的小错误了。例如学术网站如果没有对数学公式等必要工具的支持，学术人员在上面讨论不方便，自然不会在此久留；即使用户积分成长体系存在严重的不合理之处，也不会被用户发现。因此，评测应该分阶段进行，每一阶段找出影响最严重的“瓶颈”，解决后再组织下一阶段的评测，找出新的瓶颈并加以解决，如此循环往复，直至没有明显影响用户体验的瓶颈。
+<p>测试人员虽然不需要很多，但样本应有足够的代表性。不必说，测试人员应该属于网站潜在用户群，一个时尚女性网站让老大爷评测显然就不合适。应当细分网站的潜在用户群，每位测试人员具有一定的代表性，“各司其职”，例如针对大学生的网站，测试人员应该既包括重点大学的学生，又包括普通大学的学生；包括理科、工科、文科等各专业方向的学生；包括不同年级的学生；包括不同性别的学生。另外，针对不同的网络速度（宽带，拨号），不同的设备（电脑，手机）进行区别测试（甚至区别开发）也是应当考虑的。
+<p>在约请普通用户进行评测时，“考试法”是较为有效的。网站开发者充当“主考官”，在考试开始前出好涵盖网站主要操作的试卷，其中基本操作与高级操作应各占一定比例，题目的顺序要符合普通用户的操作逻辑，题目描述要清晰、符合用户习惯，但不对具体操作进行任何提示。考试时，采用屏幕录像机等方式记录用户的操作过程，同时主考官在一旁默默观察，发现不愉快的表情或动作时及时记录，这很有可能是用户感到困惑的地方。用户遇有问题，主考官不应予以解答，而要反问道“你觉得应该如何操作呢？”让他凭感觉去操作，同时密切关注这个用户体验不好的功能模块。考试后，不要忘了让用户说说自己的操作感受。统计每道题（每个操作）的完成时间、点击次数、误操作次数、停留过长或感觉不舒服的页面、让用户眼前一亮的页面等。
+<p>在大型网站的竞争中，技术是次要的，理念与用户体验才是主要因素。一套网站系统在正式发布前，至少要经历与开发时间相同的调试与测试。一般来说，大型系统的设计时间占整个开发流程的1/3，编码时间仅占1/6，模块测试占1/4，系统测试占1/4，切不可把编码当作开发的全部，更不能认为编码的结束就是开发的结束，导致上线的系统漏洞百出，威胁系统安全，激发用户不满。
+
+<h3 id="maintainance-and-feedback">3.6 维护与反馈</h3>
+<p class="note">This section is not completed.</p>
+
+<h2 id="coding-recommendation">4 代码规范</h2>
+<h3 id="KISS">4.1 KISS原则</h3>
+<p>参见《UNIX编程艺术》(The Art Of UNIX Programming)第1章。</p>
+
+<h3 id="modulization">4.2 模块化</h3>
+<p>参见《UNIX编程艺术》第4章。</p>
+
+<h3 id="text-stream-interface">4.3 面向文本流的接口</h3>
+<p>参见《UNIX编程艺术》第5章。</p>
+
+<h3 id="information-hidding">4.4 信息隐藏</h3>
+<p>参见《代码大全》第5章</p>
+
+<h3 id="self-explaining-code">4.5 自解释代码</h3>
+<p>参见《代码大全》第32章。</p>
+
+<h3 id="defensive-programming">4.6 防御式编程</h3>
+<p>参见《代码大全》第8章、《编写安全的代码》（Writing Secure Code, Microsoft Press）。</p>
+
+<h2 id="user-interface">5 用户界面</h2>
+<h3 id="usability-vs-functionality">5.1 易用性与功能性</h3>
+<p>不论是百度、新浪，还是最普通的个人博客，都需要考虑用户访问网站后的感受，如页面上的信息是否吸引人，操作是否明显而简单，希望的浏览与互动愿望是否能被实现，这就是用户体验。
+<p>一个相同的页面对不同的人群而言意味着或许大相径庭的用户体验。一个粉色充满爱意的页面也许对花季少女充满了诱惑，而正在游戏世界中寻找冲杀快感的男生也许会很快选择关闭页面。一个充斥着分类信息的门户型主页对时事爱好者是一种很好的导航，而正忙着在网上查询学术资料的研究者只会感到杂乱无章的混乱。不同的人群，不同的目的，不同的性格，都严重影响着一个网页在访问者心中的PageRank。
+<p>很多人把浏览器的默认首页设置为网址导航或搜索引擎，就是为了避免某个具体网站的限制，根据不同时间的不同上网需求选择合适的网站。除了已经规模化的百度、腾讯等大型网站，试图为所有用户提供服务是不现实的，也是不明智的，最终很有可能功能过于大众化而失去特色。因此，一个全新的理念就是网站提供不同用户群的不同上网目的所需要的功能，<strong>由用户来选择需要的功能</strong>，方便地自定义自己在网站上的“个人主页”，让网站成为量身打造的一站式网络服务平台。
+<p>具体来说，对一个特定的用户，除了一些网站主打的默认功能，还会以适当的方式展示与此用户所属群体相关的功能，每次访问网站时以相同的方式显示。对于高级用户，允许最大限度自定义功能模块，打造属于自己的网络空间。从这个角度来说，一个成功的网站必须是拥有完全自主知识产权的，设计师可以从容地<strong>根据用户需求定制程序功能</strong>，而不受制于现有程序或模板；相反，一些小网站为了省事直接使用了网上现成的程序，结果是根据程序功能“定制”了用户需求，这样构架出来的网站千篇一律，一看就知道是用谁家的程序架出来的，设计人员的创造力没有得到充分发挥。
+<p>但是，普通功能与高级功能总是网站开发中不可忽略的一对矛盾。一般来说，<strong>80%的用户是很“懒惰”的</strong>，他们只愿意看网站上现成的信息，能少点击一次就少动一次键盘鼠标，更没有心思去钻研所谓的“新功能”；20%的用户则是“高级用户”，他们乐意发掘网站的内容与功能，以独具匠心的方式使用网站，并参与网站上诸如写博客、论坛发帖的互动。80%的普通用户产生了50%以上的点击量和知名度，而<strong>20%的高级用户产生了80%的内容</strong>。
+<p>如果网站只注重“<dfn>易用性</dfn>”而不具备“<dfn>可用性</dfn>”，即操作很简单但没有什么高级功能，网站的访问者只会是那些匆匆过客，少有人愿意在网站上长期停留，也缺少用户有价值的分享与贡献；如果网站具备“可用性”而没有“易用性”，即功能繁多但主次不清、操作复杂，就会丧失绝大多数不耐心的普通访客。
+<p>事实上，易用性与可用性，分别代表普通用户与高级用户的需求，是对立统一的。一个设计良好的网站会兼顾两类人群的需求，将<strong>最常用的操作</strong>以简单的方式展现在页面的明显位置，方便普通用户的使用；网站的各类高级功能以恰当的组织方式放置在相对不明显的位置，但附有详尽的帮助系统，使得高级用户可以“随心所欲”地操纵网站。
+<p>以论坛的回帖系统为例，主帖下方会显示只有加粗、高亮等简单功能的快速回复框，但附有“高级回复”的链接，普通用户完全可以简单写上几个字，快速提交回复；但希望插入图片或附件、写大段排版整洁的文字的，完全可以使用功能强大、完备的高级编辑器。即使在高级编辑器内部，也可以对高级用户和“超高级用户”加以区别，例如插入数学公式，使用HTML代码等就是有特殊需要的发帖者才需要的功能，完全可以折叠起来，需要时再展开使用。
+<p>在任何一个页面，功能应该足够少使得网页不至于眼花缭乱，功能应该足够<strong>清晰</strong>使得用户不需要在两个相似的按钮之间“做出艰难的决定”，功能应该足够<strong>完备</strong>使得用户不会在想做某件事时找不到对应的按钮。这是应用程序开发中重要但容易被忽略的原则。
+<p>一个设计良好的网页应当是“<strong>自文档化</strong>”的，犹如一个编码风格良好的程序也应当自文档化一样，不需要任何附加的帮助文档即可充分理解各项功能的含义并在需要实现某项操作时快速准确地使用相应的功能。用户不会为了一个功能去查阅厚厚的用户帮助手册，也不会依次点击各个按钮进行试验，他们只会放弃操作，另寻他处。因此，功能（按钮、链接、输入框等）的布局、样式、图案及必要的说明文字都需要认真推敲。
+<p>例如，用户注册界面的输入框应该有必填项和选填项的区分，即使是用户名和密码这样简单易懂的输入框都应附有相应的简短说明，标明此项目的含义及系统的限制。如果用户不慎操作失误，最差的用户体验是什么都不提示，直到用户发现无法登录才想到没注册成功；稍好一点的是冷冰冰地提示一条“系统错误”并让用户重新填写表单；再好一点的是只要求重新填写上次填错的项目；可以称得上用户友好的设计是用醒目的颜色和图形标明错误发生的位置，要求重新填写的同时在旁边显示<strong>操作建议</strong>，犹如一个隐形的助手在用户身边指导如何操作。不幸的是，尽管在用户注册界面上多数有一定规模的网站都已经达到了“用户友好”的要求，但对其他操作可能就没花那么多心思认真处理了，“系统错误”往往成为网站打发走一位用户的最好借口，出了错误还什么都不提示更是让用户如堕五里雾中。
+<p>用户是不喜欢思考的，他们喜欢网站已经把所有可能的情况都考虑到，并对每种情况做出人性化的合理回应。尽管考虑所有情况在理论上是不可能的，但“自文档化”地应对至少95%的可能情况并不是很难的任务。为了做到这点，需要认真调研<strong>非技术型用户</strong>，而不是专业开发人员，浏览网页和使用网站功能的习惯。很多时候开发人员觉得很显眼的功能被多数人“无视”甚至“骑驴找驴”，开发人员觉得很清楚明白的说明文字在菜鸟眼里如同天书。
+
+<h3 id="perceivable">5.2 可获取性</h3>
+<p>Principle 1: Perceivable - Information and user interfacecomponents must be presentable to users in ways they canperceive.
+<ul>
+<li>Guideline 1.1 Text Alternatives: Providetext alternatives for any non-text contentso that it can be changed into other formspeople need, such as large print, braille,speech, symbols or simpler language.
+<p>1.1.1 Non-text Content: All non-text content that ispresented to the user has a text alternative that serves theequivalent purpose, except for Controls, Input, Time-Based Media, Test, Sensory, CAPTCHA, Decoration, Formatting, Invisible.</p></li>
+<li>Guideline 1.2 Time-based Media: Providealternatives for time-based media.
+<p>1.2.1 Audio-only and Video-only (Prerecorded): Forprerecorded audio-only and prerecorded video-only media,the following are true, except when the audio or video is amedia alternative for text and is clearly labeled as such:</p>
+<p>1.2.2 Captions (Prerecorded): Captions are providedfor all prerecorded audio content in synchronized media,except when the media is a media alternative for text and isclearly labeled as such.</p></li>
+<li>Guideline 1.3 Adaptable: Create contentthat can be presented in different ways (forexample simpler layout) without losinginformation or structure.
+<p>1.3.1 Info and Relationships: Information, structure,and relationships conveyed through presentation can beprogrammatically determined or are available in text.</p>
+<p>1.3.2 Meaningful Sequence: When the sequence inwhich content is presented affects its meaning, a correctreading sequence can be programmatically determined.</p>
+<p>1.3.3 Sensory Characteristics: Instructions providedfor understanding and operating content do not rely solely onsensory characteristics of components such as shape, size,visual location, orientation, or sound.</p></li>
+<li>Guideline 1.4 Distinguishable: Make iteasier for users to see and hear contentincluding separating foreground frombackground.
+<p>1.4.1 Use of Color: Color is not used as the only visual means of conveying information, indicating an action, prompting a response, or distinguishing a visual element.</p>
+<p>1.4.2 Audio Control: If any audio on a Web page playsautomatically for more than 3 seconds, either a mechanism is available to pause or stop the audio, or a mechanism is available to control audio volume independently from the overall system volume level.</p>
+<p>1.4.4 Resize text: Except for captions and images of text, text can be resized without assistive technology up to 200 percent without loss of content or functionality.</p>
+<p>1.4.7 Low or No Background Audio: For prerecorded audio-only content that (1) contains primarily speech in the foreground, (2) is not an audio CAPTCHA or audio logo, and(3) is not vocalization intended to be primarily musical expression such as singing or rapping, at least one of thefollowing is true:
+<ul><li>No Background: The audio does not contain background sounds.<li>Turn Off: The background sounds can be turned off.<li>20 dB: The background sounds are at least 20 decibels lower than the foreground speech content, with theexception of occasional sounds that last for only one or two seconds.</ul></p>
+<p>1.4.8 Visual Presentation: For the visual presentation of blocks of text, a mechanism is available to achieve the following:
+<ul><li>Foreground and background colors can be selected bythe user.
+<li>Width is no more than 80 characters or glyphs (40 if CJK).
+<li>Text is not justified (aligned to both the left and the rightmargins).
+<li>Line spacing (leading) is at least space-and-a-half withinparagraphs, and paragraph spacing is at least 1.5 timeslarger than the line spacing.
+<li>Text can be resized without assistive technology up to 200 percent in a way that does not require the user toscroll horizontally to read a line of text on a full-screen window.</ul></p>
+<p>1.4.9 Images of Text (No Exception): Images of textare only used for pure decoration or where a particularpresentation of text is essential to the information beingconveyed.
+Note: Logotypes (text that is part of a logo or brand name) are considered essential.</p>
+</li></ul>
+
+<h2 id="operable">5.3 可操作性</h2>
+<p>Principle 2: Operable - User interface components andnavigation must be operable.
+<ul><li>Guideline 2.1 Keyboard Accessible: Make all functionality available from a keyboard.
+<p>2.1.2 No Keyboard Trap: If keyboard focus can bemoved to a component of the page using a keyboardinterface, then focus can be moved away from thatcomponent using only a keyboard interface, and, if it requiresmore than unmodified arrow or tab keys or other standardexit methods, the user is advised of the method for movingfocus away.</p>
+<p>2.1.3 Keyboard (No Exception): All functionality of the content is operable through a keyboard interface without requiring specific timings for individual keystrokes.</p></li>
+<li>Guideline 2.2 Enough Time: Provide usersenough time to read and use content.
+<p>2.2.3 No Timing: Timing is not an essential part of theevent or activity presented by the content, except for non-interactive synchronized media and real-time events.</p>
+<p>2.2.4 Interruptions: Interruptions can be postponed orsuppressed by the user, except interruptions involving anemergency.</p>
+<p>2.2.5 Re-authenticating: When an authenticatedsession expires, the user can continue the activity withoutloss of data after re-authenticating.</p></li>
+<li>Guideline 2.3 Seizures: Do not designcontent in a way that is known to causeseizures.
+<p>2.3.2 Three Flashes: Web pages do not contain anythingthat flashes more than three times in any one second period.</p></li>
+<li>Guideline 2.4 Navigable: Provide ways tohelp users navigate, find content, anddetermine where they are.
+<p>2.4.1 Bypass Blocks: A mechanism is available tobypass blocks of content that are repeated on multiple Webpages.</p>
+<p>2.4.2 Page Titled: Web pages have titles that describetopic or purpose.</p>
+<p>2.4.3 Focus Order: If a Web page can be navigatedsequentially and the navigation sequences affect meaning oroperation, focusable components receive focus in an orderthat preserves meaning and operability.</p>
+<p>2.4.4 Link Purpose (In Context): The purpose of eachlink can be determined from the link text alone or from the link text together with its programmatically determined linkcontext, except where the purpose of the link would beambiguous to users in general.</p>
+<p>2.4.5 Multiple Ways: More than one way is available tolocate a Web page within a set of Web pages except wherethe Web Page is the result of, or a step in, a process.</p>
+<p>2.4.6 Headings and Labels: Headings and labelsdescribe topic or purpose.</p>
+<p>2.4.7 Focus Visible: Any keyboard operable userinterface has a mode of operation where the keyboard focusindicator is visible.</p>
+<p>2.4.8 Location: Information about the user's location withina set of Web pages is available.</p>
+<p>2.4.9 Link Purpose (Link Only): A mechanism isavailable to allow the purpose of each link to be identifiedfrom link text alone, except where the purpose of the linkwould be ambiguous to users in general.</p>
+<p>2.4.10 Section Headings: Section headings are used toorganize the content. Note: "Heading" is used in its general sense and includestitles and other ways to add a heading to different types ofcontent.</p></li>
+</ul>
+
+<h3 id="understandable">5.4 可理解性</h3>
+<p>Principle 3: Understandable - Information and the operation ofuser interface must be understandable.
+<ul><li>Guideline 3.1 Readable: Make text contentreadable and understandable.
+<p>3.1.1 Language of Page: The default human language ofeach Web page can be programmatically determined.</p>
+<p>3.1.2 Language of Parts: The human language of eachpassage or phrase in the content can be programmaticallydetermined except for proper names, technical terms, wordsof indeterminate language, and words or phrases that havebecome part of the vernacular of the immediately surroundingtext.</p>
+<p>3.1.3 Unusual Words: A mechanism is available foridentifying specific definitions of words or phrases used in anunusual or restricted way, including idioms and jargon.</p>
+<p>3.1.5 Reading Level: When text requires reading abilitymore advanced than the lower secondary education levelafter removal of proper names and titles, supplementalcontent, or a version that does not require reading abilitymore advanced than the lower secondary education level, isavailable.</p></li>
+<li>Guideline 3.2 Predictable: Make Webpages appear and operate in predictableways.
+<p>3.2.1 On Focus: When any component receives focus, itdoes not initiate a change of context.</p>
+<p>3.2.2 On Input: Changing the setting of any user interface component does not automatically cause a change of context unless the user has been advised of the behavior before using the component.</p>
+<p>3.2.3 Consistent Navigation: Navigational mechanismsthat are repeated on multiple Web pages within a set of Webpages occur in the same relative order each time they arerepeated, unless a change is initiated by the user.</p>
+<p>3.2.4 Consistent Identification: Components that havethe same functionality within a set of Web pages are identified consistently.</p>
+<p>3.2.5 Change on Request: Changes of context areinitiated only by user request or a mechanism is available toturn off such changes.</p></li>
+<li>Guideline 3.3 Input Assistance: Help usersavoid and correct mistakes.
+<p>3.3.1 Error Identification: If an input error isautomatically detected, the item that is in error is identifiedand the error is described to the user in text.</p>
+<p>3.3.2 Labels or Instructions: Labels or instructions areprovided when content requires user input.</p>
+<p>3.3.3 Error Suggestion: If an input error is automaticallydetected and suggestions for correction are known, then thesuggestions are provided to the user, unless it wouldjeopardize the security or purpose of the content.</p>
+<p>3.3.5 Help: Context-sensitive help is available.</p>
+<p>3.3.6 Error Prevention (All): For Web pages that require the user to submit information, at least one of the following is true:
+<ul><li>Reversible: Submissions are reversible.
+<li>Checked: Data entered by the user is checked for inputerrors and the user is provided an opportunity to correctthem.
+<li>Confirmed: A mechanism is available for reviewing,confirming, and correcting information before finalizingthe submission.</li></ul>
+</p></ul>
+
+<h3 id="robust">5.5 健壮性</h3>
+<p>Principle 4: Robust - Content must be robust enough that it canbe interpreted reliably by a wide variety of user agents, includingassistive technologies.
+<ul><li>Guideline 4.1 Compatible: Maximizecompatibility with current and future useragents, including assistive technologies.
+<p>4.1.1 Parsing: In content implemented using markuplanguages, elements have complete start and end tags,elements are nested according to their specifications,elements do not contain duplicate attributes, and any IDs areunique, except where the specifications allow these features.</p>
+<p>4.1.2 Name, Role, Value: For all user interfacecomponents (including but not limited to: form elements, links directly and components generated by scripts), the name and rolecan be programmatically determined; states, properties, andvalues that can be set by the user can be programmaticallyset; and notification of changes to these items is available touser agents, including assistive technologies.</p>
+</li></ul>
+
+<h3 id="CRAP">5.6 CRAP原则</h3>
+<h4 id="proximity">5.6.1 亲密性</h4>
+<h4 id="alignment">5.6.2 对齐</h4>
+<h4 id="repeatation">5.6.3 重复</h4>
+<h4 id="contrast">5.6.4 对比</h4>
+<p>CRAP原则参见《写给大家看的设计书》。</p>
+
+<h2 id="specification">Part II 系统说明</h2>
+
+<h2 id="requirement-analysis">6 需求分析</h2>
+<h3 id="target-customers">6.1 目标用户群</h3>
+<p>格物致知网的设计目标是面向大中学生和科教工作者的一站式网络服务平台。
+<p>用户群的需求包括：
+<ul><li>很多学生组织希望建立网络上的主页，拥有一套组织内外信息发布的便捷平台，但缺乏技术实力；
+<li>大中学校的信息发布平台多为官方主办，信息的组织性、完整性、群众参与性都远远没有满足校内外人士获取详细、真实校园信息的需要；
+<li>大中学生、科教工作者希望有一套功能完善的网络导学系统，但如今这样的导学系统价格昂贵，且属于单向灌输，缺乏互动与交流；
+<li>希望在网络上方便地输入和传输数学、物理、化学等自然科学的公式、图像等；
+<li>希望在网络上建立属于自己的结构化主页，但不拘泥于博客的简单形式；
+<li>希望以更加真实和可信的形象出现在社交网络中，但希望以更加匿名的方式参与公众话题讨论；
+<li>高级用户希望切身参与到网站的开发中去，而不仅仅是被动的使用者；
+<li>组织与个人希望从网络中不仅获取精神上的自我实现，还能获得适当的物质利益。
+</ul>
+<p>为解决网民日益增长的网络交流需要与现有网站结构与运营方式僵化之间的矛盾，格物致知网大胆采取开放开发的战略：
+<ul><li>以用户为主线串联网站各大功能；
+<li>普通用户能够方便地定制个性化主页与功能；
+<li>组织可以方便地创建和个性化自己的网站；
+<li>允许高级用户参与开发网站新功能。
+</ul>
+<p>为方便这个程序项目的开发，格物致知网底层需要一套完善的公共管理机制：
+<ul><li>为各功能模块的数据结构提供一种统一而又可扩展的定义和控制机制；
+<li>提供统一的安全访问机制；
+<li>在无需修改已有系统代码的情况下，加入新的功能模块；
+<li>提供一组标准的API来对对象执行各种操作；
+<li>提供一组方便的系统函数实现常用的逻辑功能；
+<li>提供一种模板以分离逻辑和显示；
+<li>方便地使用国际化语言包；
+<li>强大、方便的程序调试系统；
+<li>方便的版本控制系统；
+<li>一份详尽、易读的开发文档和使用说明文档。
+</ul>
+<p class="note">本节是2011年1月《格物致知网构想与实现》提出的基本需求。</p>
+<p>我们将以上诸多用户需求分为四类：
+<ul><li>组织内部交流需要
+<li>组织对外发布需要
+<li>科学在线公式、画图等需要
+<li>个人管理内容需要
+</ul>
+<p>以下四节将分别具体阐述这四类需要及其对策。</p>
+
+<h3 id="group-internal-need">6.2 组织内部交流需要</h3>
+<p>
+
+<h3 id="group-external-need">6.3 组织对外发布需要</h3>
+<p>
+
+<h3 id="scientfic-need">6.4 科学在线公式、画图等需要</h3>
+<p>
+
+<h3 id="personal-management-need">6.5 个人管理内容需要</h3>
+<p>
+
+<h2 id="basic-concepts">7 基本概念</h2>
+<h3 id="basic-principles">7.1 基本原则</h3>
+<dl>
+<dt><dfn>对象平等原则</dfn></dt>
+<dd>系统中的所有对象平等、自治，在它们之中所有的属性、操作都相同。</dd>
+<dt><dfn>最少重复原则</dfn></dt>
+<dd>每个概念在系统中应有唯一、清晰的表述；若一个概念引用或导出自其他概念，存储的应当是这种相关关系而不是最终数据。</dd>
+<dt><dfn>等效原则</dfn></dt>
+<dd>在任何应用程序看来，整个系统都在本地持续运行，程序独占所有资源。</dd>
+<dt><dfn>单一职责原则</dfn></dt>
+<dd>每个程序或模块应完成且只完成定义明确的一项数据处理或交互显示任务，并提供标准输入输出接口。</dd>
+</dl>
+
+<h3 id="object-model">7.2 对象模型</h3>
+<p><dfn>对象</dfn>（object）是独立的实体，由若干属性构成。
+<p>每个对象A有唯一的指向另一个对象B的属性，称B是A的<dfn>父对象</dfn>（parent object），A是B的<dfn>子对象</dfn>（child object），A和B之间存在<dfn>强从属关系</dfn>（strong relationship）。
+<p>一个对象A的父对象若为空，则称A为<dfn>根对象</dfn>。
+<p>一个对象A的非空父对象如果是自身或一个当前不存在的对象，则称A为<dfn>悬空对象</dfn>。
+<p class="note">悬空对象不是根对象。悬空对象在系统中没有实际意义，也无法被下级对象以外的对象访问，是应当避免的。
+<p class="note">为简明起见，除非特别声明，今后涉及“对象”的名词（包括字母代号）均蕴含着“非空、当前存在”之意。如“父对象”特指非空的、当前存在的父对象。注意，当前的存在性并不意味着过去或将来的存在性。
+
+<p>一个对象B将其父对象由空修改为另一个对象A，则称对象B<dfn>插入</dfn>(insert)对象A。
+<p>一个对象B将其父对象由A修改为不同于A、B的对象C，则称对象B从对象A<dfn>移动</dfn>(move)到对象C。
+<p>一个对象B将其父对象由A修改为空，则称对象B从对象A<dfn>移除</dfn>(remove)。
+<p class="note">对象的“移除”操作只是修改其父对象为空，并不是“删除”此对象。
+
+<p><dfn>新建</dfn>(create)对象是一个对象从无到有的过程。新建的对象初始为空，只有被插入到父对象才有意义。
+<p><dfn>修改</dfn>(modify)对象是一个对象的部分或全部被改动的过程。
+<p><dfn>删除</dfn>(delete)对象是一个对象从有到无的过程。
+
+<p>一个对象的n个子对象构成一个按照插入时间排序的有序表（ordered list），对象的<dfn>序号</dfn>唯一表征同一父对象的所有子对象，第一个成为子对象的序号为1，第n个成为子对象的序号为n。
+<p class="note">
+<ul><li>序号不是子对象的属性。子对象的序号由父对象负责维护，在插入操作时自动确定，之后不能被修改。</li>
+<li>子对象被移动、移除或删除时，父对象必须使它的序号失效，且根据序号的定义不会被重用。</li>
+</ul></p>
+
+<p>对象可以有一个<dfn>别名</dfn>（alias），别名的命名遵从变量名的命名规则，且不能与兄弟对象有相同的别名。由于别名不能以数字开头，不会与按序号的查找方式冲突。
+<p class="note">
+<ul><li>别名不是子对象的属性。子对象的别名由父对象负责维护。父对象应为子对象提供设置别名的接口。</li>
+<li>子对象的别名不是强制的，父对象不应为新插入的子对象自动分配别名，也不应自动修改子对象原有的别名。</li>
+<li>子对象的别名被修改时，父对象应释放原有别名所占用的命名空间，并允许此后的子对象重用。</li>
+<li>子对象被移动、移除或删除时，如果设置了别名，父对象应释放其占用的命名空间，并允许此后的子对象重用。</li>
+</ul></p>
+
+<p>两个不同的对象A、B若拥有相同的父对象，则称A、B互为<dfn>兄弟对象</dfn>(sibling)。
+<p>若A、B互为兄弟对象，且A的序号等于B的序号+1，则称B是A的<dfn>前兄弟</dfn>(previous sibling)，A是B的<dfn>后兄弟</dfn>(next sibling)。
+
+<p><dfn>对象树</dfn>（object tree）是若干对象及其强从属关系的集合，满足：
+<ul><li>有且仅有一个根对象R。
+<li>没有悬空对象。
+<li>不存在<dfn>循环从属关系</dfn>，即不存在对象树中的n≥2个对象a[1],a[2],…,a[n]，使得a[i]是a[i+1]的父对象（1≤i≤n-1），且a[n]是a[1]的父对象。
+</ul>
+<p class="note">以下假定讨论范围内的所有对象构成一棵对象树。显然，除根外的每个对象有且仅有一个父对象，而一个对象可以有零或任意多个子对象。
+<p>对象树的根对象到任意非根对象A，有且只有一条不重复经过任何对象（不走回头路）的路径，称为对象A的<dfn>绝对路径</dfn>(absolute path)。根对象的绝对路径为空。绝对路径是系统内一个对象位置的唯一标识。
+<p>绝对路径上除A外的所有对象，统称为A的<dfn>上级对象</dfn>。
+<p>对象树中所有以对象A为上级对象的对象，统称为A的<dfn>下级对象</dfn>。
+<p>绝对路径上除自身外对象的个数，称为对象的<dfn>深度</dfn>(depth)。根对象的深度为0。
+<p>对象树上深度最大的对象的深度，称为<dfn>对象树的深度</dfn>。
+<p>从对象树的非根对象A到另一个非根对象B，有且只有一条不重复经过任何对象的路径，称为<dfn>相对路径</dfn>(relative path)。A、B称为这条相对路径的两个<dfn>端点</dfn>(end point)。
+<p>相对路径上有且只有一个深度最小的对象，称为相对路径两端点的<dfn>最近公共祖先</dfn>。
+
+<h3 id="user-group-class">7.3 用户、组织、群体</h3>
+<p>用户（user）是独立的不可分割实体，代表一个自然人。
+<p>组织（或称用户组，group，usergroup）是用户的集合。组织S定义为用户集合P与组织集合Q之并。称组织S包含组织T，若组织T是组织集合Q的元素。称用户A属于组织S，当且仅当用户A是用户集合P的元素，或存在包含于Q的组织R，使得用户A属于组织R。
+<p>组织在行动时作为一个整体出现，称为组织用户（group user），与普通用户的行为无异。类似法人的概念。组织用户的行动事实上是由拥有授权的用户代理的。
+<p>群体（或称用户类，userclass）同样是用户的集合。群体使用规则表决定一个用户是否属于群体。
+<p>群体是一个抽象概念，不能作为一个整体行动。
+
+<p>用户与用户间的关系包括关注（listen，单向关系）、好友（friend，双向关系）。
+<p>用户与组织间的关系包括代理（agent，用户代理组织），关注（listen，单向关系，用户可以关注组织，组织也可以关注用户），包含（include，组织包含用户）。
+<p>组织与组织间的关系包括关注（listen，单向关系）、好友（friend，双向关系）、包含（include，一个组织包含另一个组织）。
+
+<p>用户代理组织，本质上是一个用户以另一个用户的身份操作。一个用户要切换到另一个用户，有两种途径：一是位于对方的agent代理列表内，二是输入对方的密码。
+<p>每个用户可以设置多个密码，并在控制面板中设置各密码拥有的权限。需要有一个主密码，拥有这个用户的所有可能权限。
+<p>每个用户和组织都有两个代表自己的默认对象，一个默认对外公开，称为个人主页或组织主页；另一个默认只有自己可访问，称为个人空间或合作平台。
+
+<h2 id="executing-mechanism">8 运行机制</h2>
+<h3 id="privilege-mechanism">8.1 权限机制</h3>
+<p>
+
+<h2 id="transfer-protocol">9 通信协议</h2>
+<h3 id="client-server">9.1 客户机、服务器</h3>
+
+
+<h2 id="appendix">附录</h2>
+<h3 id="appendix-refence">A 参考文献</h3>
+<h3 id="appendix-background">B 背景</h3>
+<p>建立格物网的初始念头可以追溯到2010年12月。那时，刚建立不足两个月的格物致知论坛（gewu.ustc.edu.cn）已经不能满足同学们日益增长的学术讨论需求。数学公式在线编辑、文档在线查看、更方便的协同工作、更精细的权限控制等对学术讨论（其他应用亦然）很有价值的功能只能在数十万行的Discuz!X源代码中苦苦寻觅、修改而来。由于代码并没有提供一个完整的抽象，$_G全局数组遍布，权限控制不够底层，添加功能可谓步履维艰。于是，渐渐萌生了自行编写代码的想法，意欲将论坛的各种无序和混乱统一到一个严格而完善的抽象。
+<p>正是在这个阶段，USTC LUG（Linux User Group，校Linux用户协会）邮件列表中出现了希望模仿外校，建立校园wiki的提议，但很快被几位大佬以“学校不允许自建论坛”的理由搁置了。当时初入协会的我自然不敢多言，但认为校园百科确实是一个不错的想法。想当年报考科大时，费了多少时间在网络上寻找各类校园信息——它们太零散了。官方网站只是一些很正式的公告通知，远远不能满足局外人深入理解科大的学习生活的需求。校园百科的需求是客观存在的；而从同学们的积极性来看，瀚海星云BBS总是一千多人同时在线，版务团队都不辞劳苦，大家很愿意交流校内的学习生活情况。但是，各大高校的BBS是从telnet时代继承来的，界面上、功能上都远远落后于时代。尽管可能存在各种行政命令的障碍，但信息交流的需求是近似“刚性”的。
+<p>带着这种建立校园百科的期许，首先调研了鼎鼎大名的MediaWiki开源程序，经过自定义后确实编辑功能强大，但权限管理方面较为薄弱，而且内置的语法很难学习，不利于普通用户加入编辑。尽管可以在其内核基础上自行开发一套完全自定义的系统，但这样做的工作量并不比完全自主开发一套wiki程序少多少。与其总是使用别人的产品拼拼凑凑，不如自己开发一个集成论坛、百科等功能的统一系统，以实现最大程度的代码复用，保证系统作为整体的概念完整性，同时也拥有了自主知识产权，不再受制于人。
+<p>期末考试<b>期间</b>，我们详细讨论了校园百科的建立计划，形成了
+
+</body>
+</html>                                                                    

@@ -1,0 +1,2542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>The Barbecue Model</title>
+<style type="text/css">
+	a:hover { background:yellow; }
+	body { line-height: 150%; font-size: 14px; font-family:Tahoma,sans-serif; }
+	.nav li { list-style:none; }
+   pre { margin-left: 2em; white-space: pre-wrap; }
+   gtitle, subtitle, h1, h2, h3, h4, h5, h6 { font-family:微软雅黑,宋体,sans-serif; font-weight: normal; }
+   h4, h5, h6 { font-weight: bold; }
+   gtitle { display:block; font-size: 40px; margin: 1em 0 1em 0; }
+   subtitle { display:block; font-size: 24px; margin: 1em 0 1em 0; }
+   h1 { margin: 3em 0 1em 0; }
+   h2 { margin: 3em 0 1em 0; }
+   h3 { margin: 2.5em 0 1em 0; }
+   h4 { margin: 2.5em 0 0.75em 0; }
+   h5, h6 { margin: 2.5em 0 1em; }
+   h1 + h2, h1 + h2 + h2 { margin: 0.75em 0 0.75em; }
+   h2 + h3, h3 + h4, h4 + h5, h5 + h6 { margin-top: 0.5em; }
+   p { margin: 1em 0; }
+   hr:not(.top) { display: block; background: none; border: none; padding: 0; margin: 2em 0; height: auto; }
+   dl, dd { margin-top: 0; margin-bottom: 0; }
+   dt { margin-top: 0.75em; margin-bottom: 0.25em; clear: left; }
+   dt + dt { margin-top: 0; }
+   dd dt { margin-top: 0.25em; margin-bottom: 0; }
+   dd p { margin-top: 0; }
+   dd dl + p { margin-top: 1em; }
+   dd table + p { margin-top: 1em; }
+   p + * > li, dd li { margin: 1em 0; }
+   dt, dfn { font-weight: bold; font-style: normal; }
+   dt dfn { font-style: italic; }
+   pre, code { font-size: inherit; font-family: monospace; font-variant: normal; }
+   pre strong { color: black; font: inherit; font-weight: bold; background: yellow; }
+   pre em { font-weight: bolder; font-style: normal; }
+   @media screen { code { color: orangered; } code :link, code :visited { color: inherit; } }
+   var sub { vertical-align: bottom; font-size: smaller; position: relative; top: 0.1em; }
+   table { border-collapse: collapse; border-style: hidden hidden none hidden; }
+   table thead, table tbody { border-bottom: solid; }
+   table tbody th:first-child { border-left: solid; }
+   table tbody th { text-align: left; }
+   table td, table th { border-left: solid; border-right: solid; border-bottom: solid thin; vertical-align: top; padding: 0.2em; }
+   blockquote { margin: 0 0 0 2em; border: 0; padding: 0; font-style: italic; }
+
+   .bad, .bad *:not(.XXX) { color: gray; border-color: gray; background: transparent; }
+   .matrix, .matrix td { border: none; text-align: right; }
+   .matrix { margin-left: 2em; }
+   .dice-example { border-collapse: collapse; border-style: hidden solid solid hidden; border-width: thin; margin-left: 3em; }
+   .dice-example caption { width: 30em; font-size: smaller; font-style: italic; padding: 0.75em 0; text-align: left; }
+   .dice-example td, .dice-example th { border: solid thin; width: 1.35em; height: 1.05em; text-align: center; padding: 0; }
+
+   .toc dfn, h1 dfn, h2 dfn, h3 dfn, h4 dfn, h5 dfn, h6 dfn { font: inherit; }
+   img.extra { float: right; }
+   pre.idl { border: solid thin; background: #EEEEEE; color: black; padding: 0.5em 1em; }
+   pre.idl :link, pre.idl :visited { color: inherit; background: transparent; }
+   pre.css { border: solid thin; background: #FFFFEE; color: black; padding: 0.5em 1em; }
+   pre.css:first-line { color: #AAAA50; }
+   dl.domintro { color: green; margin: 2em 0 2em 2em; padding: 0.5em 1em; border: none; background: #DDFFDD; }
+   hr + dl.domintro, div.impl + dl.domintro { margin-top: 2.5em; margin-bottom: 1.5em; }
+   dl.domintro dt, dl.domintro dt * { color: black; text-decoration: none; }
+   dl.domintro dd { margin: 0.5em 0 1em 2em; padding: 0; }
+   dl.domintro dd p { margin: 0.5em 0; }
+   dl.switch { padding-left: 2em; }
+   dl.switch > dt { text-indent: -1.5em; }
+   dl.switch > dt:before { content: '\21AA'; padding: 0 0.5em 0 0; display: inline-block; width: 1em; text-align: right; line-height: 0.5em; }
+   dl.triple { padding: 0 0 0 1em; }
+   dl.triple dt, dl.triple dd { margin: 0; display: inline }
+   dl.triple dt:after { content: ':'; }
+   dl.triple dd:after { content: '\A'; white-space: pre; }
+   .diff-old { text-decoration: line-through; color: silver; background: transparent; }
+   .diff-chg, .diff-new { text-decoration: underline; color: green; background: transparent; }
+   a .diff-new { border-bottom: 1px blue solid; }
+
+   h1, h2 { page-break-before: always; }
+   h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
+   h1 + h2, hr + h2.no-toc { page-break-before: auto; }
+
+   p  > span:not([title=""]):not([class="XXX"]):not([class="impl"]):not([class="note"]),
+   li > span:not([title=""]):not([class="XXX"]):not([class="impl"]):not([class="note"]), { border-bottom: solid #9999CC; }
+
+   div.head { margin: 0 0 1em; padding: 1em 0 0 0; }
+   div.head p { margin: 0; }
+   div.head h1 { margin: 0; }
+   div.head .logo { float: right; margin: 0 1em; }
+   div.head .logo img { border: none } /* remove border from top image */
+   div.head dl { margin: 1em 0; }
+   div.head p.copyright, div.head p.alt { font-size: x-small; font-style: oblique; margin: 0; }
+
+   body > .toc > li { margin-top: 1em; margin-bottom: 1em; }
+   body > .toc.brief > li { margin-top: 0.35em; margin-bottom: 0.35em; }
+   body > .toc > li > * { margin-bottom: 0.5em; }
+   body > .toc > li > * > li > * { margin-bottom: 0.25em; }
+   .toc, .toc li { list-style: none; }
+
+   .brief { margin-top: 1em; margin-bottom: 1em; line-height: 1.1; }
+   .brief li { margin: 0; padding: 0; }
+   .brief li p { margin: 0; padding: 0; }
+
+   .category-list { margin-top: -0.75em; margin-bottom: 1em; line-height: 1.5; }
+   .category-list::before { content: '\21D2\A0'; font-size: 1.2em; font-weight: 900; }
+   .category-list li { display: inline; }
+   .category-list li:not(:last-child)::after { content: ', '; }
+   .category-list li > span, .category-list li > a { text-transform: lowercase; }
+   .category-list li * { text-transform: none; } /* don't affect <code> nested in <a> */
+
+   .XXX { color: #E50000; background: white; border: solid red; padding: 0.5em; margin: 1em 0; }
+   .XXX > :first-child { margin-top: 0; }
+   p .XXX { line-height: 3em; }
+   .annotation { border: solid thin black; background: #0C479D; color: white; position: relative; margin: 8px 0 20px 0; }
+   .annotation:before { position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 6px -6px -6px 6px; background: #333333; z-index: -1; content: ''; }
+   .annotation :link, .annotation :visited { color: inherit; }
+   .annotation :link:hover, .annotation :visited:hover { background: transparent; }
+   .annotation span { border: none ! important; }
+   .note { color: green; background: transparent; font-family: sans-serif; }
+   .warning { color: red; background: transparent; }
+   .note, .warning { font-weight: bolder; }
+   p.note, div.note { padding: 0.5em 2em; }
+   span.note { padding: 0 2em; }
+   .note p:first-child, .warning p:first-child { margin-top: 0; }
+   .note p:last-child, .warning p:last-child { margin-bottom: 0; }
+   .warning:before { font-style: normal; }
+   p.note:before { content: 'Note: '; }
+   p.warning:before { content: '\26A0 Warning! '; }
+
+   .bookkeeping:before { display: block; content: 'Bookkeeping details'; font-weight: bolder; font-style: italic; }
+   .bookkeeping { font-size: 0.8em; margin: 2em 0; }
+   .bookkeeping p { margin: 0.5em 2em; display: list-item; list-style: square; }
+   .bookkeeping dt { margin: 0.5em 2em 0; }
+   .bookkeeping dd { margin: 0 3em 0.5em; }
+
+   h4 { position: relative; z-index: 3; }
+   h4 + .element, h4 + div + .element { margin-top: -2.5em; padding-top: 2em; }
+   .element {
+     background: #EEEEFF;
+     color: black;
+     margin: 0 0 1em 0.15em;
+     padding: 0 1em 0.25em 0.75em;
+     border-left: solid #9999FF 0.25em;
+     position: relative;
+     z-index: 1;
+   }
+   .element:before {
+     position: absolute;
+     z-index: 2;
+     top: 0;
+     left: -1.15em;
+     height: 2em;
+     width: 0.9em;
+     background: #EEEEFF;
+     content: ' ';
+     border-style: none none solid solid;
+     border-color: #9999FF;
+     border-width: 0.25em;
+   }
+
+   .example, .history { display: block; color: #222222; background: #FCFCFC; border-left: double; margin-left: 2em; padding-left: 1em; }
+   td > .example:only-child { margin: 0 0 0 0.1em; }
+
+   ul.domTree, ul.domTree ul { padding: 0 0 0 1em; margin: 0; }
+   ul.domTree li { padding: 0; margin: 0; list-style: none; position: relative; }
+   ul.domTree li li { list-style: none; }
+   ul.domTree li:first-child::before { position: absolute; top: 0; height: 0.6em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+   ul.domTree li:not(:last-child)::after { position: absolute; top: 0; bottom: -0.6em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+   ul.domTree span { font-style: italic; font-family: serif; }
+   ul.domTree .t1 code { color: purple; font-weight: bold; }
+   ul.domTree .t2 { font-style: normal; font-family: monospace; }
+   ul.domTree .t2 .name { color: black; font-weight: bold; }
+   ul.domTree .t2 .value { color: blue; font-weight: normal; }
+   ul.domTree .t3 code, .domTree .t4 code, .domTree .t5 code { color: gray; }
+   ul.domTree .t7 code, .domTree .t8 code { color: green; }
+   ul.domTree .t10 code { color: teal; }
+
+   body.dfnEnabled dfn { cursor: pointer; }
+   .dfnPanel {
+     display: inline;
+     position: absolute;
+     z-index: 10;
+     height: auto;
+     width: auto;
+     padding: 0.5em 0.75em;
+     font: small sans-serif, Droid Sans Fallback;
+     background: #DDDDDD;
+     color: black;
+     border: outset 0.2em;
+   }
+   .dfnPanel * { margin: 0; padding: 0; font: inherit; text-indent: 0; }
+   .dfnPanel :link, .dfnPanel :visited { color: black; }
+   .dfnPanel p { font-weight: bolder; }
+   .dfnPanel * + p { margin-top: 0.25em; }
+   .dfnPanel li { list-style-position: inside; }
+
+   #configUI { position: absolute; z-index: 20; top: 10em; right: 1em; width: 11em; font-size: small; }
+   #configUI p { margin: 0.5em 0; padding: 0.3em; background: #EEEEEE; color: black; border: inset thin; }
+   #configUI p label { display: block; }
+   #configUI #updateUI, #configUI .loginUI { text-align: center; }
+   #configUI input[type=button] { display: block; margin: auto; }
+
+   fieldset { margin: 1em; padding: 0.5em 1em; }
+   fieldset > legend + * { margin-top: 0; }
+   fieldset > :last-child { margin-bottom: 0; }
+   fieldset p { margin: 0.5em 0; }
+
+   .stability {
+     position: fixed;
+     bottom: 0;
+     left: 0; right: 0;
+     margin: 0 auto 0 auto;
+     width: 50%;
+     background: maroon; color: yellow;
+     -webkit-border-radius: 1em 1em 0 0;
+     -moz-border-radius: 1em 1em 0 0;
+     border-radius: 1em 1em 0 0;
+     -moz-box-shadow: 0 0 1em #500;
+     -webkit-box-shadow: 0 0 1em #500;
+     box-shadow: 0 0 1em red;
+     padding: 0.5em 1em;
+     text-align: center;
+   }
+   .stability strong {
+     display: block;
+   }
+   .stability input {
+     appearance: none; margin: 0; border: 0; padding: 0.25em 0.5em; background: transparent; color: black;
+     position: absolute; top: -0.5em; right: 0; font: 1.25em sans-serif; text-align: center;
+   }
+   .stability input:hover {
+     color: white;
+     text-shadow: 0 0 2px black;
+   }
+   .stability input:active {
+     padding: 0.3em 0.45em 0.2em 0.55em;
+   }
+   .stability :link, .stability :visited,
+   .stability :link:hover, .stability :visited:hover {
+     background: transparent;
+     color: white;
+   }
+   </style>
+   <link href="data:text/css,.impl%20{%20display:%20none;%20}%0Ahtml%20{%20border:%20solid%20yellow;%20}%20.domintro:before%20{%20display:%20none;%20}"
+id="author" rel="alternate stylesheet" title="Author documentation only">
+<link href="data:text/css,.impl%20{%20background:%20%23FFEEEE;%20}%20.domintro:before%20{%20background:%20%23FFEEEE;%20}"
+id="highlight" rel="alternate stylesheet" title="Highlight implementation
+requirements">
+   <style type="text/css">
+   .applies thead th > * { display: block; }
+   .applies thead code { display: block; }
+   .applies tbody th { whitespace: nowrap; }
+   .applies td { text-align: center; }
+   .applies .yes { background: yellow; }
+
+   .matrix, .matrix td { border: hidden; text-align: right; }
+   .matrix { margin-left: 2em; }
+
+   .dice-example { border-collapse: collapse; border-style: hidden solid solid hidden; border-width: thin; margin-left: 3em; }
+   .dice-example caption { width: 30em; font-size: smaller; font-style: italic; padding: 0.75em 0; text-align: left; }
+   .dice-example td, .dice-example th { border: solid thin; width: 1.35em; height: 1.05em; text-align: center; padding: 0; }
+
+   td.eg { border-width: thin; text-align: center; }
+
+   #table-example-1 { border: solid thin; border-collapse: collapse; margin-left: 3em; }
+   #table-example-1 * { font-family: "Essays1743", serif; line-height: 1.01em; }
+   #table-example-1 caption { padding-bottom: 0.5em; }
+   #table-example-1 thead, #table-example-1 tbody { border: none; }
+   #table-example-1 th, #table-example-1 td { border: solid thin; }
+   #table-example-1 th { font-weight: normal; }
+   #table-example-1 td { border-style: none solid; vertical-align: top; }
+   #table-example-1 th { padding: 0.5em; vertical-align: middle; text-align: center; }
+   #table-example-1 tbody tr:first-child td { padding-top: 0.5em; }
+   #table-example-1 tbody tr:last-child td { padding-bottom: 1.5em; }
+   #table-example-1 tbody td:first-child { padding-left: 2.5em; padding-right: 0; width: 9em; }
+   #table-example-1 tbody td:first-child::after { content: leader(". "); }
+   #table-example-1 tbody td { padding-left: 2em; padding-right: 2em; }
+   #table-example-1 tbody td:first-child + td { width: 10em; }
+   #table-example-1 tbody td:first-child + td ~ td { width: 2.5em; }
+   #table-example-1 tbody td:first-child + td + td + td ~ td { width: 1.25em; }
+
+   .apple-table-examples { border: none; border-collapse: separate; border-spacing: 1.5em 0em; width: 40em; margin-left: 3em; }
+   .apple-table-examples * { font-family: "Times", serif; }
+   .apple-table-examples td, .apple-table-examples th { border: none; white-space: nowrap; padding-top: 0; padding-bottom: 0; }
+   .apple-table-examples tbody th:first-child { border-left: none; width: 100%; }
+   .apple-table-examples thead th:first-child ~ th { font-size: smaller; font-weight: bolder; border-bottom: solid 2px; text-align: center; }
+   .apple-table-examples tbody th::after, .apple-table-examples tfoot th::after { content: leader(". ") }
+   .apple-table-examples tbody th, .apple-table-examples tfoot th { font: inherit; text-align: left; }
+   .apple-table-examples td { text-align: right; vertical-align: top; }
+   .apple-table-examples.e1 tbody tr:last-child td { border-bottom: solid 1px; }
+   .apple-table-examples.e1 tbody + tbody tr:last-child td { border-bottom: double 3px; }
+   .apple-table-examples.e2 th[scope=row] { padding-left: 1em; }
+   .apple-table-examples sup { line-height: 0; }
+
+   .details-example img { vertical-align: top; }
+
+   #base64-table {
+     white-space: nowrap;
+     font-size: 0.6em;
+     column-width: 6em;
+     column-count: 5;
+     column-gap: 1em;
+     -moz-column-width: 6em;
+     -moz-column-count: 5;
+     -moz-column-gap: 1em;
+     -webkit-column-width: 6em;
+     -webkit-column-count: 5;
+     -webkit-column-gap: 1em;
+   }
+   #base64-table thead { display: none; }
+   #base64-table * { border: none; }
+   #base64-table tbody td:first-child:after { content: ':'; }
+   #base64-table tbody td:last-child { text-align: right; }
+
+   #named-character-references-table {
+     white-space: nowrap;
+     font-size: 0.6em;
+     column-width: 30em;
+     column-gap: 1em;
+     -moz-column-width: 30em;
+     -moz-column-gap: 1em;
+     -webkit-column-width: 30em;
+     -webkit-column-gap: 1em;
+   }
+   #named-character-references-table > table > tbody > tr > td:first-child + td,
+   #named-character-references-table > table > tbody > tr > td:last-child { text-align: center; }
+   #named-character-references-table > table > tbody > tr > td:last-child:hover > span { position: absolute; top: auto; left: auto; margin-left: 0.5em; line-height: 1.2; font-size: 5em; border: outset; padding: 0.25em 0.5em; background: white; width: 1.25em; height: auto; text-align: center; }
+   #named-character-references-table > table > tbody > tr#entity-CounterClockwiseContourIntegral > td:first-child { font-size: 0.5em; }
+
+   .glyph.control { color: red; }
+
+    .domintro:before { display: table; margin: -1em -0.5em -0.5em auto; width: auto; content: 'This box is non-normative. Implementation requirements are given below this box.'; color: black; font-style: italic; border: solid 2px; background: white; padding: 0 0.25em; }
+</style>
+</head>
+<body>
+<gtitle>烧烤模式：格物网构想与实现</gtitle>
+<subtitle>The Barbecue Model: Fundamentals of Gewu Network</subtitle>
+<!-- UNDER NO CIRCUMSTANCES IS THE FOLLOWING PARAGRAPHS TO BE REMOVED OR EDITED WITHOUT TALKING TO BOJIE LI FIRST -->
+<p>Gewu Working Draft (Revision 5: 2011-08-05)
+<p>This is a confidential file. No part of this specification may be reproduced or distributed in any form or by any means, without the prior written permission of the Gewu Team.
+<p>This is a work in progress! Implementors and developers should be aware that this specification is not stable.
+<p>No proprietary software was used during the composition of this specification.
+<p>Copyright &copy; Gewu Team (2011). All Rights Reserved.</p>
+<!-- UNDER NO CIRCUMSTANCES IS THE PRECEDING PARAGRAPHS TO BE REMOVED OR EDITED WITHOUT TALKING TO BOJIE LI FIRST -->
+
+<h2 id="contents">目录</h2>
+<ol class="nav">
+ <li><a href="#introduction">1 引言</a>
+  <ol>
+   <li><a href="#structure-of-specification">1.1 本说明结构</a></li>
+   <li><a href="#how-to-read">1.2 如何阅读本说明</a></li>
+   <li><a href="#convensions">1.3 约定</a></li>
+  </ol></li>
+ <li><a href="#priciples">Part I 理念</a></li>
+ <li><a href="#design-priciples">2 设计理念</a>
+  <ol>
+   <li><a href="#web-development-history">2.1 纵观Web发展</a></li>
+   <li><a href="#current-web-product-difficulties">2.2 现有Web产品的本质困难</a></li>
+   <li><a href="#free-from-restrictions">2.3 从必然王国到自由王国</a></li>
+   <li><a href="#barbecue-model">2.4 烧烤模式</a></li>
+   <li><a href="#smart-network">2.5 智能网络畅想</a></li>
+   <li><a href="#creative-everyone">2.6 创新每个人</a></li>
+   <li><a href="#profit-assignment">2.7 利益分配机制</a></li>
+  </ol></li>
+ <li><a href="#software-engineering">3 软件工程</a>
+  <ol>
+   <li><a href="#concept-integrity">3.1 概念完整性</a></li>
+   <li><a href="#surgery-team">3.2 外科手术团队</a></li>
+   <li><a href="#think-twice-cut-once">3.3 三思而后行</a></li>
+   <li><a href="#iterative-development">3.4 迭代式开发</a></li>
+   <li><a href="#software-testing">3.5 测试与审查</a></li>
+   <li><a href="#maintainance-and-feedback">3.6 维护与反馈</a></li>
+  </ol></li>
+ <li><a href="#coding-recommendation">4 代码规范</a>
+  <ol>
+   <li><a href="#KISS">4.1 KISS原则</a></li>
+   <li><a href="#modulization">4.2 模块化</a></li>
+   <li><a href="#text-stream-interface">4.3 面向文本流的接口</a></li>
+   <li><a href="#information-hidding">4.4 信息隐藏</a></li>
+   <li><a href="#self-explaining-code">4.5 自解释代码</a></li>
+   <li><a href="#defensive-programming">4.6 防御式编程</a></li>
+  </ol></li>
+ <li><a href="#user-interface">5 用户界面</a>
+  <ol>
+   <li><a href="#usability-vs-functionality">5.1 易用性与功能性</a></li>
+   <li><a href="#perceivable">5.2 可获取性</a></li>
+   <li><a href="#operable">5.3 可操作性</a></li>
+   <li><a href="#understandable">5.4 可理解性</a></li>
+   <li><a href="#robust">5.5 健壮性</a></li>
+   <li><a href="#CRAP">5.6 CRAP原则</a>
+    <ol>
+	 <li><a href="#proximity">5.6.1 亲密性</a></li>
+	 <li><a href="#alignment">5.6.2 对齐</a></li>
+	 <li><a href="#repeatation">5.6.3 重复</a></li>
+	 <li><a href="#contrast">5.6.4 对比</a></li>
+	</ol></li>
+  </ol></li>
+ <li><a href="#specification">Part II 系统说明</a></li>
+ <li><a href="#basic-concepts">6 基本概念</a>
+  <ol>
+   <li><a href="#basic-principles">6.1 基本原则</a></li>
+   <li><a href="#object-model">6.2 对象模型</a></li>
+   <li><a href="#user-group-class">6.3 用户、组织、群体</a></li>
+  </ol></li>
+ <li><a href="#executing-mechanism">7 运行机制</a>
+  <ol>
+   <li><a href="#privilege-mechanism">7.1 权限机制</a></li>
+   <li><a href="#attributes-calculation">7.2 属性计算</a></li>
+   <li><a href="#event-mechanism">7.3 事件机制</a></li>
+   <li><a href="#message-mechanism">7.4 消息机制</a></li>
+  </ol></li>
+ <li><a href="#transfer-protocol">8 通信协议</a>
+  <ol>
+    <li><a href="#client-server">8.1 客户机、服务器</a></li>
+	<li><a href="#message-format">8.2 通信格式</a></li>
+	<li><a href="#connections">8.3 连接</a></li>
+	<li><a href="#method-definition">8.4 方法定义</a></li>
+	<li><a href="#status-code-definition">8.5 状态码定义</a></li>
+	<li><a href="#locationing">8.6 寻址</a></li>
+	<li><a href="#caching">8.7 缓存</a></li>
+	<li><a href="#prefetch">8.8 预取</a></li>
+	<li><a href="#combine-fetch">8.9 合取</a></li>
+	<li><a href="#mirroring">8.10 镜像</a></li>
+	<li><a href="#header-definition">8.11 头部定义</a></li>
+	<li><a href="#authentication">8.12 安全认证</a></li>
+  </ol></li>
+ <li><a href="#storage-engine">9 存储引擎</a>
+ </li>
+ <li><a href="#system-attributes">10 系统属性</a>
+ </li>
+ <li><a href="#system-functions">11 系统函数</a>
+ </li>
+ <li><a href="#rule-list">12 规则表</a>
+ </li>
+ <li><a href="#markup-language">13 标记语言</a>
+ </li>
+ <li><a href="#script">14 脚本</a>
+ </li>
+ <li><a href="#system-modules">15 系统模块</a>
+  <ol>
+   <li><a href="#version-control">15.1 版本控制</a></li>
+   <li><a href="#recycler">15.2 回收站</a></li>
+   <li><a href="#content-censoring">15.3 内容审核</a></li>
+   <li><a href="#draft-box">15.4 草稿箱</a></li>
+   <li><a href="#feedback-box">15.5 意见箱</a></li>
+   <li><a href="#webpage-note">15.6 批注</a></li>
+   <li><a href="#vote">15.7 投票</a></li>
+   <li><a href="#election">15.8 选举</a></li>
+   <li><a href="#questionaire">15.9 调查</a></li>
+  </ol></li>
+ <li><a href="#functions">Part III 功能</a></li>
+ <li><a href="#user-management">16 用户管理</a>
+  <ol>
+   <li><a href="#user-overall-design">16.1 总体设计</a></li>
+   <li><a href="#register">16.2 注册</a></li>
+   <li><a href="#login">16.2 登录</a></li>
+   <li><a href="#forget-password">16.3 找回密码</a></li>
+   <li><a href="#nickname">16.4 昵称</a></li>
+   <li><a href="#friend">16.5 好友</a></li>
+   <li><a href="#listen">16.6 关注</a></li>
+   <li><a href="#privilege-giving">16.7 权限授予</a></li>
+   <li><a href="#credit-rule">16.8 积分规则</a></li>
+   <li><a href="#punishment">16.9 处分条例</a></li>
+  </ol></li>
+ <li><a href="#group-management">17 组织管理</a>
+  <ol>
+   <li><a href="#group-overall-design">17.1 总体设计</a></li>
+  </ol></li>
+ <li><a href="#user-center">18 用户中心</a>
+  <ol>
+   <li><a href="#ucenter-overall-design">18.1 总体设计</a></li>
+   <li><a href="#control-panel">18.2 控制面板</a></li>
+   <li><a href="#chatting-building">18.3 聊天大厦</a></li>
+   <li><a href="#user-announcements">18.4 小字报</a></li>
+   <li><a href="#today-headline">18.5 今日热点</a></li>
+   <li><a href="#floating-bottle">18.6 漂流瓶</a></li>
+   <li><a href="#event-noticing">18.7 事件提醒</a></li>
+   <li><a href="#content-recommendation">18.8 内容推荐</a></li>
+   <li><a href="#schedule">18.9 日程安排</a></li>
+   <li><a href="#user-defined-modules">18.10 自定义模块</a></li>
+  </ol></li>
+ <li><a href="#publishing-platform">19 发布平台</a>
+  <ol>
+   <li><a href="#blog-cms-wiki">19.1 博客，CMS，百科的结合</a></li>
+   <li><a href="#leveled-management-system">19.2 分级管理系统</a></li>
+   <li><a href="#tag-tree">19.3 标签树</a></li>
+   <li><a href="#article-content-type">19.4 文章内容类型</a></li>
+   <li><a href="#content-and-comment">19.5 内容与评论</a></li>
+   <li><a href="#sidebar">19.6 边栏</a></li>
+   <li><a href="#directory">19.7 分类目录</a></li>
+   <li><a href="#protect-and-approve">19.8 保护与审核</a></li>
+   <li><a href="#edit-conflict">19.9 编辑冲突</a></li>
+   <li><a href="#history-versions">19.10 历史版本</a></li>
+   <li><a href="#page-redirection">19.11 页面重定向</a></li>
+   <li><a href="#subscribe">19.12 订阅</a></li>
+   <li><a href="#user-panel">19.13 用户平台</a></li>
+   <li><a href="#backend-management">19.14 后台管理</a></li>
+   <li><a href="#online-activities">19.15 在线活动</a></li>
+  </ol></li>
+ <li><a href="#group-platform">20 组织合作平台</a>
+  <ol>
+   <li><a href="#group-platform-overall-design">20.1 总体设计</a></li>
+   <li><a href="#leveled-management">20.2 分级管理</a></li>
+   <li><a href="#task-status">20.3 任务状态</a></li>
+   <li><a href="#whiteboard">20.4 白板</a></li>
+   <li><a href="#discuss-group">20.5 讨论组</a></li>
+   <li><a href="#table-generation">20.6 表格生成</a></li>
+   <li><a href="#document-logging">20.7 档案存储</a></li>
+   <li><a href="#group-event-noticing">20.8 事件提醒</a></li>
+  </ol></li>
+ <li><a href="#public-forum">21 公共论坛</a>
+  <ol>
+   <li><a href="#forum-overall-design">21.1 与合作平台的区别</a></li>
+   <li><a href="#moderators">21.2 版主</a></li>
+   <li><a href="#medal">21.3 勋章</a></li>
+   <li><a href="#property">21.4 道具</a></li>
+  </ol></li>
+ <li><a href="#assistance-functions">22 辅助功能</a>
+  <ol>
+   <li><a href="#assistance-overall-design">22.1 总体设计</a></li>
+   <li><a href="#wysiwyg-document">22.2 可视化文档编辑</a></li>
+   <li><a href="#wysiwyg-page">22.3 可视化网页编辑</a></li>
+   <li><a href="#document-preview">22.4 文档在线预览</a></li>
+   <li><a href="#math-online-edit">22.5 公式在线编辑</a></li>
+   <li><a href="#math-online-view">22.6 公式在线显示</a></li>
+   <li><a href="#online-draw">22.7 在线画图</a></li>
+   <li><a href="#online-math-draw">22.8 在线数学作图</a></li>
+   <li><a href="#online-physics-draw">22.9 在线物理作图</a></li>
+   <li><a href="#online-dictionary">22.10 在线小词典</a></li>
+   <li><a href="#cheatsheet">22.11 速查手册</a></li>
+   <li><a href="#math-calculator">22.12 数学计算器</a></li>
+  </ol></li>
+ <li><a href="#learning-system">23 导学系统</a>
+  <ol>
+   <li><a href="#learn-overall-design">23.1 总体设计</a></li>
+   <li><a href="#learn-problem-set">23.2 题库</a></li>
+   <li><a href="#learn-problems">23.3 题目</a></li>
+   <li><a href="#learn-evaluating">23.4 评测</a></li>
+   <li><a href="#smart-evaluating">23.5 智能评分</a></li>
+   <li><a href="#learn-level-mode">23.6 关卡模式</a></li>
+   <li><a href="#learn-test">23.7 模拟考试</a></li>
+   <li><a href="#learn-directions">23.8 研发方向</a></li>
+  </ol></li>
+ <li><a href="#backend-analysis-system">24 后台分析系统</a>
+ </li>
+ <li><a href="#search-engine">25 搜索系统</a>
+  <ol>
+   <li><a href="#search-overall-design">25.1 总体设计</a></li>
+   <li><a href="#word-segmentation">25.2 中文分词</a></li>
+   <li><a href="#ranking-algorithm">25.3 排名算法</a></li>
+   <li><a href="#indexing-algorithm">25.4 索引算法</a></li>
+  </ol></li>
+ <li><a href="#recommending-system">26 推荐系统</a>
+ </li>
+ <li><a href="#virtual-currency">27 虚拟货币</a>
+ </li>
+ <li><a href="#promotion">Part VI 运营</a></li>
+ <li><a href="#appendix">附录</a>
+  <ol>
+   <li><a href="#appendix-refence">A 参考文献</a></li>
+   <li><a href="#appendix-background">B 背景</a></li>
+   <li><a href="#appendix-revisions">C 各版本改动记录</a></li>
+   <li><a href="#appendix-checklist">D 需求检查列表</a></li>
+   <li><a href="#appendix-contact">E 联系我们</a></li>
+   <li><a href="#appendix-copyright">F 版权声明</a></li>
+   <li><a href="#appendix-index">G 索引</a></li>
+  </ol></li>
+</ol><!-- END of Table of Contents -->
+
+<h2 id="introduction">1 引言</h2>
+
+<h3 id="structure-of-specification">1.1 本文档结构</h3>
+<p>本文档分为以下四部分，分别代表格物网的理念、技术、功能、运营四个维度：
+<dl><dt><a href="#principles">理念</a></dt>
+<dd>格物网创始的动机、不同于传统网站的理论基础，开发过程中的统一规范。</dd>
+<dt><a href="#specification">技术</a></dt>
+<dd>格物网的系统架构、通信协议、标记语言、重要系统模块。</dd>
+<dt><a href="#functions">功能</a></dt>
+<dd>格物网从用户层面来看的各种功能。</dd>
+<dt><a href="#promotion">运营</a></dt>
+<dd>格物网推广、发展、盈利的方针策略和规划路线图。</dd>
+</dl>
+<p>理解格物网，应当将理念、技术、功能、运营视为一个整体。应当看到它们之间的联系、在各种矛盾之间的权衡。事实上，在设计过程中，功能是作为直接的用户需求被提出的，而技术则作为功能的“用户需求”被提出以实现所需的功能，理念则是在技术和功能的“进化”过程中逐步提炼、升华出来的，又反过来指导技术和功能的设计，以去粗取精，凸显最能体现核心价值的设计。运营策略作为相对独立的一部分，在理念框架的指导下，结合具体功能，因地制宜地设计网站运行、推广的策略与路线。
+
+<h3 id="how-to-read">1.2 如何阅读本文档</h3>
+<p>设计文档不是小说，它以集中的文字形式承载着系统设计者的思考与决策，也将基本确定整个网站未来的发展途径。设计文档中模糊、不一致、不恰当的陈述会影响最终产品的概念完整性，理念中的偏见与误解更会导致整个网站作为一个整体的隔阂甚至分裂。因此，本设计文档应在设计与开发过程中被逐步完善，在相应模块程序的开发前基本统一意见，并在网站正式发布前定稿。
+<p>正如其他设计文档一样，本文档应当至少被从头到尾读两遍，以掌握设计的总体框架；然后从尾到头反过来读至少一遍，力图发掘由功能到技术，再到理念的进化历程；最后阅读每节以超链接形式标明的交叉参考，以理解设计各部分间的相互关系。
+<p>对设计文档的审阅者而言，应当进一步关注语言描述的精确性与无歧义性，一些专有名词是否被正确使用，文档中的各项设计间有无理念上的冲突、概念上的冲突、实现上的不可能性、各种可能情况是否都被考虑到并被正确处理了。
+<p class="example">理念上的冲突：例如，如果在某一节中要求好友关系必须是双向的，在另一节中又允许了单向的好友关系，那么“好友”这个概念就存在理念上的冲突。
+要解决这个问题，可以加入另一个概念“关注”来满足单向关系的需求，这样“好友”和“关注”两个概念都是定义明确的。
+<p class="example">
+概念上的冲突：例如，“字段”和“属性”两个概念在传统上分别用于数据库领域和对象系统、文件系统领域，而在本设计文档中数据库与文件系统均已纳入网络对象模型，这两种描述方式的并存很容易引起误解，那么应考虑将它们合并成同一概念。
+<p class="example">不可能实现：例如，要求浏览器使用服务器间通信的扩展HTTP协议，以实现通信协议的统一。目前还没有技术能够改变浏览器所使用的网络协议，因此这个设计是不可行的。
+<p class="example">可能情况遗漏：例如，系统在多个层面进行了纵深防御，功能设计遵循了最小特权原则，核心模块避开了各种常见漏洞，因此整个系统在已知范围内是“安全的”。
+但是，如果系统的一位核心管理员使用了弱密码，那么系统相当于没有安全性可言。此例中，认为系统已经安全的人忽略了非技术因素。
+
+<h3 id="conventions">1.3 排版约定</h3>
+<p class="note">This is a note.
+<p class="example">This is an example.
+<p class="XXX">This is an open issue.
+<p class="warning">This is a warning.
+<pre class="idl extract">function main() {
+	// this is a piece of code
+};</pre>
+<p>The defining instance of a term is marked up like <dfn id="x-this" title="x-this">this</dfn>. Uses of that term are marked up like
+  <a href="#x-this" title="x-this">this</a> or like <i title="x-this"><a href="#x-this">this</a></i>.<p>The defining instance of an element, attribute, or API is marked up like <dfn id="x-that" title="x-that"><code>this</code></dfn>. References to that element, attribute, or API are marked up like <code title="x-that"><a href="#x-that">this</a></code>.<p>Other code fragments are marked up <code title="">like this</code>.
+<p>Variables are marked up like <var title="">this</var>.
+
+<h3 id="terminology">1.4 概念约定</h3>
+<p>本文档的概念遵循最小立异原则，尽量遵循已被业界广泛接受的概念定义。如果有必要引入新的概念，应当不与其他众所周知的概念相冲突，尽量达到“望文生义”。
+<p><dfn>本说明(specification)</dfn>与<dfn>本文档</dfn>在适当的语境下，均指代本设计文档。
+<p><dfn>字段</dfn>、<dfn>属性(attribute)</dfn>、<dfn>变量(variable)</dfn>在本文档中意义相同，统一使用<dfn>属性</dfn>概念。
+<p class="note">This section is not completed.
+
+<h1 id="principles">Part I 理念</h1>
+
+<h2 id="design-principles">2 设计理念</h2>
+<h3 id="web-development-history">2.1 纵观Web发展</h3>
+<p>自从人类文明出现以来，人们一直致力于解决时空问题。人们发明轮子、汽车、火车、飞机、宇宙飞船，都是在克服空间障碍，节约人类有限的时间。互联网正是解决这样问题的新型工具，它最大限度地克服了空间障碍，使得天各一方的人们在理论上可以光速实现自由交流。
+<p>1969年12月，美国的分组交换网ARPANET投入运行，从此计算机网络进入了一个新的发展阶段，标志着现代通信时代的开始。
+<!-- These statements are wrong! 1978年，国际标准化组织ISO提出了著名的开放系统互联参考模型OSI，结束了各大网络体系“各自为政”的局面，开辟了计算机网络的新纪元。我国的公用分组交换网于1989年11月建成，可以认为是中国互联网的起跑线。-->
+<p>我国上网用户数在经历1998年的酝酿后，从1999年到2000年以每年两倍的速度狂飙，互联网泡沫沸腾，现在人们耳熟能详的几大网络公司多是那时起步的。2001年到2002年是中国互联网最痛苦的时代，大量网络公司因泡沫破灭而倒闭或转行。但随着新浪、搜狐、网易等公司宣布盈利，互联网熬过了第一次冬天，浴火重生的胜利者开始了第二次圈地运动。随着互联网春天的到来，更多的网站开通了，2005年7月时网站数量已达67.8万个，网民数量也突破1亿。
+<p>就在这时，高歌猛进的互联网界潜移默化地经历着一场革命。这场革命是如此平静，以至于连它们的发动者都没有意识到这将是怎样一个开天辟地的大事变。
+<p>2005年对互联网用户的调查，用户最反感的内容中，弹出广告以22.6%名列第二，与排名第一的病毒仅差3个百分点。也许当时的设计者们还没有意识到，弹出广告正是违背了“用户处于控制地位”的设计原则。
+<p>被今天的Web设计者称作Web 1.0的“网站处于控制地位”的信息发布网站，正是像传统媒体一样，不断改变花样让用户接受自己的信息。不过网站上允许发表评论了，至少些许实现了信息来源与信息接收端的互动，也算是一种进步吧。但从根本上，用户作为信息被动接受者的角色没有改变。
+<p>Google、百度等搜索引擎所做的工作可以相当于Web 1.5，它们使得用户可以选择查看某特定方面的信息，搜索一个关键词，机器就会把最相关的内容呈现出来，而不需要用户自己去浩如烟海的信息世界中搜寻。
+<p>为了方便大家共同讨论某个感兴趣的话题，百度出品了贴吧，猫扑、天涯等很多或综合或专业的论坛如雨后春笋般，冲击了几大网络巨头的垄断地位。Web建设者的个人英雄主义时代开始，2005年前后又有一批今天耳熟能详的网络公司从库房里、地下室里脱颖而出。以论坛为主导的新一场圈地运动对传统门户网站的理念是个重大的革新，它把用户从单纯的阅读者和评论者中解放出来，容许大家自由发表观点，每个人都是编辑、作者。用户参与网络活动的积极性提高了，用户在网站讨论中收获了自我满足的精神食粮，网站变得更有粘性。
+<p>希望在网上占有一席之地的技术爱好者纷纷架起自己的独立博客，新浪等大公司也紧抓商机，开通了免费blog服务。博客是完全自主的展现自我的平台，进一步深化了每个人都是作者和主人的观念。数以万计的个人站长跨越较低的技术和资金门槛，悄然掀开Web 2.0时代的序幕。
+事实上，这一阶段国外以Wikipedia（维基百科）为代表的wiki（百科）站点的兴起也是Web 2.0的重要组成部分，宗旨是由用户来完成自由开放的百科全书。国内也有百度百科、互动百科等影响力较大的wiki社区，但明显专业度与凝聚力不足。
+<p>“墙外开花墙内香”，大洋彼岸的Facebook，Youtube，Twitter等网站的兴起奏响了Web 2.0时代的最强音。这些统称为SNS（Social Network System，社交网络）的新型网络传播方式大大拉近了虚拟世界与现实世界的距离，使人们足不出户便可以与好友分享新鲜事、发表心得感言，把现实世界的朋友关系延伸到网络上。新浪、搜狐、网易等网站也曾推出过同学录服务，如Chinaren社区等。目前国内这方面最成熟的代表是人人（原2005年成立的校内网）、QQ（不完全算是）。同时，各大社交网络也纷纷推出了桌面客户端、移动客户端，以满足日益增长的使用移动设备上网聊天的需要。
+<p>Web 2.0时代，由于每个人都是内容的作者，因此长尾效应愈加凸显，大部分的流量不是来自百度、新浪等少数几个大网站，而是更多分流到规模小，但专业性强的垂直分类网站上了。事实上，由这些对专业知识更了解的人来解决本行业内的问题恰恰做到了现实生活中难以实现的资源优化调配，使得网络上的信息更具专业性、针对性、合理性，减少了权威性、垄断性。
+<p>另一方面，由于现实世界的群聚效应，名人效应也是愈加凸显的。近两年网络上爆出的“门”往往在几天内走红网络，并波及到传统媒体，其传播速度和影响力都是史无前例的。新浪微博并不是第一个在中国引入微博服务的，但凭借新浪博客上众多名人的推广效应，新浪微博在短短半年内风靡全国，并成为各大网站的“标配”。
+<p>在某种意义上，网络也是社会舆论监督的重要形式。网络言论的开放性使一大批社会的阴暗面露出冰山一角直至浮出水面，网络舆论的强大压力也左右了很多社会焦点问题的动向。
+<p>但不容忽视的是，如今的Web 2.0在带来经济、社会、文化生活巨大变革的背后，隐藏着深层的矛盾与危机。
+<p>虚拟性和分布性是网络自出现以来的基本特征。很多人也许津津乐道于虚拟世界的巨大自由，但谎言、虚假与诚信缺失却在动摇着社交网络的根基。在把现实世界的货币引入网络世界时，不得不考虑未曾谋面的双方在利益分配上可能出现的争执和互不信任的困局。因此，网络世界需要真实化，但不是全部真实化。在建立在互相信任基础上的、涉及现实生活的网络层面上实现全面的真实化，而在不需要信任关系维系的公共论坛等处，可继续享受匿名带来的自由。
+<p>再谈分布性。分布性的本意是将复杂的任务分解到每个人、每台计算机去完成，充分发挥每个人的能力和每台计算机的运算资源，但在实际运行中，由于网络是自由开放的，不可避免地将分布性异化成了“各自为政”，大量网站如分封的郡县，不但没有合理分工合作，反而为了自身的利益相互开战，损害绝大多数用户的利益，近期的QQ与360之战就是一例。
+<p>正如西方经济的发展以罗斯福新政为标志，经历了从完全自由到国家统筹规划的痛苦的蜕变，网络在经历Web 1.0的垄断、Web 2.0的完全自由后，到了民主集中的时候。很多人，尤其是生活在官僚压迫下的人，对“集中”往往误解成“独裁”。事实上，在现实世界中，不论国家，不论政体，都要有一套规范的自上而下的管理决策机制和完善的道德法律体系。没有规矩，不成方圆，从“网络水军”到网络诈骗，网络世界的种种乱象使得真正有技术、有理念的网络公司难以立足，而采取侵犯版权、虚假欺骗等不道德甚至违法措施的人却大发横财。靠行业自我约束是无法洗净自身的，必须引入一套完备的民主集中制的网络政治体系和利益分配机制来规范人们在虚拟世界的行为。或许随着技术的进步，虚拟世界这个名词在可以预见的将来将不复存在。
+<p>另外，合理的利益分配也是迄今为止网络发展未能解决的难题。不论是新浪博客还是人人空间，用户撰写再多的内容，也只是纯凭兴趣，可以获得精神上的满足，但不能取得物质上的收益。唯一有效的收益方式便是放置自己的广告，但这显然只是权宜之计。更严重的是，一个实体组织若要创建自己的网络平台，必须自己从头摸索，或者花大价钱请网络公司帮忙构建，而之后的收益方式又需要组织自己出人力物力来摸着石头过河。这样多次无意义的重复摸索降低了生产力，浪费了宝贵的技术力量。
+<p>因此有必要为希望创建网络平台的实体组织提供一个开放的开发平台和一套完善、合理的利益分配体系。开发平台足够易用使得组织无需凭借外力即可制作出实际的网络应用；足够可用使得能够充分发挥每个人的创造力，根据自己的意愿实现设计效果。利益分配体系建立在真实信任关系的基础上，引入现实社会中的仲裁机制和民主法制，公平合理地化解虚拟世界的利益纠纷，保证了开发者和使用者的共同利益。
+
+<h3 id="current-web-product-difficulties">2.2 现有Web产品的本质困难</h3>
+<p>尽管针对组织的Web模式有着诱人的前景，但互联网界的诸位大佬为何没有在其中分一杯羹呢？其中一定存在效益的考量。按照信息来源和使用方式，我们不妨对现有的以促进信息传播为主要目的的互联网产品进行分类。分类中列出的互联网产品往往是同类产品的代表，因篇幅所限不可能把所有产品全部列出。
+<table>
+<tr><th>信息来源</th><th>个人</th><th>组织</th><th>群体</th><th>社会</th></tr>
+<tr><th>交流</th><td>电子邮件QQ单聊</td><td>QQ群邮件列表RTX公共邮箱</td><td>论坛豆瓣小组</td><td>综合社区百度知道</td></tr>
+<tr><th>发布</th><td>博客微博人人状态</td><td>公共主页CMS群博自建网站</td><td>垂直门户垂直搜索RSS小众网站</td><td>门户网站搜索引擎百度百科</td></tr>
+</table>
+<p>这个分类中没有区分大家耳熟能详的Web 1.0与Web 2.0，因为目前的网站越来越多地依赖用户创造内容，完全意义上的Web 1.0已经淡出主流。
+<p>目前最火的互联网产品居于分类的左右两侧（个人、社会），这是有历史必然性的。一个互联网产品盈利的多少等于重用率与单个效益的乘积。针对个人的应用往往比较简单，因此一个同样的应用可供无数人使用，重用率非常高；但SNS里的每个人带来的收益并不多，这采用了聚沙成塔模式。针对社会的应用往往比较复杂（例如制作一个新闻专题需要大量人力），且每次都要重新制作，但每个专题能被许多人看到，这样每个专题带来的收益也很可观。总之，普通的互联网应用不能指望“大客户”，而要靠庞大的用户基数逐步积累，那么一种模式是“一次制作，永久使用”，另一种是“每次重做，一鸣惊人”。
+<table>
+<tr><th>信息来源</th><th>个人</th><th>组织</th><th>群体</th><th>社会</th></tr>
+<tr><th>重用率</th><td>高</td><td>低</td><td>低</td><td>低</td></tr>
+<tr><th>单个效益</th><td>低</td><td>低</td><td>高</td><td>高</td></tr>
+</table>
+<p>由上表可见，针对个人和社会的互联网产品“性价比”最高，尤其是以SNS为代表的“一次制作，永久使用”的针对个人的互联网应用，降低了网络开发的进入门槛，因此近来越来越受到关注。而针对组织的互联网产品重用率和单个效益都不高，因此没有受到业界多大关注就是很自然的了。值得注意的是，上述例子中列出的QQ群、邮件列表、公共主页等确实重用率很高，但如同针对个人的产品一样功能确定，不能满足多样化的组织的各种复杂需求，因此这个领域还有很大的开发空间。
+<p>但是，不容忽视的是，人是生活在一个个组织（人际圈子）中的，根据职业不同还分属各种群体，而不是一个个孤立的人，也不是社会中毫无个性的茫茫一粒沙。SNS部分解决了这个问题，将现实世界的朋友关系复制到网络上，实现了人与人之间的信息互通，这是划时代的进步。然而，现实社会的人际关系错综复杂，决不能用一个简单的朋友圈子概括；客观存在的正式和非正式组织，也没有自然的到网络世界的映射。
+<p>如果考虑到中西方文化的差异，中国人更加重视集体主义，办事也较西方人更正式，起源于推崇个人主义和个人权利的西方的社交网络只能满足国人茶余饭后的娱乐需求，而无法大面积应用于真正“有用”的信息沟通。
+<p>因此，这部分需求经常被遗忘于网络世界的角落，有这种需求的人或组织只好求助于几种并不自然的替代方案：
+<ul><li>找懂计算机的人做一个刚好能达到要求的简陋的网站，我们开发团队经常做这种事；</li>
+<li>使用论坛、wiki、博客、CMS等现有的程序，拼拼凑凑弄出个勉强能用的网站，尽管功能和权限往往并不切合需求；</li>
+<li>依托更大的网络平台，如学校BBS、同城BBS、QQ群、公共邮箱等，使用那个并不是为当前需求而设计的强大的公共平台；（这是最多的选择）</li>
+<li>干脆不使用网络，直接采用群发短信、贴海报、发通知、线下交流等手段解决交流问题；</li>
+<li>交流成本太高，干脆不交流。（这不是开玩笑，很多潜在的交流和本应实现的信息沟通都因为工具的缺失而没有进行，这也是互联网出现多年后很多重要信息仍未实现网络化，信息壁垒仍然高耸的重要根源。）</li></ul>
+<p>需求客观存在与生产效益不高间的矛盾，使互联网的一个本质任务——促进信息交流遇到了本质困难。需求是客观存在的，改变的只能是成本，而降低成本、提高生产力，需要科学技术的支持。短短几十年，TCP/IP协议族结束了APARANET以来互联网体系结构的混战，HTTP奠定了B/S架构的通信协议基础，如今的W3C也在积极推动HTML、CSS等的标准化，可见规范与标准的重要。Ajax的历史告诉我们，有时一项很好的技术已经在实际应用中显露雏形，但将这些零散的best practice总结、升华，并赋予一个响亮的名字，能够极大地推动这项新技术的发展与应用。类似的，本文档所提出的“烧烤模式”并不是一种新的网络技术，而是一种新的思维方式和开发框架。
+
+<h3 id="free-from-restrictions">2.3 从必然王国到自由王国</h3>
+<p>现有的Web产品之所以出现重用率低、重复劳动多的死结，从根本上说是Web架构不够开放。主要的Web公司都没有开放核心源代码，更不要说开放数据库和账户体系了。如今被热炒的开放API不过是将表现层的一部分接口开放给第三方应用，核心技术和数据仍然由公司“严防死守”。因此，每个希望发展的Web产品只有四条路可走：
+<ul><li>不使用用户体系或使用很简单的用户体系，如博客的评论功能；</li>
+<li>开发自己的用户体系，每人来到这里都要注册一个账号，如discuz论坛，校园BBS等；</li>
+<li>使用大公司的开放API，成为第三方应用；</li>
+<li>被大公司收购，成为其产品体系的一部分。</li></ul>
+<p>从用户角度，这样的封闭开发体系必然会带来“用户名爆炸”，即一个用户需要在不同的网站记忆多个用户名和相应密码，还要担心钓鱼网站等安全问题。从开发者角度，开源产品的缺失迫使站长“重新发明轮子”，做出很多重复的、低质量的网站功能。
+<p>退一步，即使公司开放了开发体系，现有Web产品耦合紧密的技术架构决定了其不可能实现充分开放。
+<div class="example"><p>Discuz!论坛曾被集体入侵，页面变成Hacked by ring04h, just for fun!，原因只是Discuz官方的更新服务器被域名劫持，劫持期间登陆论坛管理后台的论坛从被劫持的“更新服务器”下载了恶意代码，导致论坛瘫痪。
+<p>我们不惮以最坏的恶意推测，如果Discuz官方推出了某种恶意后门，那么如何保证论坛的敏感信息不被窃取呢？仅仅登陆了后台，就能悄无声息地远程下载并运行更新，也许是为了方便对网络技术一窍不通的站长，但这正是缺乏透明性导致安全问题的典型。</div>
+<p class="example">我们希望利用现有的论坛平台（Discuz!X 2.0）架设一个类似Google Groups的内部讨论组，即设置一个只允许几个特定用户访问的私密板块。很好，论坛本身提供了这种功能。但论坛首页的显示模板并没有考虑到“几个特定用户访问”的功能，因此这个“私密板块”就堂而皇之地摆在了论坛首页，点击进入后才提示“没有权限”。究其原因，程序的内部边界不明确，权限控制分散在显示层而非集中于数据层，导致论坛中常常出现各种微妙的权限问题。
+<p class="example">继续以Discuz论坛为例，管理团队的权限分配很不方便，版主不能修改自己管辖版面的设置，界面设计人员不能修改页面显示的某些元素，最后大家都变成了“管理员”，而管理员的权限只能按功能分配，而不能按数据分配，导致管理团队的安全边界混乱，经常出现某位成员因相距十万八千里的另一处设置而没有权限。这种混乱的权限控制体系犹如设计拙劣的面向对象程序，由于分工不明，本来private的数据一个个public了，丧失了数据封装的优势。
+<p class="example">如果没有落实“做一件事，并把它做好” (do one thing, and do it well) 的信息隐藏和封装原则，即使是业务逻辑并不复杂的程序，也不能逃出bug的泥沼。例如学校选课系统的抽签功能，如果没有抽上，输入刚才的链接还能再抽一次，知道抽上为止。显然，选课系统的作者认为用户只会正常使用浏览器选课，而不会直接输入网址，但这就给了用户“钻空子”的机会。我们推测，选课系统可能维护了一个数据表“选课”，包括学号、课程号、状态（未抽签，未抽中，已选上），但在抽签时并没有检查当前的抽签状态。如果对好不容易抽中的课程再抽一次，说不定还能抽掉呢！
+<p class="note">上段不合主题</p>
+<p>Discuz!论坛在现有的开源论坛、CMS产品中，算是质量相当高的，其代码中确实有很多值得学习之处。但是，由于没有大胆地走出架构重构的第一步，依然没有逃脱传统的“硬编码”式风格，稍有问题就得麻烦管理员修改代码，不适于大型社区的分级授权管理。这反映了当今Web研发中“东拼西凑”的通病：没有仔细研究当前的需求到底需要什么技术，而去盲目应用现有的编程框架，将各种资料、框架、工具中提供的特性加上厚重的胶合层，拼凑在一起，只要“能用”便万事大吉。以至于很多人认为Web开发是个“技术含量不高”的领域。事实上，Web社区中出现的种种矛盾和混乱，期待着一个真正分布式的、模块化的、开放的开发体系。
+<p>我们把由少数人控制的封闭研发体系称为“必然王国”，而与之对应的充分开放的开发体系称为“自由王国”。自由王国并不是开放API这么简单，它具有以下几个基本特征：
+<ol>
+<li>天然就是分布式的系统架构
+<li>统一而便于扩展的文件格式和通信协议（先决条件：1）
+<li>完善的权限机制，拥有相应权限的用户对内容的读、写、展示、操作、授权可以任意控制（这模糊了用户与开发者的界限）
+<li>系统的所有操作对用户是透明的（先决条件：3）
+<li>可以方便地重用已有的功能、风格，并进行修改（这意味着非技术型用户可以不必成为开发者）（先决条件：4）
+<li>兼容经典的Web应用
+</ol>
+<p>显然，在经典的LAMP（Linux+Apache+MySQL+PHP）框架下，这些特征难以实现。
+<ul>
+<li>要充分而彻底地支持分布式系统架构，完全采用PHP脚本效率会很低，必须在HTTP协议层面进行扩展，需要高效的编译型语言编写的CGI，在Apache的基础上进行扩展。
+<li>要充分落实权限机制，必须将权限与数据绑定，而MySQL数据库内置的权限机制是表级别的，无法使用，因此需要在数据库通信接口进行限制。为提高效率，这也需要编译型语言编写的中间件。
+<li>要方便地重用已有功能，必须允许有权限的用户修改代码，这样在文件系统层面需要一个类似“版本控制系统”的机制。
+</ul>
+<p>事实上，在Apache、MySQL、Linux文件系统上各增加一个胶合层（中间件），再提供一个类似Smarty的PHP开发框架，已经能充分满足“自由王国”的基本特征了。但是，这样的东西总有一种“东拼西凑”的感觉，因此我们在本文档的第二部分提出了更为强大而统一的架构，当然也是一个宏伟的计划。
+<p>根据“不要重新发明轮子”的教导，这个架构的实现方式仍然是在现有基础上进行扩展，最大的区别是不再使用关系型数据库MySQL，而采用了树形结构的面向对象数据库。“数据结构决定算法”，我们架构的创新之处集中在数据的存储、访问和传输上。
+<p>不论如何，充分开放的开发体系在现有技术条件下是不难做到的。因此，我们更需要的事实上不是技术，而是开发理念。这仿佛是两难的：开发者需要CLI（命令行）模式的、功能强大的平台，能忍受陡峭的学习曲线；最终用户需要GUI（图形用户界面）模式的、简单易学的平台，对复杂度非常敏感。旷日持久的UNIX和Windows两大阵营混战的争论焦点就在这里。
+<div class="example"><p>事情不会是绝对的。本文档是用HTML语言写成的，作者使用了GNU Notepad++编辑器，这是CLI的典型，方便强大；然而，不懂HTML的用户可以方便的使用网页浏览器查看网页，也可以使用各种所见即所得的网页编辑器来编辑本文档。<p>这就是一线希望所在：只要数据结构是透明的，都通过统一的基本访问层进行访问，那么在此基础上开发出CLI和GUI程序都是可行的。但MS Word这样的封闭而复杂的文件格式就难以开发第三方软件。</div>
+<p>我们架构的关键之处就是将数据和表示分开，加强现有的“继承”机制，使得需要自定义的时候能够充分自定义，希望直接采用其他实现时又能方便地引用。
+
+<h3 id="barbecue-model">2.4 烧烤模式</h3>
+<div class="example">我们的很多设计都是在一起吃烧烤的讨论中产生的，这也是“烧烤模式”得名的原因之一。吃烧烤可以有几种选择：
+<ul><li>在烧烤店，服务员会根据我们的要求烧好肉串，送到我们桌前，这是最简单省事，也最少个性化的模式；
+<li>在野餐时，我们准备好烧烤架、木炭、现成的冰冻肉串等，点燃木炭就可以开始烧烤，不过烧烤的整个过程都在我们的掌控之中，可以任意掌握火候、风味等因素；
+<li>自己找柴生火，将肉穿成肉串，相当于自己准备烧烤设备，这样需要花费不少时间在前期准备中，但烧烤的自由度更大，也乐在其中。
+</ul></div>
+<p>烧烤之所以能被分为多种“层次”，是因为烧烤是个已经被高度模块化的“行业”，制作肉串、制作烧烤架、制作木炭、烧烤肉串等多个操作都已经高度成熟，由专人、用专用的设备来完成，因此想吃烧烤的用户可以让专业人士完成这些操作，也可以自行完成其中的任意一部分，将剩余部分留给专业人士完成，这就带来了很大的自由度，使用户自定义其中的任意操作成为可能。
+<p>“烧烤模式”的核心精神就是让互联网应用也成为像目前分工明确的工业化大生产一样，实现充分的层次化和模块化，这样用户可以从任意的现成通用模块开始，用最少的精力对其余模块进行定制，而无需重新编写整个系统。软件工程的终极目标之一就是实现代码复用，而代码复用的先决条件就是恰当的架构、明确的内部边界、逻辑紧凑的模块。
+<p>“烧烤模式”作为一个生动的名字，在“模块化”的基础上进一步强调了恰当的系统架构和默认值的重要性。如果系统架构不合理（如前例所述权限在显示层控制），模块化便是无本之木；如果没有默认策略（默认值），用户的学习曲线将会十分陡峭，不利于系统的大众化与通用化。
+<div class="example">现代操作系统是“烧烤模式”的生动典型。以Linux文件系统为例，一个文件如果只能被操作系统指定的应用程序访问，这个操作系统的可扩展性就很差。事实上，对一个文本文件，Linux文件系统至少有以下几种访问方式：
+<ul><li>使用图形界面下的gedit等编辑工具；
+<li>使用命令行下的编辑工具（ed，vi等）；
+<li>写一段脚本，调用emacs等工具；
+<li>写一段C程序，通过系统调用访问文件；
+<li>绕过Linux文件系统，直接访问硬盘的物理位置。
+</ul>
+<p>有些人可能会问，既然有了系统调用，为什么还允许绕过Linux文件系统直接访问物理硬盘？如果不是这样，Linux就只能允许存在“内置”的文件系统类型而排斥了其他扩展；即使是内置支持的文件系统（如ext2、ext3），也可能需要某些更底层的访问来提高效率（如数据库）或执行某些特殊操作（修复损坏的分区表）。文件系统的作者深知，尽管自己制作的文件系统缓存机制已经很高效了，但针对数据库等文件内组织结构复杂的应用，通用的缓存机制并不是最优的，不如把这个优化的机会留给数据库等应用的作者。开放底层接口使得整个系统更具功能性和可扩展性。
+<p>有些人又会问，有了访问文件的系统调用，为什么还要vi等编辑工具？因为并不是每个使用操作系统的人都会编程，即使是这样，多数情况下也没有必要为读取、修改一个文件而专门写一个程序。这样，编辑工具这种高层抽象便是一种“默认策略”，不需要高级的编辑功能时这些现有的工具就足够了，这大大平滑了学习曲线，也使得整个系统更具易用性。
+</div>
+<p>这就是“烧烤模式”的基本要求：不假定自己开发的策略适用于一切场合，将更底层的机制通过接口暴露出来，允许他人来开发。这也重述了UNIX哲学中的重要论断：机制，而不是策略。(Mechanism, not strategy.) 暴露出底层接口对开发者也是一种鞭策。分层次提供定义良好的接口，强迫开发者更好地封装程序的各个模块，将相互关联的操作尽量集中存放。
+<div class="example"><p>Windows操作系统中的注册表便是机制与策略紧密结合的反面典型。注册表的二进制文件格式是微软专有的，需要访问注册表的程序必须使用Windows系统提供的接口。由于注册表集中存放了所有应用程序的配置设置，带来了“注册表蠕变”难题：应用程序越多，使用时间越长，注册表的信息越多，存放也越混乱，读取一个注册表项所需的时间也越长，最终拖慢了整个操作系统的运行速度。Windows 7采用了新的注册表存储结构，缓解了这个问题。
+<p>此外，运行于管理员权限下的程序可以对注册表任意修改，因此系统很容易被各种修改注册表的恶意程序破坏。由于“所有鸡蛋放在一个篮子里”，一个程序的故障（如注册表编辑器修改注册表时，系统突然断电）可能导致整个系统无法启动。</div>
+<p>专有文件格式助长了应用程序的不透明性，也就促成了单个逻辑复杂的大程序，不仅不利于第三方应用的开发，而且容易造成各平台间的不一致，是“烧烤模式”不推荐的。
+<p class="example">不完全开放的NTFS文件系统，在Windows和Linux下就存在一些微妙的兼容性问题。例如，在Windows中删除文件时并未清空MFT中的文件名和目录结构，而在Linux中删除文件时会清空这些文件元信息。Linux的删除方式在文件恢复时会带来麻烦，当然从另一个角度说删除比较“彻底”。
+<div class="example">MySQL数据库是“烧烤模式”的另一经典实例。显然，MySQL使用了关系型数据库的统一接口SQL语句，因此不存在兼容性问题，很容易将为MySQL数据库开发的程序移植到其他数据库。作为开源数据库，MySQL并不是一个单一的实体，而划分为几个互相独立的层次：
+<ol><li>API层，面向应用，包括各种编程语言的接口、命令行操作接口；
+<li>连接池，面向连接，管理所有与数据库的连接、线程、权限控制等；
+<li>查询执行层，面向查询，包括视图生成、查询语言解析、查询优化、权限控制、日志记录、查询缓存等模块，这些模块又是相互独立的；
+<li>存储引擎层，面向数据，负责数据存储、索引、内存缓冲等，可从MyISAM、InnoDB、Memory等存储引擎中选择；
+<li>文件系统层，面向磁盘，数据库文件在物理磁盘上的具体存储位置。
+</ol>
+如果MySQL数据库的所有层次都像连体婴儿一样集中起来会怎样？我们无法：
+<ul><li>对新的编程语言提供方便的访问接口；
+<li>对分布式数据库提供不同于本地数据库的网络连接、数据缓存等优化；
+<li>使用一种新的权限控制模型；
+<li>根据不同应用的特点，选用支持事务的、支持全文索引的、或者直接使用内存的存储引擎。
+</ul>
+如果MySQL数据库没有将MyISAM作为默认存储引擎，也没有默认的shell API，也会导致
+<ul><li>每个使用MySQL的用户都要了解、比较各种存储引擎并从中选择，大大加大了数据库管理员的学习难度，也使MySQL的应用范围受限，这与MySQL的开源共享精神相悖。
+<li>每个在命令行下操作的用户都要了解至少一门shell以外的编程语言，编写一段程序进行操作。要实现交互，还要编写更多的代码，且很容易出现bug。这将给数据库维护带来很大的麻烦。
+</ul>
+</div>
+<p>由此可见，模块化对一个要求重用性和可扩展性的软件是至关重要的。文件系统和数据库的例子都告诉我们，实现模块化的一条有效途径便是“层次化”：不同的层次面向不同的对象，低层为高层提供一致的抽象和接口。低层实现要完成且仅完成接口中定义的任务，而不能依赖高层应用的调用方式；高层应用要优雅地使用接口，而不能依赖低层的具体实现。这便达到了“做一件事，并把它做好”的目的，实现了封装，便于模块测试，也为代码复用提供了可能。这样，用户或开发者可以根据需要，从任意一个层次开始，重用系统的底层模块，定制需要的高层应用。
+<p>有时开发者对自己的项目了如指掌，认为用户也会很容易掌握系统的运行原理。但事实不是这样，深层的设计理念往往很难准确传达，用户也没有时间深入了解高级内容。因此面对普通用户，应尽量提供用户友好的、提示性强（无歧义）的、各部分表现一致的接口，将最常用的功能明确传达，提供一套不需要思考（Don't make me think）就能完成常用操作的工作流程。
+<p>如前所述，便是“烧烤模式”的核心要义：层次化、模块化、默认策略。
+
+<h3 id="smart-network">2.5 智能网络畅想</h3>
+<p>Web出现之前的主要矛盾是信息传递困难，Web 1.0解决了它，新的主要矛盾变为信息基本静态与用户参与的愿望之间的矛盾；Web 2.0解决了旧矛盾，又产生了信任体系和利益分配机制不完善、虚拟世界与现实世界快速融合的新矛盾。一个网络应用要成为Web 3.0，解决Web 2.0的遗留矛盾始终是不可淡忘的主题。
+<p>在Web 1.0中，用户是网站的访问者，可悲的是很多现有的网站仍然抱有类似的陈旧观念，仅仅通过页面点击率衡量得失，通过广告取得收益。在Web 2.0中，用户是网站的参与者，他们发表信息，交流知识，成为现实世界社交关系的便捷渠道和重要补充。在Web 3.0中，用户是网站的建设者，大家充分发挥各自的优势，将创新成果应用到自己的“地盘”，共同开发整个网站的程序和内容，共同享受网站发展的精神愉悦和物质利益。
+<p>总而言之，Web 3.0在两个核心理念上将是对传统网络模型的突破：
+<ul><li>通过实名制，结合真实的社会组织，将网络的虚拟性转化为真实性；</li>
+<li>通过网络政治和利益分配机制，将网络由完全分散的分布式转化为民主集中式。</li>
+</ul>
+<p>如果说Web 1.0是信息网络，Web 2.0是社交网络，那么Web 3.0则是智能网络。智能网络的基本特征是让每个人不再是孤立的人（Web 1.0），也不再是好友圈子里的人（Web 2.0），而是充分发挥自身主观能动性，投身到让整个互联网更美好的伟大事业中的人（Web 3.0）。
+<p>从技术角度来看，Web 3.0也有本质的突破。Web 1.0的中心是“网站”（Website），代表技术是海量信息管理系统和大型关系型数据库的服务器集群；Web 2.0的中心是“应用”（Applications），代表技术是大规模并发事务处理和大型非关系数据库的服务器集群；Web 3.0的中心是“云”（Cloud），代表技术是大规模完全分布式处理的信息共享、合作开发、应用间的充分交互。由此，Web 3.0并不是一个网站，而是一个服务体系，在这个架构下可以建立无数紧密相连的网站，犹如大量联动的神经元构成的智能神经网络，让互联网真正触及生活的每个角落。
+<p>具有一定复杂程度的网络，便能产生一定程度的智能。若干个神经元组成的人脑如此，若干个人脑形成的组织也是如此；若干个电子元件组成的电脑如此，若干个电脑组成的网络也是如此。分别从社会和技术角度看，“智能网络”有两层含义：
+<ul><li>每个用户都与现实的和虚拟的组织紧密联系，通过团队合作和信息共享，发挥着最大的创新潜能；</li>
+<li>每台计算机通过完全分布式的通信协议紧密联系，发挥网络运算的最大能力。</li>
+</ul>
+
+<h3 id="creative-everyone">2.6 创新每个人</h3>
+<p>多米诺骨牌效应最通常的形式，并不是逐级放大的神奇推演，而是点点滴滴的蔓延。尽管每一块的力量都同比例的微小，但是最终的伟大质变却是隐藏在不断积累的过程中。
+<p>每天15分钟是什么概念？如果是阅读，一分钟可达300字，15分钟就是4500字，一周可读3.15万字，一个月就是12.6万字。那么一年就是151.2万字。如果一本书以7.5万字算，每天读15分钟，一年可读20本书。有一个人这样坚持了半个世纪，共读了8235万字、1098本书。他就是加拿大籍的世界著名医生奥斯勒。
+<p>我们从网站维护谈起。在其他条件不变的前提下，花费在网站上的时间越多，取得的效果越好。
+<ul><li>管理员一个人维护网站，每天3小时，每周21小时；
+<li>15个人的团队维护网站，每周3小时，共45小时；
+<li>科大7500本科生每周登陆一次网站，一次10分钟，每周共1250小时。
+<li>按照平均每15秒点击一次网页的估计，每天的网站点击量为42857次。
+<li>受到中央电视台等多家媒体报道的大型科普网站科学松鼠会，每天点击量也只是在10万次的量级。
+<li>而这一切只考虑了科大一所高校！全国共有四千多所高校，人人网就是这样炼成的。
+</ul>
+<p>也许有人会问，这些推算都是不切实际的，7500学生凭什么每个人、每个星期都来这个网站？
+<p>这就是用户黏性的威力。例如科大的网上选课系统，每个学生必须登录，这是行政压力所驱使的。而我们前进的方向正是与真实的社会组织、学生社团等结合，一个人所加入的组织机构发布的信息只有在我们这里能够看到，他不就必须经常来我们网站查询新信息了吗？
+<p>那么为什么组织机构要选择在我们这里发布信息呢？这就是1.1节所述易用性、可用性和利益分配机制的厉害之处。组织机构不仅不需要为创办网站付出高额成本，还可以充分发挥创造力，满足自我实现的需要，同时还能从利益分配机制中取得今后的收益，何乐而不为呢？
+<p>一个团队的创新是有限的，人类的创新相对来说是无限的。人是创新的主体，是最宝贵的资源。要发挥每个人、每个组织的主观能动性，提供一个开放的平台，提高归属感和认同感，让他们不仅成为网站的访问者、参与者，更是网站的建设者。
+<p>一个有活力的技术团队是网站成功的必要条件。没有充足的技术资源，上文提到的易用性、可用性就无从谈起，没有足够的优势吸引到组织和个人的关注、认可和参与，也就没有后面的网络政治、利益分配机制了。
+<p>一个忠实的用户群体是网站成功的充分条件。有了领先的理念，又有一批数量可观的用户，推行新方法、推销新功能、推广新理念就如探囊取物了。例如，百度推出一个新功能，绝对比自己的小网站推出一个同样的功能能吸引更多人的关注和试用，也就会取得更大的成功。再如，“青年民意领袖”韩寒在博客上发表一篇文章，即使只有一个字，也会有数十万人关注他的“杰作”；相反，自己呕心沥血写的一篇万言长文，就算再有道理，只要没有炒作，也很难达到韩寒杂文的影响力。
+<p>QQ和360之战，如果没有工信部的调停，最后肯定两败俱伤，但相对而言腾讯的胜算显然很大。为什么？腾讯QQ拥有4亿多活跃用户，拥有中国最大的用户群体，且在即时聊天领域基本处于垄断地位，诸如MSN等聊天软件应用范围很窄，这种垄断酷似谷歌退出后百度在中国搜索引擎领域的垄断。离开了QQ，很多用户根本无法与人网上聊天，这简直成了网民生活的必需品。而360安全软件则不尽然。首先360的用户份额比QQ要小，另外最重要的是360在安全软件领域不占有垄断地位，不能做到让用户别无选择。没有360，还可以选择瑞星、金山、卡巴斯基等其他杀毒软件和浏览器安全软件。
+<p>以上归结起来，就是用户对QQ的忠诚度，或依赖度，大于对360的相应指标。一旦开战，忠诚度高的一方更容易获得认同。在平时网站间的竞争中，也存在着类似的“大鱼吃小鱼”的现象。曾几何时，各大网站的校友录功能群雄并起，但现在还有几家能跟人人网一决雌雄？
+<p>因此，格物致知网要在技术和理念上不断创新，把握好现有的忠实用户，稳健发展可能的忠实用户，团结一切可以团结的力量，至少在一个二级领域实现压倒性优势，凭借不断改善的用户体验，不断提升用户的忠诚度和信任度，甚至成为一些人上网的“必需品”，则发挥每个人的创新能力，领跑Web 3.0的理念突破，Nothing is impossible。
+<p class="note">本节摘自2011年1月《格物致知网构想与实现》，目前（7月）已融入“烧烤模式”和“智能网络”的更为宏大的架构中。
+
+<h3 id="profit-assignment">2.7 利益分配机制</h3>
+<p>虚拟货币结构图
+
+<h2 id="software-engineering">3 软件工程</h2>
+
+<h3 id="concept-integrity">3.1 概念完整性</h3>
+<p>软件的目的是使计算机更加容易使用。为了做到这一点，计算机装备了语言和各种工具，这些工具实际上也是被调用的程序，受到编程语言的控制。使用这些工具是有代价的：软件外部描述的规模大小是计算机系统本身说明的十倍。用户会发现寻找一个特定功能是很容易的，但相应却有太多的选择，要记住太多的选项和格式。<strong>只有当这些功能说明节约下来的时间，比用在学习、记忆和搜索手册上的时间要少时，易用性才会得到提高。</strong>
+<p>对于给定级别的功能，能用最简洁和直接的方式来指明事情的系统是最好的。仅有简洁是不够的。有些程序语言或软件要表达一件待完成的事情，常常需要对基本元素进行意料不到的复杂组合，而且除了了解基本要素和组合规则，还需要学习晦涩的用法，以及在实际工作中如何进行组合。这违反了直白的原则。
+<p><strong>简洁</strong>和<strong>直白</strong>来自概念的完整性。每个部分必须反映相同的原理、原则和一致的折衷机制。在语法上，每个部分应使用相同的技巧；在语义上，应具有同样的相似性。因此，易用性实际上需要设计的一致性和概念上的完整性。
+<p>概念的完整性要求设计必须由一个人，或者非常少数互有默契的人员来实现，而大型项目的进度压力却要求很多人员来开发系统。获得概念完整性有两个重要途径，一是体系结构与实现分离，二是外科手术队伍的开明专制。
+<p>对于非常大型的项目，将设计方法、体系结构方面的工作与具体实现相分离是获得概念完整性的强有力方法。
+<p>系统的体系结构指的是完整和详细的用户接口说明，是用户要完成自己全部工作所需参考的手册的集合。因此，系统的结构师，如同建筑的结构师一样，是用户的代理人，他们需要运用专业技术知识来维护<strong>用户的真正利益</strong>。
+<p>体系结构同实现必须仔细地区分开来。<strong>体系结构陈述的是发生了什么，而实现描述的是如何实现。</strong>一个简单的例子是时钟，它的结构包括表面、指针和上发条的旋钮。当一个小孩知道了时钟的外表结构，他很容易从手表或者教堂上的时钟辨认时间。而时钟的实现，描述了表壳中的事物——很多种动力提供装置中的一种，以及众多控制精度方案的一种。
+<p>当讨论专制与民主这个带有高度感情色彩的话题时，我们当然不认为首席程序员才有最好的设计与创意，最好的创意往往来自实现者与用户。但<strong>概念的完整性决定了系统的易用程度</strong>，一个设计良好的系统不应该是各种“优秀理念”的大杂烩，而应以一条主线串联所有模块与功能。不能与系统基本概念进行整合的良好想法和特色，最好放到一边，不予考虑。如果出现了很多非常重要但不兼容的构想，就应该抛弃原来的设计，对不同基本概念进行合并，在合并后的系统上重新开始。
+<p>“<strong>没有规矩，不成方圆</strong>”，外部的体系结构规定实际上是增强，而不是限制实现小组的创造性。一旦他们将注意力集中在没有人解决过的问题上，创意就开始奔涌而出。在毫无限制的实现小组中，在进行结构上的决策时，会出现大量的想法和争议，对具体实现的关注反而会比较少。
+<p>当建议由体系结构的团队来编写计算机和编程系统的所有外部技术说明时，编程人员可能提出三个反对意见：
+<ul><li>该说明中的功能过于繁多，而对实际情况中的成本考虑比较少；
+<li>结构师获得了所有创造发明的快乐，剥夺了实现人员的创造力；
+<li>当体系结构的队伍缓慢工作时，很多实现人员只能空闲地坐着等待。
+</ul>
+<p>第一个问题确实是一项危险。在开发第一个系统时，结构师倾向于精炼和简洁。他知道自己对正在进行的任务不够了解，所以他会谨慎仔细地工作。在设计第一个项目时，他会面对不断产生的装饰和润色功能。这些功能都被搁置在一边，作为“下一个”项目的内容。第一个项目迟早会结束，而此时的结构师，对这类系统充满了十足的信心，熟练掌握了相应的知识，并且时刻准备开发第二个系统。
+<p>第二个系统是设计师们所设计的最危险的系统，一种普遍倾向是过分地设计，向系统添加很多修饰功能和想法，形成一个庞大而不实用的恐龙。而当他着手第三个或第四个系统时，先前的经验会相互验证，得到此类系统通用特性的判断，而且系统之间的差异会帮助他识别出经验中不够通用的部分。
+<p>为避免第二系统效应，设计师可以有意识关注那些系统的特殊危险，运用特别的<strong>自我约束准则</strong>，来避免那些功能上的修饰；根据系统基本理念及目的变更，舍弃一些功能。
+<p>第二个问题纯粹是一项误解。整个创造性活动包括了三个独立的阶段：<strong>体系结构</strong>（architecture）、<strong>设计实现</strong>（implementation）、<strong>物理实现</strong>（realization）。在实际情况中，它们往往可以同时开始和并发地进行。
+<p>实现同样是一项高级别的创造性活动。在外部说明完成之前，设计实现人员有很多的事情可以做。只要有一些最终将并入外部说明的系统功能雏形，他就可以开始了。首先，必须设定良好定义的时间和空间目标，了解产品运行的平台配置。接着，他可以开始设计模块的边界、表结构、算法以及所有的工具。另外，还需要花费一些时间和体系结构师沟通。
+<p>具体实现中创造和发明的机会，并不会因为指定了外部技术说明而大为减少，相反<strong>创造性活动会因为规范化而得到增强</strong>，整个系统也一样。
+<p>关于第三个时间顺序和阶段性上的问题，回答很简单，在说明完成的时候，才开始使用编程实现人员，他们之前可以为其他项目服务。这也正是在搭建一座建筑时所采用的方法。
+<p>概念的完整性要求系统只反映<strong>唯一的设计理念</strong>，用户所见的技术说明来自<strong>少数人的思想</strong>。实际工作被划分成体系结构、设计实现和物理实现，但这并不意味着该开发模式下的系统需要更长的时间来创建。经验显示恰恰相反，整个系统将会开发得更快，所需要的测试时间将更少。同工作的水平分割相比，<strong>垂直划分</strong>从根本上大大减少了劳动量，结果是使交流彻底地简化，概念完整性得到大幅提高。
+
+<h3 id="surgery-team">3.2 外科手术团队</h3>
+<p>软件项目犹如盖大楼，如果10个人的施工队盖楼需要2年，显然20人不会将工期缩短到1年，7300人在一天内盖完楼更是神话。产生如此“非反比关系”的根本原因在于这些项目需要一定的顺序步骤才能完成，即使有再多的人，也不可能一拥而上。<strong>不论有多少个母亲，都需要十个月才能生出孩子。</strong>
+<p>另外，添加人手意味着<strong>更细的分工、更多的交流</strong>，大量宝贵的工作时间被浪费在开发者间的沟通与协商上了。一般来说，n个人“一拥而上”的团队两两需要交流，花费n(n-1)/2的交流时间，是大于人数的线性增长的。对于普通的软件项目，添加人手在开始时由于人数的增加确实可以提前工期，但人数增加到一定程度后由于互相交流等内耗，工期不会继续缩短，甚至还可能因内耗过大反而延长工期。另外，每个程序员对程序的架构与实现都有自己的想法，如果不能得到统一，很可能导致内部的不和谐，从而影响开发的积极性。
+<p>更严重的是，如果一个软件项目事先没有充分估计复杂度，而没有完成阶段性目标，从而中途添加一些人手，这样往往会导致<strong>迟到的项目越来越迟</strong>，因为新来的人需要原有的开发者腾出一部分时间对他们进行培训，使之熟悉整个软件的开发流程、设计文档和当前任务，在这段时间中原有的人被迫停下手中的工作，从而耽误了更多的时间。
+<p>优秀程序员与较差程序员之间的差异是广泛存在的，<strong>最优秀的程序员与平庸程序员的产出率（单位时间内完成的代码量、代码的时间与空间复杂度）之比可达10:1</strong>。因此，<strong>并不是所有会编程序的人都要参与代码的真正编写工作</strong>：一个优秀的程序员应该把全部精力投入到最擅长和最有效率的程序设计、代码编写工作中，而把测试、工具、文档、管理等其余琐事安排给其他人来做；普通的程序员则可以从事与程序开发相关，但并不要求最高水平的辅助性事务。
+<p>基于以上事实，我们必须避免“一拥而上”的开发方式，一个大型团队应由若干精干的小型队伍组成，<strong>每个队伍负责一个相对独立的模块</strong>。我们把这样的小团队称为“<dfn>外科手术队伍</dfn>”：
+<dl><dt><dfn>首席程序员（外科医生）</dfn></dt>
+<dd><strong>亲自</strong>定义功能和性能技术说明书，设计程序，编制源代码，测试以及书写技术文档。首席程序员需要极高的天分、充足的经验和应用数学、业务数据处理或其他方面的大量系统和应用知识。</dd>
+<dt><dfn>参谋（副手）</dfn></dt>
+<dd>设计的思考者、讨论者和评估人员。首席程序员与参谋沟通设计方案，但不受到参谋建议的限制。参谋在与其他团队的功能和接口讨论中代表自己的小组。他需要详细了解所有的代码，研究设计策略的备选方案，充当首席程序员的保险机制。</dd>
+<dt><dfn>管理员</dfn></dt>
+<dd>首席程序员是老板，必须在重大事件上具有决定权，但决不能在这些事务上浪费任何时间。因而，他需要一个控制财务、人员、工作地点安排和机器的专业管理人员，该管理员充当与组织中其他管理机构的接口。</dd>
+<dt><dfn>测试员</dfn></dt>
+<dd>首席程序员需要大量合适的测试用例，用来对他所编写的代码进行测试。因此，测试人员既是为他的各个功能设计系统测试用例的“挑刺者”，同时也是为他的日常调试设计测试数据的助手。他还负责计划测试的步骤和为测试搭建测试平台。</dd>
+<dt><dfn>辅助人员</dfn></dt>
+<dd>负责文档编辑、工具维护等。根据首席程序员的草稿，对设计文档进行分析和重新组织，形成可读性强的正式文件；向首席程序员提供各种参考信息和资料；保证所有基本服务的可靠性，构建、维护和升级团队必需的各种开发环境、开发工具与实用程序。</dd>
+</dl>
+<p>在实际项目中，一个管理员可以管理和协调3~5个外科手术队伍，除去管理员外每个外科手术队伍由首席程序员、参谋、测试员、辅助人员组成，由首席程序员牵头与拍板，避免了策略与接口的不一致性，维护了概念完整性，减少了多人反复交流争论的内耗。
+<p>此外，每个大型团队中总有一两个乐于掌握复杂编程语言的<dfn>语言专家</dfn>。这些天才不同于首席程序员，首席程序员主要是系统设计者以及考虑系统的整体表现。而语言专家则寻找一种简洁、有效的使用语言的方法来解决复杂、晦涩或者棘手的问题。他们可以为各开发小组提供程序语言支持。
+
+<h3 id="think-twice-cut-once">3.3 三思而后行</h3>
+<p>参见《代码大全》(Code Complete)（第二版）第3章。</p>
+
+<h3 id="iterative-development">3.4 迭代式开发</h3>
+<p>参见《敏捷开发的艺术》。</p>
+
+<h3 id="software-testing">3.5 测试与审查</h3>
+<p>此处给出一些基本原则。详细的测试方法参见《微软的软件测试之道》。</p>
+<p>大型程序系统的开发过程有两种：自上而下和自下而上。自上而下的方式意味着开始编写的系统就是一个“能用”的系统，但其中的功能都是假的（模拟出来的）；自下而上的方式犹如制造汽车，每个零件工人都在不知道汽车全貌的情况下开发、组装。计算机软件各组件之间耦合复杂、逻辑严密的特征决定了汽车制造式的完全“面向对象”开发是不现实的，同时也容易挫伤开发人员的积极性，容易引入接口和规范的不一致性，为整体组装带来极大的麻烦。
+<p>“自顶向下，逐步求精”是大型程序系统常用的开发方式。具体到Web应用程序，以下的开发模式是不错的：
+<ol><li>用纸笔画出每个页面的大致框架，并确定程序流程；
+<li>用HTML静态网页的形式实现，并完成CSS等页面设计；
+<li>对每个功能用程序实际实现；
+<li>将静态模板与动态程序结合在一起，成为可用产品。
+</ol>
+<p>其中第一步是编程开始前高层决策人员做出整体规划、明确设计文档的阶段。第二步和第三步可以同时互不影响的进行，第二步由页面设计与用户体验师完成，第三步由程序设计师完成，这个阶段也是开发流程中耗时最长的阶段，由于前台页面设计与后台程序设计两类性质不同的任务被分开，在提高任务并行性的同时减少了页面和程序人员对不熟悉的对方领域的盲目探索。如果第一步文档明确，设计合理，采用了逻辑与显示分离的策略，第四步将是一个很快的过程。
+<p>程序开发完毕，需要多少人来对其测试？开发者自身能否充当测试者的角色？第二个问题的回答是否定的。开发者往往考虑的是程序方面的整体性能，编程复杂度及应用某些“高级”方法的自我实现感觉；而用户关注的则是易用性和可用性。因此普通终端用户是必须成为内部测试阶段的主力军的，且自视清高的开发者必须放下架子来认真听取他们的意见，根据用户价值取向作出改进，直到大部分用户满意。
+<p>网站的内部测试阶段并不像想象中的那样，需要很多人来测试。研究显示，5名负责任的普通用户就能发现80%的问题，而这80%的问题正是网站竞争力低下的关键因素。只要能把这些影响用户体验的瓶颈消除，剩余的问题其实并无大碍。
+<p>如果一个网站有某个功能非常难用，或存在严重的BUG，就可能出现屏蔽效应。用户在遇到这个非常不爽的严重问题后直接丧失了对网站的兴趣，从而也就无法发现后续的小错误了。例如学术网站如果没有对数学公式等必要工具的支持，学术人员在上面讨论不方便，自然不会在此久留；即使用户积分成长体系存在严重的不合理之处，也不会被用户发现。因此，评测应该分阶段进行，每一阶段找出影响最严重的“瓶颈”，解决后再组织下一阶段的评测，找出新的瓶颈并加以解决，如此循环往复，直至没有明显影响用户体验的瓶颈。
+<p>测试人员虽然不需要很多，但样本应有足够的代表性。不必说，测试人员应该属于网站潜在用户群，一个时尚女性网站让老大爷评测显然就不合适。应当细分网站的潜在用户群，每位测试人员具有一定的代表性，“各司其职”，例如针对大学生的网站，测试人员应该既包括重点大学的学生，又包括普通大学的学生；包括理科、工科、文科等各专业方向的学生；包括不同年级的学生；包括不同性别的学生。另外，针对不同的网络速度（宽带，拨号），不同的设备（电脑，手机）进行区别测试（甚至区别开发）也是应当考虑的。
+<p>在约请普通用户进行评测时，“考试法”是较为有效的。网站开发者充当“主考官”，在考试开始前出好涵盖网站主要操作的试卷，其中基本操作与高级操作应各占一定比例，题目的顺序要符合普通用户的操作逻辑，题目描述要清晰、符合用户习惯，但不对具体操作进行任何提示。考试时，采用屏幕录像机等方式记录用户的操作过程，同时主考官在一旁默默观察，发现不愉快的表情或动作时及时记录，这很有可能是用户感到困惑的地方。用户遇有问题，主考官不应予以解答，而要反问道“你觉得应该如何操作呢？”让他凭感觉去操作，同时密切关注这个用户体验不好的功能模块。考试后，不要忘了让用户说说自己的操作感受。统计每道题（每个操作）的完成时间、点击次数、误操作次数、停留过长或感觉不舒服的页面、让用户眼前一亮的页面等。
+<p>在大型网站的竞争中，技术是次要的，理念与用户体验才是主要因素。一套网站系统在正式发布前，至少要经历与开发时间相同的调试与测试。一般来说，大型系统的设计时间占整个开发流程的1/3，编码时间仅占1/6，模块测试占1/4，系统测试占1/4，切不可把编码当作开发的全部，更不能认为编码的结束就是开发的结束，导致上线的系统漏洞百出，威胁系统安全，激发用户不满。
+
+<h3 id="maintainance-and-feedback">3.6 维护与反馈</h3>
+<p class="note">This section is not completed.</p>
+
+<h2 id="coding-recommendation">4 代码规范</h2>
+<h3 id="KISS">4.1 KISS原则</h3>
+<p>参见《UNIX编程艺术》(The Art Of UNIX Programming)第1章。</p>
+
+<h3 id="modulization">4.2 模块化</h3>
+<p>参见《UNIX编程艺术》第4章。</p>
+
+<h3 id="text-stream-interface">4.3 面向文本流的接口</h3>
+<p>参见《UNIX编程艺术》第5章。</p>
+
+<h3 id="information-hidding">4.4 信息隐藏</h3>
+<p>参见《代码大全》第5章</p>
+
+<h3 id="self-explaining-code">4.5 自解释代码</h3>
+<p>参见《代码大全》第32章。</p>
+
+<h3 id="defensive-programming">4.6 防御式编程</h3>
+<p>参见《代码大全》第8章、《编写安全的代码》（Writing Secure Code, Microsoft Press）。</p>
+
+<h2 id="user-interface">5 用户界面</h2>
+<h3 id="usability-vs-functionality">5.1 易用性与功能性</h3>
+<p>不论是百度、新浪，还是最普通的个人博客，都需要考虑用户访问网站后的感受，如页面上的信息是否吸引人，操作是否明显而简单，希望的浏览与互动愿望是否能被实现，这就是用户体验。
+<p>一个相同的页面对不同的人群而言意味着或许大相径庭的用户体验。一个粉色充满爱意的页面也许对花季少女充满了诱惑，而正在游戏世界中寻找冲杀快感的男生也许会很快选择关闭页面。一个充斥着分类信息的门户型主页对时事爱好者是一种很好的导航，而正忙着在网上查询学术资料的研究者只会感到杂乱无章的混乱。不同的人群，不同的目的，不同的性格，都严重影响着一个网页在访问者心中的PageRank。
+<p>很多人把浏览器的默认首页设置为网址导航或搜索引擎，就是为了避免某个具体网站的限制，根据不同时间的不同上网需求选择合适的网站。除了已经规模化的百度、腾讯等大型网站，试图为所有用户提供服务是不现实的，也是不明智的，最终很有可能功能过于大众化而失去特色。因此，一个全新的理念就是网站提供不同用户群的不同上网目的所需要的功能，<strong>由用户来选择需要的功能</strong>，方便地自定义自己在网站上的“个人主页”，让网站成为量身打造的一站式网络服务平台。
+<p>具体来说，对一个特定的用户，除了一些网站主打的默认功能，还会以适当的方式展示与此用户所属群体相关的功能，每次访问网站时以相同的方式显示。对于高级用户，允许最大限度自定义功能模块，打造属于自己的网络空间。从这个角度来说，一个成功的网站必须是拥有完全自主知识产权的，设计师可以从容地<strong>根据用户需求定制程序功能</strong>，而不受制于现有程序或模板；相反，一些小网站为了省事直接使用了网上现成的程序，结果是根据程序功能“定制”了用户需求，这样构架出来的网站千篇一律，一看就知道是用谁家的程序架出来的，设计人员的创造力没有得到充分发挥。
+<p>但是，普通功能与高级功能总是网站开发中不可忽略的一对矛盾。一般来说，<strong>80%的用户是很“懒惰”的</strong>，他们只愿意看网站上现成的信息，能少点击一次就少动一次键盘鼠标，更没有心思去钻研所谓的“新功能”；20%的用户则是“高级用户”，他们乐意发掘网站的内容与功能，以独具匠心的方式使用网站，并参与网站上诸如写博客、论坛发帖的互动。80%的普通用户产生了50%以上的点击量和知名度，而<strong>20%的高级用户产生了80%的内容</strong>。
+<p>如果网站只注重“<dfn>易用性</dfn>”而不具备“<dfn>可用性</dfn>”，即操作很简单但没有什么高级功能，网站的访问者只会是那些匆匆过客，少有人愿意在网站上长期停留，也缺少用户有价值的分享与贡献；如果网站具备“可用性”而没有“易用性”，即功能繁多但主次不清、操作复杂，就会丧失绝大多数不耐心的普通访客。
+<p>事实上，易用性与可用性，分别代表普通用户与高级用户的需求，是对立统一的。一个设计良好的网站会兼顾两类人群的需求，将<strong>最常用的操作</strong>以简单的方式展现在页面的明显位置，方便普通用户的使用；网站的各类高级功能以恰当的组织方式放置在相对不明显的位置，但附有详尽的帮助系统，使得高级用户可以“随心所欲”地操纵网站。
+<p>以论坛的回帖系统为例，主帖下方会显示只有加粗、高亮等简单功能的快速回复框，但附有“高级回复”的链接，普通用户完全可以简单写上几个字，快速提交回复；但希望插入图片或附件、写大段排版整洁的文字的，完全可以使用功能强大、完备的高级编辑器。即使在高级编辑器内部，也可以对高级用户和“超高级用户”加以区别，例如插入数学公式，使用HTML代码等就是有特殊需要的发帖者才需要的功能，完全可以折叠起来，需要时再展开使用。
+<p>在任何一个页面，功能应该足够少使得网页不至于眼花缭乱，功能应该足够<strong>清晰</strong>使得用户不需要在两个相似的按钮之间“做出艰难的决定”，功能应该足够<strong>完备</strong>使得用户不会在想做某件事时找不到对应的按钮。这是应用程序开发中重要但容易被忽略的原则。
+<p>一个设计良好的网页应当是“<strong>自文档化</strong>”的，犹如一个编码风格良好的程序也应当自文档化一样，不需要任何附加的帮助文档即可充分理解各项功能的含义并在需要实现某项操作时快速准确地使用相应的功能。用户不会为了一个功能去查阅厚厚的用户帮助手册，也不会依次点击各个按钮进行试验，他们只会放弃操作，另寻他处。因此，功能（按钮、链接、输入框等）的布局、样式、图案及必要的说明文字都需要认真推敲。
+<p>例如，用户注册界面的输入框应该有必填项和选填项的区分，即使是用户名和密码这样简单易懂的输入框都应附有相应的简短说明，标明此项目的含义及系统的限制。如果用户不慎操作失误，最差的用户体验是什么都不提示，直到用户发现无法登录才想到没注册成功；稍好一点的是冷冰冰地提示一条“系统错误”并让用户重新填写表单；再好一点的是只要求重新填写上次填错的项目；可以称得上用户友好的设计是用醒目的颜色和图形标明错误发生的位置，要求重新填写的同时在旁边显示<strong>操作建议</strong>，犹如一个隐形的助手在用户身边指导如何操作。不幸的是，尽管在用户注册界面上多数有一定规模的网站都已经达到了“用户友好”的要求，但对其他操作可能就没花那么多心思认真处理了，“系统错误”往往成为网站打发走一位用户的最好借口，出了错误还什么都不提示更是让用户如堕五里雾中。
+<p>用户是不喜欢思考的，他们喜欢网站已经把所有可能的情况都考虑到，并对每种情况做出人性化的合理回应。尽管考虑所有情况在理论上是不可能的，但“自文档化”地应对至少95%的可能情况并不是很难的任务。为了做到这点，需要认真调研<strong>非技术型用户</strong>，而不是专业开发人员，浏览网页和使用网站功能的习惯。很多时候开发人员觉得很显眼的功能被多数人“无视”甚至“骑驴找驴”，开发人员觉得很清楚明白的说明文字在菜鸟眼里如同天书。
+
+<h3 id="perceivable">5.2 可获取性</h3>
+<p>Principle 1: Perceivable - Information and user interfacecomponents must be presentable to users in ways they canperceive.
+<ul>
+<li>Guideline 1.1 Text Alternatives: Providetext alternatives for any non-text contentso that it can be changed into other formspeople need, such as large print, braille,speech, symbols or simpler language.
+<p>1.1.1 Non-text Content: All non-text content that ispresented to the user has a text alternative that serves theequivalent purpose, except for Controls, Input, Time-Based Media, Test, Sensory, CAPTCHA, Decoration, Formatting, Invisible.</p></li>
+<li>Guideline 1.2 Time-based Media: Providealternatives for time-based media.
+<p>1.2.1 Audio-only and Video-only (Prerecorded): Forprerecorded audio-only and prerecorded video-only media,the following are true, except when the audio or video is amedia alternative for text and is clearly labeled as such:</p>
+<p>1.2.2 Captions (Prerecorded): Captions are providedfor all prerecorded audio content in synchronized media,except when the media is a media alternative for text and isclearly labeled as such.</p></li>
+<li>Guideline 1.3 Adaptable: Create contentthat can be presented in different ways (forexample simpler layout) without losinginformation or structure.
+<p>1.3.1 Info and Relationships: Information, structure,and relationships conveyed through presentation can beprogrammatically determined or are available in text.</p>
+<p>1.3.2 Meaningful Sequence: When the sequence inwhich content is presented affects its meaning, a correctreading sequence can be programmatically determined.</p>
+<p>1.3.3 Sensory Characteristics: Instructions providedfor understanding and operating content do not rely solely onsensory characteristics of components such as shape, size,visual location, orientation, or sound.</p></li>
+<li>Guideline 1.4 Distinguishable: Make iteasier for users to see and hear contentincluding separating foreground frombackground.
+<p>1.4.1 Use of Color: Color is not used as the only visual means of conveying information, indicating an action, prompting a response, or distinguishing a visual element.</p>
+<p>1.4.2 Audio Control: If any audio on a Web page playsautomatically for more than 3 seconds, either a mechanism is available to pause or stop the audio, or a mechanism is available to control audio volume independently from the overall system volume level.</p>
+<p>1.4.4 Resize text: Except for captions and images of text, text can be resized without assistive technology up to 200 percent without loss of content or functionality.</p>
+<p>1.4.7 Low or No Background Audio: For prerecorded audio-only content that (1) contains primarily speech in the foreground, (2) is not an audio CAPTCHA or audio logo, and(3) is not vocalization intended to be primarily musical expression such as singing or rapping, at least one of thefollowing is true:
+<ul><li>No Background: The audio does not contain background sounds.<li>Turn Off: The background sounds can be turned off.<li>20 dB: The background sounds are at least 20 decibels lower than the foreground speech content, with theexception of occasional sounds that last for only one or two seconds.</ul></p>
+<p>1.4.8 Visual Presentation: For the visual presentation of blocks of text, a mechanism is available to achieve the following:
+<ul><li>Foreground and background colors can be selected bythe user.
+<li>Width is no more than 80 characters or glyphs (40 if CJK).
+<li>Text is not justified (aligned to both the left and the rightmargins).
+<li>Line spacing (leading) is at least space-and-a-half withinparagraphs, and paragraph spacing is at least 1.5 timeslarger than the line spacing.
+<li>Text can be resized without assistive technology up to 200 percent in a way that does not require the user toscroll horizontally to read a line of text on a full-screen window.</ul></p>
+<p>1.4.9 Images of Text (No Exception): Images of textare only used for pure decoration or where a particularpresentation of text is essential to the information beingconveyed.
+Note: Logotypes (text that is part of a logo or brand name) are considered essential.</p>
+</li></ul>
+
+<h3 id="operable">5.3 可操作性</h3>
+<p>Principle 2: Operable - User interface components andnavigation must be operable.
+<ul><li>Guideline 2.1 Keyboard Accessible: Make all functionality available from a keyboard.
+<p>2.1.2 No Keyboard Trap: If keyboard focus can bemoved to a component of the page using a keyboardinterface, then focus can be moved away from thatcomponent using only a keyboard interface, and, if it requiresmore than unmodified arrow or tab keys or other standardexit methods, the user is advised of the method for movingfocus away.</p>
+<p>2.1.3 Keyboard (No Exception): All functionality of the content is operable through a keyboard interface without requiring specific timings for individual keystrokes.</p></li>
+<li>Guideline 2.2 Enough Time: Provide usersenough time to read and use content.
+<p>2.2.3 No Timing: Timing is not an essential part of theevent or activity presented by the content, except for non-interactive synchronized media and real-time events.</p>
+<p>2.2.4 Interruptions: Interruptions can be postponed orsuppressed by the user, except interruptions involving anemergency.</p>
+<p>2.2.5 Re-authenticating: When an authenticatedsession expires, the user can continue the activity withoutloss of data after re-authenticating.</p></li>
+<li>Guideline 2.3 Seizures: Do not designcontent in a way that is known to causeseizures.
+<p>2.3.2 Three Flashes: Web pages do not contain anythingthat flashes more than three times in any one second period.</p></li>
+<li>Guideline 2.4 Navigable: Provide ways tohelp users navigate, find content, anddetermine where they are.
+<p>2.4.1 Bypass Blocks: A mechanism is available tobypass blocks of content that are repeated on multiple Webpages.</p>
+<p>2.4.2 Page Titled: Web pages have titles that describetopic or purpose.</p>
+<p>2.4.3 Focus Order: If a Web page can be navigatedsequentially and the navigation sequences affect meaning oroperation, focusable components receive focus in an orderthat preserves meaning and operability.</p>
+<p>2.4.4 Link Purpose (In Context): The purpose of eachlink can be determined from the link text alone or from the link text together with its programmatically determined linkcontext, except where the purpose of the link would beambiguous to users in general.</p>
+<p>2.4.5 Multiple Ways: More than one way is available tolocate a Web page within a set of Web pages except wherethe Web Page is the result of, or a step in, a process.</p>
+<p>2.4.6 Headings and Labels: Headings and labelsdescribe topic or purpose.</p>
+<p>2.4.7 Focus Visible: Any keyboard operable userinterface has a mode of operation where the keyboard focusindicator is visible.</p>
+<p>2.4.8 Location: Information about the user's location withina set of Web pages is available.</p>
+<p>2.4.9 Link Purpose (Link Only): A mechanism isavailable to allow the purpose of each link to be identifiedfrom link text alone, except where the purpose of the linkwould be ambiguous to users in general.</p>
+<p>2.4.10 Section Headings: Section headings are used toorganize the content. Note: "Heading" is used in its general sense and includestitles and other ways to add a heading to different types ofcontent.</p></li>
+</ul>
+
+<h3 id="understandable">5.4 可理解性</h3>
+<p>Principle 3: Understandable - Information and the operation ofuser interface must be understandable.
+<ul><li>Guideline 3.1 Readable: Make text contentreadable and understandable.
+<p>3.1.1 Language of Page: The default human language ofeach Web page can be programmatically determined.</p>
+<p>3.1.2 Language of Parts: The human language of eachpassage or phrase in the content can be programmaticallydetermined except for proper names, technical terms, wordsof indeterminate language, and words or phrases that havebecome part of the vernacular of the immediately surroundingtext.</p>
+<p>3.1.3 Unusual Words: A mechanism is available foridentifying specific definitions of words or phrases used in anunusual or restricted way, including idioms and jargon.</p>
+<p>3.1.5 Reading Level: When text requires reading abilitymore advanced than the lower secondary education levelafter removal of proper names and titles, supplementalcontent, or a version that does not require reading abilitymore advanced than the lower secondary education level, isavailable.</p></li>
+<li>Guideline 3.2 Predictable: Make Webpages appear and operate in predictableways.
+<p>3.2.1 On Focus: When any component receives focus, itdoes not initiate a change of context.</p>
+<p>3.2.2 On Input: Changing the setting of any user interface component does not automatically cause a change of context unless the user has been advised of the behavior before using the component.</p>
+<p>3.2.3 Consistent Navigation: Navigational mechanismsthat are repeated on multiple Web pages within a set of Webpages occur in the same relative order each time they arerepeated, unless a change is initiated by the user.</p>
+<p>3.2.4 Consistent Identification: Components that havethe same functionality within a set of Web pages are identified consistently.</p>
+<p>3.2.5 Change on Request: Changes of context areinitiated only by user request or a mechanism is available toturn off such changes.</p></li>
+<li>Guideline 3.3 Input Assistance: Help usersavoid and correct mistakes.
+<p>3.3.1 Error Identification: If an input error isautomatically detected, the item that is in error is identifiedand the error is described to the user in text.</p>
+<p>3.3.2 Labels or Instructions: Labels or instructions areprovided when content requires user input.</p>
+<p>3.3.3 Error Suggestion: If an input error is automaticallydetected and suggestions for correction are known, then thesuggestions are provided to the user, unless it wouldjeopardize the security or purpose of the content.</p>
+<p>3.3.5 Help: Context-sensitive help is available.</p>
+<p>3.3.6 Error Prevention (All): For Web pages that require the user to submit information, at least one of the following is true:
+<ul><li>Reversible: Submissions are reversible.
+<li>Checked: Data entered by the user is checked for inputerrors and the user is provided an opportunity to correctthem.
+<li>Confirmed: A mechanism is available for reviewing,confirming, and correcting information before finalizingthe submission.</li></ul>
+</p></ul>
+
+<h3 id="robust">5.5 健壮性</h3>
+<p>Principle 4: Robust - Content must be robust enough that it canbe interpreted reliably by a wide variety of user agents, includingassistive technologies.
+<ul><li>Guideline 4.1 Compatible: Maximizecompatibility with current and future useragents, including assistive technologies.
+<p>4.1.1 Parsing: In content implemented using markuplanguages, elements have complete start and end tags,elements are nested according to their specifications,elements do not contain duplicate attributes, and any IDs areunique, except where the specifications allow these features.</p>
+<p>4.1.2 Name, Role, Value: For all user interfacecomponents (including but not limited to: form elements, links directly and components generated by scripts), the name and rolecan be programmatically determined; states, properties, andvalues that can be set by the user can be programmaticallyset; and notification of changes to these items is available touser agents, including assistive technologies.</p>
+</li></ul>
+
+<h3 id="CRAP">5.6 CRAP原则</h3>
+<h4 id="proximity">5.6.1 亲密性</h4>
+<h4 id="alignment">5.6.2 对齐</h4>
+<h4 id="repeatation">5.6.3 重复</h4>
+<h4 id="contrast">5.6.4 对比</h4>
+<p>CRAP原则参见《写给大家看的设计书》。</p>
+
+<h1 id="specification">Part II 系统说明</h1>
+
+<h2 id="basic-concepts">6 基本概念</h2>
+<h3 id="basic-principles">6.1 基本原则</h3>
+<dl>
+<dt><dfn>对象平等原则</dfn></dt>
+<dd>系统中的所有对象平等、自治，在它们之中所有的属性、操作都相同。</dd>
+<dt><dfn>最少重复原则</dfn></dt>
+<dd>每个概念在系统中应有唯一、清晰的表述；若一个概念引用或导出自其他概念，存储的应当是这种相关关系而不是最终数据。</dd>
+<dt><dfn>等效原则</dfn></dt>
+<dd>在任何应用程序看来，整个系统都在本地持续运行。</dd>
+</dl>
+
+<h3 id="object-model">6.2 对象模型</h3>
+<p><dfn>对象</dfn>（object）是独立的实体，由若干属性构成。
+<p>每个对象A有唯一的指向另一个对象B的属性，称B是A的<dfn>父对象</dfn>（parent object），A是B的<dfn>子对象</dfn>（child object），A和B之间存在<dfn>强从属关系</dfn>（strong relationship）。
+<div class="example">万物皆对象：
+<ul><li>博客、博文、评论、博主回复；<li>论坛、板块、帖子、回复；<li>组织主页、新闻栏目、文章、评论；<li>百科分类、词条；<li>即时通信中的群组、聊天室、消息；</ul>
+在以上各组中，前后相邻两个对象有着父对象与子对象的关系。
+</div>
+<p>一个对象A的父对象若为自身，则称A为<dfn>根对象</dfn>。
+<p class="note">事实上，根对象的父对象可以定义为空，也可以定义为自身，此处定义为自身。定义为空从逻辑上看起来更为优雅，但在实际应用中若沿父对象行进，到达根对象后下一步会进入空对象，带来潜在的错误可能；如果定义为自身，则根对象沿父对象行进一步仍然是根对象，这样避免了悬空指针问题，也使每个对象都有父对象这一事实没有例外。UNIX中的文件路径也采用了根目录的上级目录仍为根目录的机制。
+<p>一个对象A的非空父对象如果为空或一个当前不存在的对象，则称A为<dfn>悬空对象</dfn>。
+<p class="note">悬空对象不是根对象。悬空对象在系统中没有实际意义，也无法被下级对象以外的对象访问，是应当避免的。
+<p class="note">为简明起见，除非特别声明，今后涉及“对象”的名词（包括字母代号）均蕴含着“非空、当前存在”之意。如“父对象”特指非空的、当前存在的父对象。注意，当前的存在性并不意味着过去或将来的存在性。
+
+<p>一个对象B将其父对象由空修改为另一个对象A，则称对象B<dfn>插入</dfn>(insert)对象A。
+<p>一个对象B将其父对象由A修改为不同于A、B的对象C，则称对象B从对象A<dfn>移动</dfn>(move)到对象C。
+<p>一个对象B将其父对象由A修改为空，则称对象B从对象A<dfn>移除</dfn>(remove)。
+<p class="note">对象的“移除”操作只是修改其父对象为空，并不是“删除”此对象。
+
+<p><dfn>新建</dfn>(create)对象是一个对象从无到有的过程。新建的对象初始为空，只有被插入到父对象才有意义。
+<p><dfn>修改</dfn>(modify)对象是一个对象的部分或全部被改动的过程。
+<p><dfn>删除</dfn>(delete)对象是一个对象从有到无的过程。
+
+<p>一个对象的n个子对象构成一个按照插入时间排序的有序表（ordered list），对象的<dfn>序号</dfn>唯一表征同一父对象的所有子对象，第一个成为子对象的序号为1，第n个成为子对象的序号为n。
+<div class="note">
+<ul><li>序号不是子对象的属性。子对象的序号由父对象负责维护，在插入操作时自动确定，之后不能被修改。</li>
+<li>子对象被移动、移除或删除时，父对象必须使它的序号失效，且根据序号的定义不会被重用。</li>
+</ul></div>
+
+<p>对象可以有一个<dfn>别名</dfn>（alias），别名的命名遵从变量名的命名规则，且不能与兄弟对象有相同的别名。由于别名不能以数字开头，不会与按序号的查找方式冲突。
+<div class="note">
+<ul><li>别名不是子对象的属性。子对象的别名由父对象负责维护。父对象应为子对象提供设置别名的接口。</li>
+<li>子对象的别名不是强制的，父对象不应为新插入的子对象自动分配别名，也不应自动修改子对象原有的别名。</li>
+<li>子对象的别名被修改时，父对象应释放原有别名所占用的命名空间，并允许此后的子对象重用。</li>
+<li>子对象被移动、移除或删除时，如果设置了别名，父对象应释放其占用的命名空间，并允许此后的子对象重用。</li>
+</ul></div>
+
+<p>两个不同的对象A、B若拥有相同的父对象，则称A、B互为<dfn>兄弟对象</dfn>(sibling)。
+<p>若A、B互为兄弟对象，且A的序号等于B的序号+1，则称B是A的<dfn>前兄弟</dfn>(previous sibling)，A是B的<dfn>后兄弟</dfn>(next sibling)。
+
+<p><dfn>对象树</dfn>（object tree）是若干对象及其强从属关系的集合，满足：
+<ul><li>有且仅有一个根对象R。
+<li>没有悬空对象。
+<li>不存在<dfn>循环从属关系</dfn>，即不存在对象树中的n≥2个对象a[1],a[2],…,a[n]，使得a[i]是a[i+1]的父对象（1≤i≤n-1），且a[n]是a[1]的父对象。
+</ul>
+<p class="note">以下假定讨论范围内的所有对象构成一棵对象树。显然，除根外的每个对象有且仅有一个父对象，而一个对象可以有零或任意多个子对象。
+<p>对象树的根对象到任意非根对象A，有且只有一条不重复经过任何对象（不走回头路）的路径，称为对象A的<dfn>绝对路径</dfn>(absolute path)。根对象的绝对路径为空。绝对路径是系统内一个对象位置的唯一标识。
+<p>绝对路径上除A外的所有对象，统称为A的<dfn>上级对象</dfn>。
+<p>对象树中所有以对象A为上级对象的对象，统称为A的<dfn>下级对象</dfn>。
+<p>绝对路径上除自身外对象的个数，称为对象的<dfn>深度</dfn>(depth)。根对象的深度为0。
+<p>对象树上深度最大的对象的深度，称为<dfn>对象树的深度</dfn>。
+<p>从对象树的非根对象A到另一个非根对象B，有且只有一条不重复经过任何对象的路径，称为从A到B的<dfn>相对路径</dfn>(relative path)。A、B称为这条相对路径的两个<dfn>端点</dfn>(end point)。
+<p>相对路径上有且只有一个深度最小的对象，称为相对路径两端点的<dfn>最近公共祖先</dfn>。
+
+<p>每个对象可以有若干<dfn>标签</dfn>（tag），表示对象的<dfn>开放分类</dfn>（open category）。称对象与开放分类之间存在<dfn>弱从属关系</dfn>（weak isa relationship）。
+
+<p><dfn>叶子对象</dfn>(leaf object)是在逻辑上不能再有子对象的对象。一个对象应当被设置为叶子对象，如果其子对象在逻辑上没有意义。
+
+<h3 id="user-group-class">6.3 用户、组织、角色</h3>
+<p><dfn>用户</dfn>（user）是独立的不可分割实体，代表一个自然人。
+<p><dfn>组织</dfn>（或称<dfn>用户组</dfn>，group，usergroup）是用户的集合。组织S定义为用户集合P与组织集合Q之并。
+<p>称组织S<dfn>包含</dfn>组织T，若组织T是组织集合Q的元素。称用户A<dfn>属于</dfn>组织S，当且仅当用户A是用户集合P的元素，或存在包含于Q的组织R，使得用户A属于组织R。
+<p>组织在行动时作为一个整体出现，称为<dfn>组织用户</dfn>（group user），与普通用户的行为无异。类似法人的概念。组织用户的行动事实上是由拥有授权的用户代理的。在下文中，组织与组织用户将不再区分。
+<p class="example">组织的例子包括：班级、学生社团、兴趣小组、同一学校内的学生。
+<p><dfn>角色</dfn>（role）是具有一定特征的用户、组织的集合。角色使用规则表决定一个用户是否属于这个角色。
+<p class="note">组织必须是静态固定的，只能采用集合操作增加或删除元素；角色则可以是动态的，使用规则表动态地决定当前哪些用户属于一个角色。角色的定义中只能包含对用户和组织的判断，不能包含角色。
+<div class="example"><p>合法的角色定义：同一学校内的学生、选择同一门课程的学生、正在同一学校的IP区域内登录的用户、积分不少于10000的用户、所有用户；所有组织、至少加入了一个组织的用户、同时关注了某两个组织的用户、至少包含10个成员的组织、所有成员都在同一所学校内的组织、“所有成员都加入了至少一个其他组织“的组织的所有用户……
+<p>不合法的角色定义：所有角色、同时属于某两个角色的用户、不属于任何角色的用户（这会引出矛盾：如果这个用户不属于任何一个其他角色，那么是否属于当前角色？）……</div>
+<p>角色是一个抽象概念，不能作为一个整体行动。
+
+<p>用户与组织间的关系分为单向和双向。<dfn>单向关系</dfn>是有顺序的二元关系，<dfn>双向关系</dfn>是无顺序的二元关系。一个双向关系不等于两个单向关系之和，正如有向图中A->B和B->A的两条边不等于无向图中A-B的一条边。
+
+<p>用户与用户间的关系包括<dfn>关注</dfn>（listen，单向关系）、<dfn>好友</dfn>（friend，双向关系）。
+<p>用户与组织间的关系包括<dfn>代理</dfn>（agent，用户代理组织），<dfn>关注</dfn>（listen，单向关系，用户可以关注组织，组织也可以关注用户），<dfn>包含</dfn>（include，组织包含用户）。
+<p>组织与组织间的关系包括<dfn>关注</dfn>（listen，单向关系）、<dfn>好友</dfn>（friend，双向关系）、<dfn>包含</dfn>（include，一个组织包含另一个组织）。
+
+<p>用户代理组织（即组织用户），本质上是一个用户以另一个组织用户的身份操作。一个用户要切换到一个组织用户，有两种途径：一是位于对方的允许代理列表内，二是输入对方的密码。
+<p>每个用户或组织可以设置多个密码，并在控制面板中设置各密码拥有的权限。需要有一个<dfn>主密码</dfn>，拥有这个用户的所有可能权限。
+<p>每个用户都有两个代表自己的默认对象，一个默认对外公开，称为<dfn>个人主页</dfn>；另一个默认只有自己可访问，称为<dfn>个人空间</dfn>。
+<p>每个组织也有两个代表自己的默认对象，一个默认对外公开，称为<dfn>组织主页</dfn>；另一个默认只有自己可访问，称为<dfn>合作平台</dfn>。
+
+<h2 id="executing-mechanism">7 运行机制</h2>
+<h3 id="privilege-mechanism">7.1 权限机制</h3>
+<p>系统中的权限遵从自上而下、上级管理下级的原则。首先判断根对象是否明确表示允许或禁止，若允许或禁止则结束判断，按此决定；若没有允许或禁止的明确规则，则将判断的权力转交给子对象，以此类推，直到目标对象。若目标对象也没有作出允许或禁止的明确判断，则默认禁止。
+
+<p>权限的判定规则有两种书写方式：一是简单权限，二是规则表（见“规则表”一节）。对象的简单权限若为空，使用规则表；否则默认使用简单权限，以提高权限判断效率。
+<p>简单权限由9个二进制位组成，3个一组，每组rwi分别表示读取权限、写入（包括修改、删除）权限、插入子对象权限。第一组表示admin组的权限，第二组为user组的权限，第三组为guest组的权限。
+<p>admin组可设为一个用户、组织或群体，user组也可设为一个用户、组织或群体。Guest组为除admin组、user组外的所有用户。若一个用户属于admin组，则拥有admin组对应权限；若不属于admin组，但属于user组，则拥有user组对应权限；若不属于admin或user组，则拥有guest组对应权限。
+<p>当简单权限用于下级权限判断时，若被允许（有权限），立即允许，相当于规则表中的ALLOW；若被禁止（无权限），相当于在规则表中没有此项，将进一步判断的权力转交给子对象。
+<p>为方便给某些特殊人群开绿灯或亮红灯，简单权限附带了白名单（whitelist）和黑名单（blacklist）功能，判断顺序是 黑名单->白名单->简单权限。
+
+<h3 id="attributes-calculation">7.2 属性计算</h3>
+<p>类（class）是带有一定共同特征的对象的代表对象。每个对象可以通过设置class属性指明所继承的类，当然对象自身也可以被其他对象继承。因此，类与对象并无本质区别。一个对象可以继承多个类，并指定继承的顺序。
+<p>每个对象默认继承了inherit对象，即parent.default。可以调整这个inherit继承的顺序。
+
+<p>由于引用一个属性而需要计算其值时，采用以下步骤：
+<div class="code">ElemType get_attr(var) {
+If (defined in current object)
+	    Return get_value(var);
+Foreach (extend objects) {
+    Set current object;
+    If (defined in current object)
+         Return the value;
+    If (current object is this.default) {
+         If (var is of form default.class.var) {
+              result = Recursively call get_attr(var)
+              If (result not null) return result;
+}
+Else {
+    Result = recursively call get_attr(this.default.var)
+    If (result not null) return result;
+}
+}
+Else {
+    Result = recursively call get_attr(var)
+    If (result not null) return result;
+}
+}
+Throw Exception ‘Attribute Undefined’
+Return NULL;
+} //end get_attr
+
+ElemType get_value(var, pure_text = FALSE) {
+Check flag bits: 
+if (violate private or private limitations) {
+ throw exception ‘Access Violation’; return null;
+}
+Check Privilege Rule List:
+if ‘DENY’ {
+ throw exception ‘Access Denied’; return null;
+}
+
+If (EXECUTE flag bit == FALSE || pure_text == FALSE)
+return var;
+Else return execute(var);
+}</div>
+<p>在属性的查找过程中，如果某一对象定义了该属性，求值的过程为：
+<ol><li>判断特征标志位，若与private、protected冲突，抛出“访问违例”（Access Violation）异常，属性值为NULL。
+<li>查询所在对象的权限规则表，若判断结果为“禁止”，抛出“访问被拒绝”（Access Denied）异常，属性值为NULL。
+<li>判断属性的EXECUTE特征标志位，按照指定方式计算属性值。
+</ol>
+<p>如果启用了属性递归求值，则系统维护一张正在被计算的属性表。一个属性计算开始时进行判断，如果处于正在计算表中，则视为发生了循环引用，抛出“循环引用”（Recursive Reference）异常，属性值为NULL；若不在此表中，则将属性加入正在计算表，开始计算，计算完毕后即从此表中移除。
+<p>在属性递归求值过程中，若只指定了对象名而未指定属性名，则使用当前属性名作为递归求值的属性名。例如，某个style属性的值为$inherit，则解析得到inherit.style的值，即父对象的默认子对象的style属性值。
+
+<p>为方便获取原始数据，系统提供了直接访问数据的接口。
+<p>get：计算一个属性时默认使用，即按照属性的特征标志位决定是否递归执行和解析逻辑。
+<p>select：不经过任何解析机制，直接获取原始数据。
+<p>系统不提供强制将属性值作为程序执行的机制。属性的EXECUTE标志位设置为不执行的，不能强制其执行。这是因为设为不执行的属性值（字符串）中的$，for，if等符号和标记没有经过转义，若强制执行则会被当作属性名或控制逻辑，可能造成无法预料的后果。
+
+<h3 id="event-mechanism">7.3 事件机制</h3>
+<p>根据“等效原理”，整个系统被看作是在本地持续运行的，因此必须通过事件驱动的机制来实现对用户请求、内部状态变化等的响应。
+<p>一个事件由三部分构成：事件名、目标对象、可选的参数。
+<p>一个事件的传播分为capture、bubble两个过程。Capture过程从根对象开始，沿着到达目标对象的路径依次传播，用相同的事件名、目标对象、可选参数触发路径上每个对象。
+<p>bubble过程与capture过程类似，但方向相反。注意，位于传播过程中间的目标对象只被触发一次。总的传播过程为 根对象…父对象目标对象父对象…根对象。
+<p>使用AddEventListener加入的对同一事件进行相应的函数或代码段称为执行体。在同一对象中，可以有多个执行体依次对同一事件进行相应。这些执行体的执行顺序通过AddEventListener中的order决定。用户指定的order可以是正整数或负整数，order 0由系统保留，某些系统操作在此处执行。按照order递增的顺序执行这些执行体。
+
+<p>系统内置的事件及其执行机制
+<table><tr><th>事件名</th>
+<th>事件描述</th>
+<th>系统调用（order）</th></tr>
+<tr><td>Get</td>
+<td>获取属性的值</td>
+<td>Select(0), parse_var(10), parse_logic(20)</td></tr>
+<tr><td>Select</td>
+<td>获取属性原始数据</td>
+<td>Select(0)</td></tr>
+<tr><td>Read</td>
+<td>只递归解析变量</td>
+<td>Select(0), parse_var(10)</td></tr>
+<tr><td>Execute</td>
+<td>只执行变量内的逻辑</td>
+<td>Select(0), parse_logic(10)</td></tr>
+<tr><td>Set</td>
+<td>设置属性的值</td>
+<td>update(0)</td></tr>
+<tr><td>Update</td>
+<td>更新属性的值</td>
+<td>Update(0)</td></tr>
+<tr><td>Undefine</td>
+<td>删除属性</td>
+<td>Update(0)</td></tr>
+<tr><td>insert</td>
+<td>插入子对象</td>
+<td>Insert(0)</td></tr>
+<tr><td>Delete</td>
+<td>删除当前对象</td>
+<td>Delete(0)</td></tr>
+</table>
+<p>注：set与update相同，若属性不存在则创建此属性并设置其值；若属性已存在则更新其值。
+<p>Undefine通过将当前已存在属性的值设为undefined来删除属性，update系统调用会识别这个特殊值并进行真正的删除操作。据此原理，用update或set事件也可达到同样效果。
+<p>Insert的操作目标是子对象，其余事件的目标是当前对象。
+
+<p>在事件传播过程中，可以使用StopPropagation立即停止事件的后续传播，但一个执行体可以通过PreventStop防止后续执行体停止传播（此后的StopPropagation无效）。可以使用SkipPropagation有选择地跳过某些后续执行体，可以将执行体所在对象、执行体函数名、执行体执行顺序（order）作为选择条件。类似地，一个执行体可以通过PreventSkip防止后续执行体使用SkipPropagation功能。
+
+<p>类似磁盘分区工具，在处理事件过程中所有操作都没有被真正执行，只是在事件处理程序看来似乎已经执行了。由此，提供了回滚（rollback）机制。可以按照所在对象、执行体函数名进行回滚操作，恢复到此执行体执行前的状态。不加任何参数表示回滚到事件开始传播前的状态。当事件处理结束（不论是正常结束还是被Stop或Skip的）时，所有变更真正被执行。
+
+<h3 id="message-mechanism">7.4 消息机制</h3>
+<p>消息（message）是由特定的对象发出，指定了接收对象，一经发出不得撤销或修改的信息。
+<p>用户或组织发出和收到的消息，事实上是通过其默认对象之一（个人空间或组织合作平台）进行的。
+<p>对象通过权限规则制定可以接收消息的用户。对于用户的默认对象，有权限的用户显然是其自身；对于组织的默认对象，有权限的用户默认为其代理人。
+
+<p>消息的属性：
+<table><tr><th>属性名</th>
+<th>含义</th></tr>
+<tr><td>source</td>
+<td>来源对象</td></tr>
+<tr><td>target</td>
+<td>目的对象</td></tr>
+<tr><td>time</td>
+<td>发送时间</td></tr>
+<tr><td>content</td>
+<td>内容</td></tr>
+<tr><td>urgent</td>
+<td>紧急程度，分为realtime（实时，2），semi-realtime（准实时，1），non-realtime（非实时，默认，0）三种。</td></tr>
+<tr><td>report</td>
+<td>消息是否需要上报</td></tr>
+</table>
+
+<p>对举报、建议类消息，对象不仅需要在规定时间内处理（回复），还要接受上级对象的监督。Upload属性若设为true，则若此消息未在48小时内处理（回复），会自动发送一份副本给上级对象。运用权限规则表，上级对象可以查看下级对象的此类消息的状态。
+
+<h2 id="transfer-protocol">8 通信协议</h2>
+<h3 id="client-server">8.1 客户机、服务器</h3>
+
+<h3 id="message-format">8.2 通信格式</h3>
+
+<h3 id="connections">8.3 连接</h3>
+
+<h3 id="method-definition">8.4 方法定义</h3>
+
+<h3 id="status-code-definition">8.5 状态码定义</h3>
+
+<h3 id="locationing">8.6 寻址</h3>
+
+<h3 id="caching">8.7 缓存</h3>
+
+<h3 id="prefetch">8.8 预取</h3>
+
+<h3 id="combine-fetch">8.9 合取</h3>
+
+<h3 id="mirroring">8.10 镜像</h3>
+
+<h3 id="header-definition">8.11 头部定义</h3>
+
+<h3 id="authentication">8.12 安全认证</h3>
+
+<h2 id="storage-engine">9 存储引擎</h2>
+
+<h2 id="system-attributes">10 系统属性</h2>
+<h3 id="user-attributes">10.1 用户属性</h3>
+<p>用户与组织用户的主要属性包括：
+<table><tr><th>属性名</th>
+<th>含义</th></tr>
+<tr><td>id</td>
+<td>用户唯一身份标识</td></tr>
+<tr><td>Login_name</td>
+<td>登录名</td></tr>
+<tr><td>password</td>
+<td>密码</td></tr>
+<tr><td>realname</td>
+<td>真实姓名（组织名）</td></tr>
+<tr><td>Nickname</td>
+<td>（用户）昵称</td></tr>
+<tr><td>Register_time</td>
+<td>注册时间</td></tr>
+<tr><td>Register_ip</td>
+<td>注册IP</td></tr>
+<tr><td>Login_time</td>
+<td>最后登录时间</td></tr>
+<tr><td>Login_ip</td>
+<td>最后登录IP</td></tr>
+<tr><td>Login_count</td>
+<td>登录次数</td></tr>
+<tr><td>Online_time</td>
+<td>在线时间</td></tr>
+<tr><td>Agent</td>
+<td>（组织）代理人</td></tr>
+<tr><td>Friend</td>
+<td>（用户，组织）好友</td></tr>
+<tr><td>Listen</td>
+<td>（用户，组织）关注的（用户，组织）</td></tr>
+<tr><td>Listener</td>
+<td>（用户，组织）的听众</td></tr>
+<tr><td>Parent</td>
+<td>（组织）包含于的上级组织</td></tr>
+<tr><td>Include</td>
+<td>（组织）包含的下级组织</td></tr>
+<tr><td>Profile</td>
+<td>（用户，组织）信息</td></tr>
+<tr><td>Settings</td>
+<td>配置设置</td></tr>
+<tr><td>Public_object</td>
+<td>个人主页（组织主页）</td></tr>
+<tr><td>Private_object</td>
+<td>个人空间（合作平台）</td></tr>
+</table>
+
+<h3 id="object-attributes">10.2 对象属性</h3>
+<p>本节列举了对象处理中必需的重要属性及其简要作用。
+<p>系统属性
+<table><tr><th>属性名称</th>
+<th>属性描述</th>
+<th>备注</th></tr>
+<tr><td>select_count</td><td>对象被访问过的次数</td></tr>
+<tr><td>modifications</td><td>对象被修改过的次数</td><td>创建视为第一次修改</td></tr>
+<td>sub_object_count</td>
+对象的子对象个数
+10000000
+All_subobject_count
+对象的下级对象个数
+10000000
+Real_credit
+真实积分，由系统积分计算公式得出（*）
+10001000
+Author
+对象的创建者
+10000000
+Create_time
+对象的创建时间
+10000000
+Modify_time
+对象最后被修改的时间
+10000000
+Access_time
+对象最后被访问的时间
+10000000
+Search_index
+搜索引擎使用的索引（*）
+10010000
+Page_rank
+页面在搜索中的权重（*）
+10000000
+</table>
+
+内置属性：内置属性从理论上说不是一种特殊属性，但此处列出这些属性是因为它们是对象中最重要、最常用的属性。系统属性与内置属性的主要区别是系统属性不可修改，内置属性可以修改。但这些内置属性对系统的正常运行有着甚至超过内置属性的重要性，因此务必注意按照后续章节所述的语法说明，谨慎修改内置属性。
+
+属性名称
+属性描述
+特征标志位
+Parent
+父对象
+00000001
+Tag
+标签
+00010001
+Class_name
+当前对象的类名
+00000001
+class
+对象extend的类
+00000001
+Child
+子对象列表
+00000000
+Child_alias
+子对象别名表
+00000001
+Privilege
+权限规则表
+01100001
+Simple_privilege
+简单权限
+01100001
+Whitelist
+白名单
+01100001
+Blacklist
+黑名单
+01100001
+Style
+显示模板
+00000111
+Javascript
+浏览器端需要下载的脚本
+00000001
+Script
+控制脚本
+00000001
+Credit
+用户积分
+00001000
+Note
+用户批注
+00001001
+Draft
+草稿
+00001001
+Inbox
+收件箱
+00000000
+
+表达下列含义的属性，推荐采用下表指定的名称，以方便对象间互相调用数据，减少不必要的误解和特殊处理。
+
+属性名称
+属性描述
+特征标志位
+Title
+标题
+00010001
+Content
+内容
+00010001
+Rate_good
+好评/顶
+00000000
+Rate_bad
+差评/踩
+00000000
+Assess
+上级对象评价
+00000001
+
+为方便使用，系统根对象（root）定义了一组属性用于描述各项系统参数，不得自行重新定义这些属性，以免发生混乱。
+
+用户
+user.attr：进行该操作的用户的属性attr的值。
+author.attr：当前对象的创建者的属性attr的值。
+user、author分别是user.id、author.id的缩写。
+usergroup、userclass分别是user.usergroup，user.userclass的缩写，可用于判断进行该操作的用户是否属于组织或群体。
+
+客户端
+agent：访问此属性的对象。用于限制其他对象获取信息。
+user-agent：用户所使用的浏览器版本。
+
+<h2 id="system-functions">11 系统函数</h2>
+
+<h2 id="rule-list">12 规则表</h2>
+<h3 id="rule-list-introduction">12.1 规则表简介</h3>
+<p>规则表（rules list）是确定在当前条件下应执行何种动作的一组规则。规则表由若干行（line）构成，每行代表一条规则（rule）。
+
+<h3 id="rule-list-syntax">12.2 规则表语法</h3>
+<p>使用规则表时，从第一条规则开始，若符合条件，则执行相应的动作；若不符合条件，判断第二条规则，以此类推。一般地，若前（k-1）条规则均不符合条件，判断第k条规则，若符合条件，执行此条规则所指定的动作；若不符合条件，继续判断第（k+1）条规则。若所有规则均不符合条件，执行默认动作（default action）。
+<p>每条规则由动作、操作、属性、条件、标记五部分构成，其间用空格隔开，每部分中不存在空格。
+<p>若当前规则表是针对单个属性的操作，可以取消“属性”部分，规则解析器（parser）将按照其余四部分解析规则。
+<dl>
+<dt>动作（action）</dt><dd>共有允许（allow）、审核（approve）、投票（vote）、禁止（deny）四种。</dd>
+<dt>操作（operation）</dt><dd>当前规则处理的操作类型，多个操作间用逗号隔开。针对当前对象和子对象，分别有读取（read）、插入（insert）、删除（delete）、修改（modify）四种操作。</dd>
+<dt>属性（attribute）</dt><dd>操作所针对的属性，多个属性间用逗号隔开。若对所有属性生效，则使用all。工作对象（working object）始终是规则表所在的对象。</dd>
+<dt>条件（condition）</dt><dd>由若干表达式构成，大于一个的表达式之间用&&（与）连接。当且仅当所有表达式的值均为真时，才符合条件。</dd>
+<dt>表达式（expression）</dt><dd>仅由左操作数、运算符、右操作数构成。左右操作数可以是某个属性的key，也可以是常数const。运算符包括相等（==）、不等于（!=）、小于（<）、小于或等于（<=）、大于（>）、大于或等于（>=）。</dd>
+<dt>标记（flag）</dt><dd>用于补充说明执行的动作。</dd>
+</dl>
+
+<h3 id="set-rule-list">12.3 集合规则表</h3>
+<p>集合规则表是确定一个元素是否属于一个集合时使用的一种特殊类型的规则表。
+<p>集合规则表仅由动作、条件两部分构成，动作仅有in、out两种，分别表示元素属于集合、元素不属于集合。
+<p>用户类使用集合规则表判断用户是否属于用户类。
+
+<h3 id="privilege-rule-list">12.4 权限规则表</h3>
+
+<h2 id="markup-language">13 标记语言</h2>
+<h3 id="markup-language-introduction">13.1 标记语言简介</h3>
+<p>格物标记语言（Gewu Markup Language）是解析显示模板时使用的XML语言，XML以HTML为基本结构，加入了三项逻辑控制功能：
+<ol><li>循环语句：&lt;for condition&gt; … &lt;/for&gt;。
+对所有满足condition的对象执行for的内容。在for内部的语句看来，当前对象是通过condition选出的对象，而不是原来的对象。原来的对象需要用绝对路径或与当前对象的相对路径来访问。
+<li>条件语句：&lt;if condition&gt; … &lt;else if condition&gt; … &lt;else&gt; … &lt;/if&gt;。注意括号的配对。
+若当前对象满足condition，则执行if的内容，当前对象不变。
+<li>直接插入对象：&lt;sub object /&gt;，用路径指定object。
+</ol>
+<p>Condition：
+<ul><li>style，即div矩形块的css样式
+<li>display，展示方式，包括标题链接式（默认）、标题+摘要式、标题+图片式、标题+摘要+图片式等。
+<li>listyle，li列表的css样式，据display默认样式不同。
+<li>title，标题名称
+<li>num，显示条数，标题链接式默认为10，其余默认为1。
+<li>item，人工选取的词条名称，多个词条用逗号隔开。item&lt;num时才根据source和order自动选取词条。
+<li>source，自动选取来源，默认为当前目录，支持category（分类）和tag（标签）的与或逻辑表达式。（如来自“格物致知社”分类且标签为“网站”，或来自“格物致知网”分类，表达为cat=格物致知网 OR cat=格物致知社 AND tag=网站）
+<li>order，排序依据，包括最新、最热、被推荐、最好评、浏览数最多、编辑次数最多、随机等。
+</ul>
+
+<h3 id="markup-language-syntax">13.2 标记语言语法</h3>
+<p class="note">This section is generated from comments in source code.
+<p>Template syntax is derived from HTML syntax by adding several tokens to HTML, 
+	providing a control mechanism of information shown in an object.
+<p>Template tokens are divided into two types: logical, instructional.
+<p>Note that extra tokens defined in CSS are not considered template tokens, 
+	for they have nothing to do with the control flow.
+
+<hr />
+
+<p>Logical template tokens definition
+<p>	if, for, ref, include
+
+<p><dfn>'if' statement</dfn>
+<p>syntax: &lt;if condition&gt;... [&lt;elseif [condition] /&gt;...] [&lt;else [condition] &gt;>...] &lt;/if&gt;
+
+<p>Note that &lt;if and its condition is required (otherwise why is there to be an 'if' statement?), 
+	&lt;elseif&gt; can be repeated zero or one or multiple times,
+	&lt;else&gt; can be repeated zero or one time.
+<p>Since &lt;elseif&gt; and &lt;else&gt; is self-closed, tokens still appear in pairs. Unclosed &lt;elseif&gt; and &lt;else&gt;
+	clause will break the HTML structure, which might have been XML-compliant.
+
+<p>&lt;condition&gt; is the success criteria presented in SQL syntax.
+<p>For ease of use, conditions with '==' comparison and attribute name not 'condition',
+	can be represented outside &lt;condition&gt; in HTML attribute syntax (attribute_name='value').
+	While parsing, outside conditions will be added to &lt;condition&gt; with 'AND' between adjacent ones.
+
+<div class="example">Possible 'if' statement 1:
+<p>Say 'I have so long been waiting for you' to and only to the expected user.<br />
+	&lt;if user='the_one'&gt;&lt;script&gt;alert('I have so long been waiting for you');&lt;/script&gt;&lt;/if&gt;
+<p>Example HTML output: (when the statement is false)<br />
+	(nothing)
+</div>
+<div class="example">Possible 'if' statement 2:
+<p>Show 'delete' link if current user has the privilege to delete current object.<br />
+	&lt;if condition="have_privilege(delete)"&gt;&lt;a href="delete"&gt;DELETE ME!&lt;/a&gt;&lt;/if&gt;
+<p>Example HTML output: (when the statement is true)<br />
+	&lt;a href="delete"&gt;DELETE ME!&lt;/a&gt;
+</div>
+<hr />
+
+<p><dfn>'for' statement</dfn>
+<p>syntax: &lt;for [source] [depth] [condition] [order] [limit] &gt;...&lt;/for&gt;
+
+<p>If a valid &lt;source&gt; is given, sub-objects will be selected from that source.
+<p>If &lt;source&gt; is not given or invalid, &lt;source&gt; will be set to current object. (NOT root!)
+
+<p>If a positive numeric &lt;depth&gt; is given, sub-objects with relative path to &lt;source&gt; not longer than
+	&lt;depth&gt; will be selected.
+<p>Specificly, if &lt;depth&gt; is 1, only child objects of &lt;source&gt; will be selected.
+<p>The default value of &lt;depth&gt; is 1.
+<p>If &lt;depth&gt; is set but not valid, &lt;depth&gt; will be set to INFINITY, which means no depth limit.
+
+<p>&lt;condition&gt; is the selection criteria of sub-objects, presented in SQL syntax.
+<p>For ease of use, conditions with '==' comparison and attribute name NOT
+	in_array('for', 'source', 'depth', 'condition', 'order', 'limit')
+	can be represented outside &lt;condition&gt; in HTML attribute syntax (attribute_name='value').
+	While parsing, outside conditions will be added to &lt;condition&gt; with 'AND' between adjacent ones.
+
+<p>&lt;order&gt; is the ranking order of selected objects presented in SQL syntax, excluding 'ORDER BY'.
+ &lt;order&gt; = [&lt;attribute&gt; [&lt;order&gt;]] repeated n(&gt;=1) times, where order can be DESC (descending) or null (ascending).
+
+<p>&lt;limit&gt; limits the number of selected objects.
+<p>If &lt;limit&gt; consists of only one positive integer, then objects ranked 0 ~ &lt;limit&gt;-1 will be selected.
+	Note that the first object is ranked 0, NOT 1.
+<p>If &lt;limit&gt; consists of two non-negative integers separated by ',', call them &lt;start&gt;,&lt;number&gt; correspondingly,
+	then objects ranked &lt;start&gt; ~ &lt;start&gt;+&lt;number&gt;-1 will be selected.
+<p>The syntax of &lt;limit&gt; is identical to SQL LIMIT.
+
+<div class="example">Possible 'for' statement 1:
+<p>Show a list of all news in current channel.<br />
+	&lt;ul&gt;&lt;for&gt;&lt;li&gt;extract_date($create_time) &lt;a href="$link"&gt;$title&lt;/a&gt;&lt;/li&gt;&lt;/for&gt;&lt;/ul&gt;
+<p>Example HTML result:<br />
+	&lt;ul&gt;&lt;li&gt;2011-07-08 &lt;a href="2617"&gt;RFC 2617&lt;/a&gt;&lt;/li&gt;&lt;li&gt;2011-07-07 &lt;a href="2616"&gt;Hypertext Transfer Protocol&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+</div>
+<hr />
+
+<p><dfn>'ref' statement</dfn>
+<p>syntax: &lt;ref source&gt;...&lt;/ref&gt;
+
+<p>Different from 'for' statement, 'ref' just show the &lt;source&gt; object.<br />
+ It can be used to switch to another given object promptly.
+
+<div class="example">Possible 'ref' statement:
+<p>Show the title of a manually referred object.<br />
+	... HTTP and FTP are two widely acknowleged application-layer network protocols.<br />
+	&lt;ul&gt;&lt;li&gt;&lt;ref source="../RFC/2616"&gt;&lt;a href="$link"&gt;$title&lt;/a&gt; addlink($tags) &lt;/ref&gt;&lt;/li&gt;<br />
+	&lt;li&gt;&lt;ref source="../RFC/959"&gt;&lt;a href="$link"&gt;$title&lt;/a&gt; addlink($tags) &lt;/ref&gt;&lt;/li&gt;&lt;/ul&gt;
+<p>Example HTML result:<br />
+	... HTTP and FTP are two widely acknowleged application-layer network protocols.<br />
+	&lt;ul&gt;&lt;li&gt;&lt;a href="../RFC/2616"&gt;Hypertext Transfer Protocol&lt;/a&gt; &lt;a href="HTTP?tag"&gt;HTTP&lt;/a&gt;&lt;a href="RFC?tag"&gt;RFC&lt;/a&gt; &lt;/ref&gt;&lt;/li&gt;<br />
+	&lt;li&gt;&lt;a href="../RFC/959"&gt;File Tranfer Protocol&lt;/a&gt; &lt;a href="FTP?tag"&gt;FTP&lt;/a&gt;&lt;a href="RFC?tag"&gt;RFC&lt;/a&gt; &lt;/ref&gt;&lt;/li&gt;&lt;/ul&gt;
+</div>
+<hr />
+
+<p><dfn>'include' statement</dfn>
+<p>syntax: &lt;include source [updatelink] /&gt;
+
+<p>This statement initiates a 'read' event to &lt;source&gt; and get the contents of &lt;source&gt;.
+<p>If &lt;updatelink&gt; is set to be true, then the relative links in included content will be updated
+	to adapt current object path.
+<p>If &lt;updatelink&gt; is not set or set to be a value other than 'true', then the included content
+	will be exactly filled here. This may lead to some dead links.
+
+<div class="example">Possible 'include' statement:
+<p>Show the user panel on the topright corner of page.<br />
+	&lt;div class="upanel"&gt;&lt;include source="/user/upanel" /&gt;&lt;/div&gt;
+<p>Example HTML result:<br />
+	&lt;div class="upanel"&gt;Welcome &lt;a href="/user/profile"&gt;boj&lt;/a&gt; &lt;a href="/user/logout"&gt;Logout&lt;/a&gt;&lt;/div&gt;
+</div>
+<hr />
+
+<p>Instructional templates token definition
+<p>	event, call, eval, set
+
+<p><dfn>'event' statement</dfn> (no return value)
+<p>syntax: &lt;event event [arguments] /&gt;
+
+<p>Trigger an event.
+<p>Use HTML-style argument list to provide arguments for the event.
+<p>Use escape ('\') character to escape double-quote ('"') character.
+<hr />
+
+<p><dfn>'call' statement</dfn>
+<p>syntax: &lt;call event [argument] /&gt;
+
+<p>Call a SYNCHRONOUS event and get the return value.
+<p>Use HTML-style argument list to provide arguments for the event.
+<p>Use escape ('\') character to escape double-quote ('"') character.
+
+<hr />
+
+<p><dfn>'eval' statement</dfn>
+<p>syntax: &lt;eval&gt;command&lt;/eval&gt;
+
+<p>Execute a command in script syntax and get the return value.
+<p>If the command consists of HTML special characters, they should be encoded first to avoid ambigious tokens.
+<p>The command parser will decode the command to recover the HTML special characters before any other action.
+
+<hr />
+
+<p><dfn>'set' statement</dfn> (no return value)
+<p>syntax: &lt;set attribute="value" /&gt;</p>
+
+<p>Set an attribute with given value. The name of attribute should be a valid variable name.
+<p>Use escape ('\') character in &lt;value&gt; to escape double-quote ('"') character.
+<p>If the attribute is currently set, its value will be updated.
+
+<hr />
+
+<h2 id="script">14 脚本</h2>
+<h3 id="script-introduction">14.1 脚本简介</h3>
+<p>配合“变量值作为程序执行”机制，脚本中的赋值语句分为数值赋值和程序赋值。
+<p>数值赋值用传统的“=”号表示，A=B，将表达式B求值后保存到A中，EXECUTE位置0。
+<p>程序赋值用“:=”表示，A:=B，将B作为一个字符串保存到A中，EXECUTE位置1。若B较长，为保持程序清晰，可以将B用双引号括起来。
+<dl>
+<dt>函数调用的缺省参数：</dt>
+<dd>函数可以形如function(a = ‘default’, b, c = 0, d = 2.5)的形式定义，若调用时相应的变量未指定，则采用缺省值。若调用时未指定，被调函数又没有缺省值，则视为null。</dd>
+
+<dt>函数调用的参数匹配：</dt>
+<dd>调用函数时，除顺序一一对应的参数匹配外，可以采用形如call(123, a => ‘0’, d => null)的形式输入参数，在已知形式参数名的情况下无需记忆其位置。没有指定形式参数名时，按照顺序对应的通常方式确定形式参数名。若一个形式参数被匹配两次以上（含），会抛出异常。</dd>
+
+<dt>函数调用的按类型匹配函数：</dt>
+<dd><p>同一函数名的函数可以有多个，它们的参数类型可以有所不同，系统将根据参数的实际类型自动选择需要的函数。属性的类型不是一成不变的，而是在运行过程中动态确定的。
+<p>按类型匹配的流程为：依次扫描每个函数名与调用函数名相同的函数，若每个实际参数都有对应的类型相同的形式参数，则调用这个函数，不再考虑其它函数；若找不到参数类型相同的函数，抛出“函数调用类型错误”异常。若根本没有相同的函数名，抛出“函数不存在”异常。</dd>
+
+<dt>数组下标作为参数：</dt>
+<dd><p>数组下标可以是一个变量，用“:=”写入包含此变量的表达式，或用“:”写入常量，则当数组当前元素未被赋值时，将调用此表达式进行计算或返回此常量，并将计算结果存入数组。据此可实现一些简单的逻辑。
+<p>如定义数组f，f[n] := f[n-1] + f[n-2]，f[1] = 1，f[2] = 1，则f[10]则为第10个Fibonacci数。</dd>
+</dl>
+
+<h3 id="script-syntax">14.2 脚本语法</h3>
+
+<h2 id="system-modules">15 系统模块</h2>
+<h3 id="system-module-principle">15.1 系统模块编写总则</h3>
+<p>系统模块不是系统内核的一部分，它们可以由脚本写成，也可以使用第三方语言编写。为了保证内核的简洁和通用，也为了使整个系统的内部边界更加清晰，降低内核中出现bug的风险，不会将很多与具体应用相关的非必需功能放进内核。系统模块扩展了内核的功能，使很多常用的功能变得简单易用。
+<p>编写系统模块，应当
+<ol><li>寻找现有的系统模块，看能否找到立即可用或经二次开发后可用的模块，避免重新发明轮子；当然，如果希望提高此模块的效率或增强其功能，可以进一步开发甚至推倒重来。
+<li>阅读设计文档，掌握系统架构、运行原理和接口声明，充分利用系统内核提供的特性。
+<li>充分注意权限管理，既不要违反其他对象的权限规则，又不要将自身的数据过多地开放给不需要的用户和应用，以免造成安全问题。
+</ol>
+<p>如果这个模块要提供给他人使用，应该编写说明文档，以阐述模块作用、工作原理，定义接口和使用方法（包括启用、关闭），说明注意事项。
+<p>如果这个模块是基础模块（如本章所述的类型），或应用十分广泛，或将应用于高负载或资源紧缺的场合，应该用编译型语言编写，采用与系统内核通信的方法，而不是使用系统内置的解释型脚本，以提高执行效率。同时，应对程序的执行进行测量，采用更好的算法、数据结构、缓存等策略优化其瓶颈，或从根本上调整其处理逻辑。
+<p>一个系统模块典型的组成部分和设计总则：
+<ol><li>安装程序：启用系统模块时，建立监听已有事件的钩子，注册所需的事件及其执行体，建立必要的数据结构。
+<li>主体程序：已加钩子的已有事件或自行注册的事件被触发后，应当执行哪些动作。应当谨慎使用全局数据（尽量只使用安装时建立的全局数据结构），减小模块的“表面积”；有一定的容错机制，出错时用户友好地反馈错误信息，内部进行尽可能详细的记录以便调试，不要破坏全局数据（或提供一定的一致性检查和修复机制）。
+<li>卸载程序：关闭系统模块时执行清理操作，原则上回到启用之前的状态，不留下垃圾。如果系统模块依赖于其他模块，则不应关闭依赖的模块，因为这些模块可能还有其他作用。如果无法判定依赖模块中哪些是本模块产生的信息，则不应进行修改。
+</ol>
+
+<h3 id="module-language-dependent-attribute">15.2 语言相关属性</h3>
+<p>根据与自然语言的关系，属性分为语言无关属性、语言相关属性：
+<p><dfn>语言无关属性</dfn>（language independent attribute）：取值与自然语言的种类无关的属性，由key（属性名）、value（属性值，仅有一个）、name（自然语言中的名称）组成。LAUGUAGE_DEPENDENT位置0。
+<p><dfn>语言相关属性</dfn>（language dependent attribute）：取值因自然语言不同而发生变化的属性，由key（属性名）、value（属性值，每种语言一个）、name（自然语言中的名称）组成。LANGUAGE_DEPENDENT位置1。
+<p>语言相关属性的value和name根据当前语言自动选择，更新时也默认改变当前语言下的取值。
+<p>若指定的语言没有设置语言相关属性，采用系统默认语言（简体中文）的值作为属性值。
+<p>在定义属性时，可以选择属性与语言关系的种类。之后若从语言相关属性更改为语言无关属性，采用系统默认语言的值作为属性值；若从语言无关属性更改为语言相关属性，将系统默认语言的属性值设置为原属性值，其余语言不予设置。
+
+<h3 id="module-user-dependent-attribute">15.3 用户相关属性</h3>
+<p>根据与当前用户的关系，属性分为用户无关属性、用户相关属性：
+<p><dfn>用户无关属性</dfn>：取值与所访问的用户无关的属性。这是默认的形态。
+<p><dfn>用户相关属性</dfn>：取值因所访问的用户不同而不同的属性，根据当前用户自动选择，更新时也默认改变当前用户下的取值。一般用于用户的自定义设置。
+<p>对象可以通过API函数获取非当前用户的用户相关属性值，一般用于投票等需要统计各用户信息的场景。
+<p>对于用户相关属性，有一个虚拟的default用户，若当前用户没有设置用户相关属性，则采用default用户的值为属性值。
+<p>在定义属性时，可以选择属性与用户关系的种类。之后若从用户相关属性更改为用户无关属性，采用default用户的值作为属性值；若从用户无关属性更改为用户相关属性，将default用户的属性值设置为原属性值，其余用户不予设置。
+
+<h3 id="module-simple-version-control">15.4 版本控制器</h3>
+<p><dfn>版本控制器</dfn>可以控制对象的历史版本，便于编辑者保存、比较文章的多个版本，也便于开发者进行开发、测试、维护。
+<p>版本控制器的基本单元是对象。工作原理是：
+<ol>
+<li>初次使用时，在对象中加入一个属性latest_version_number，标识最新版本号。
+<li>初次使用时，在对象的修改(MODIFY)事件中加入一个钩子version_update_criteria，每次修改即判断是否触发版本变更条件。
+<li>当触发版本变更条件时，复制这个对象并加后缀_version_xxx（其中xxx是最新版本号，从1开始递增编号）再将最新版本号+1。
+<li>当查看某个历史版本时，直接访问对应的历史版本。
+<li>当按修改时间条件查询时，从_version_1开始搜索，直到最新版本号为止。
+</ol>
+<p class="note">由以上原理可知，如果要使用版本控制器，若object是一个对象名，不应在同一父对象下再使用形如object_version_xxx的对象名，以免发生冲突。
+<p><dfn>版本变更条件</dfn>是一个属性集合，表示哪些属性的变化会导致产生一个新版本。默认情况下非系统属性的变化都会导致产生新版本，但如果用户不想为某些经常变动的属性频繁创建新版本，可以指定排除这些属性。当然，用户也可以只对若干指定属性的变更进行跟踪。
+<p>对象的历史版本可能与当前版本存在不兼容问题，因此可能不希望历史版本被任意访问。<dfn>权限自动修改</dfn>是在复制历史版本对象时，在原有权限规则的首部自动加入一些指定规则。如果启用了“权限自动修改”，初次使用时会在对象中加入一个属性privilege_auto_modify，其中记录了这些指定规则。
+<p>如果希望将当前版本替换为某个历史版本，并不能直接用这个历史版本覆盖当前版本，而要使用<dfn>恢复到历史版本</dfn>操作。这是因为不能覆盖最新版本号，恢复时还要把权限自动修改加入的权限规则删除（如果有的话）。当然，如果注意到了这两点，也可以手动操作。无论在何种情况下，由系统自动维护的系统属性不可能被覆盖。
+<p>关闭版本控制器时，将删除所有历史版本和在原对象中添加的属性、钩子。
+
+<h3 id="module-recycler">15.5 回收站</h3>
+<p><dfn>回收站</dfn>是针对父对象设置的。
+<p>开启回收站功能时，
+<ol><li>在父对象中新建一个空数组deleted_childs，用于保存已被删除的子对象的序号；
+<li>在父对象中加入钩子，监控删除操作。
+</ol>
+<p>当父对象的子对象被删除时：
+<ul><li>若这个对象不在回收站中：将这个对象的序号加入deleted_childs数组；再向子对象权限表首部加入DENY ALL，禁止一切访问，相当于被删除了。这样在列出父对象的所有子对象或通过路径访问子对象时，将不能找到被删除的子对象，但这个对象仍然是存在的。
+<li>当从回收站中删除对象时，首先彻底删除这个对象，然后从deleted_childs中移除它的序号。
+</ul>
+<p>当从回收站中恢复对象时，首先将这个对象权限规则首部的DENY ALL去掉，然后从deleted_childs中移除它的序号。
+<p class="note">deleted_childs类似日志的功能，其生存期总是不小于对象在回收站中的时间，这是为了在操作中途发生意外情况后根据日志进行恢复。
+<p><dfn>清空回收站</dfn>是删除回收站中的所有对象，并将父对象中的deleted_childs数组置空。
+<p>关闭回收站时，将自动清空回收站，并删除父对象中的deleted_childs数组、去除钩子。
+
+<h3 id="module-draft-box">15.6 草稿箱</h3>
+<p><dfn>草稿箱</dfn>是针对父对象设置的，当用户希望不立即插入一个对象或保存对现有对象的修改时，可以将它放入草稿箱中，修改完毕后再提交。
+<p>开启草稿箱功能时，
+<ol><li>在父对象中新建一个空数组draft_childs，数组的每个元素是一个结构体，包括草稿的对象序号、别名、操作用户、目标对象序号；
+<li>在父对象中加入钩子，监控插入、修改操作。
+</ol>
+<p>插入新对象保存草稿时：
+<ol><li>将准备插入的对象权限规则首部加入ALLOW CURRENT_USER, DENY ALL，表示只允许作者访问；
+<li>确实将这个对象插入父对象；
+<li>将上一步插入的对象的序号、别名、当前用户、目标对象序号（与对象序号相同）保存到draft_childs。
+</ol>
+
+<p>提交插入时：
+<ol><li>从草稿对象的权限规则首部去掉ALLOW CURRENT_USER, DENY ALL；
+<li>将draft_childs数组中的相应项删除。
+</ol>
+<p>修改已有对象保存草稿时：
+<ol><li>将修改后的对象权限规则首部加入ALLOW CURRENT_USER, DENY ALL，表示只允许修改者访问；
+<li>将这个对象插入父对象；
+<li>将上一步插入的对象的序号、别名、当前用户、准备修改的已有对象序号保存到draft_childs。
+</ol>
+<p>再次修改已经保存草稿的对象时，用新的修改更新原有草稿。亦即同一时刻同一用户只能为同一目标对象保存一份草稿，这是为了避免多份草稿出现冲突。
+<p>提交更改时：
+<ol><li>从草稿对象的权限规则首部去掉ALLOW CURRENT_USER, DENY ALL；
+<li>用草稿对象覆盖目标对象；
+<li>将draft_childs数组中的相应项删除。
+</ol>
+<p class="note">草稿箱根据草稿对象序号与目标对象序号是否相同来判断这是一个新插入对象还是一个对已有对象的修改。事实上，在提交更改时，如果是新插入对象，只是少了覆盖的步骤。
+<p>删除草稿时：
+<ol><li>删除草稿对象；
+<li>将draft_childs数组中的相应项删除。
+</ol>
+<p>关闭草稿箱时，将删除所有草稿，并删除父对象中的draft_childs数组、钩子。
+
+<h3 id="module-content-censoring">15.7 内容审核</h3>
+<p><dfn>内容审核</dfn>是针对父对象设置的，作用于插入、修改操作，当触发审核条件时，将通知父对象进行审核，通过后方可真正执行操作。
+<p class="note">内容审核功能基于草稿箱功能。
+<p>启用内容审核时，
+<ol><li>如果没有启用草稿箱，启用草稿箱；
+<li>在父对象中加入钩子，监控插入、修改操作。
+</ol>
+<p class="note">启用内容审核后，草稿箱的保存和修改草稿功能不受任何影响，只在提交插入、修改、草稿时进行审核。
+<p><dfn>审核条件</dfn>(censoring criteria)是一组正则表达式，当提交对象的文本符合正则表达式中的任意一个时，即触发审核规则。为了提高效率，建议不要使用过于复杂的正则表达式，简单的词语过滤一般已经足够了。
+<p>当触发审核条件时，将
+<ol><li>对这个插入或修改保存一份草稿；
+<li>生成一份触发了何种审核条件的报告，并发送到父对象，供审核时参考；
+<li>通知对象作者其操作被审核，并提供草稿的对象路径以便作者修改。
+</ol>
+<p>如果作者修改了草稿并再次提交，
+<ul><li>若再次触发审核规则，直接更新当前草稿，生成新的报告发送到父对象（其中包含原草稿失效的通知），通知作者操作被审核。
+<li>若没有触发审核规则，提交当前草稿，通知父对象无需再审核原有草稿。
+</ul>
+<p>若作者删除了这个草稿，通知父对象无需再审核原有草稿。
+<p>当审核通过时，将提交这个草稿；当审核不通过时，将草稿删除。无论是否通过，将审核结果通知作者。
+<p>关闭内容审核时，将删除父对象中的钩子，不会影响草稿箱。
+<p class="note">关闭内容审核后，父对象只能手动处理（提交或删除）待审核的草稿。
+
+<h3 id="module-version-control">15.8 版本控制系统</h3>
+<p>版本控制器只能满足对单个对象的版本控制需求，对一个目录的变更记录、团队合作编辑或开发、生成同一个应用的不同分支版本都需要更细粒度的版本控制。
+<p><dfn>版本控制系统</dfn>提供了细粒度的变更控制、团队合作中的权限管理、沙盒、签入签出、分支版本等较高级的版本控制功能。
+<p class="note">本节功能依赖于版本控制器、回收站、草稿箱、内容审核功能。
+<p class="note">版本控制系统相对复杂，会增加系统负载，并可能给普通的操作带来不必要的麻烦。不需要时建议关闭。
+<p>版本控制系统首页为开发者登录界面，所有开发者均从这里登陆。开发者分为三级：管理组（admin），信任组（trusted），用户组（user）。管理组成员有权访问所有代码和开发文档，有权对信任组和用户组代码加以修改，有权管理开发人员；信任组成员有权访问所有代码和开发文档，但无权修改其他人的代码；用户组成员仅有权访问自己的源代码、公开的源代码和开发文档。
+<p>管理组成员个人有权任免信任组成员，对信任组和用户组成员执行禁止访问、屏蔽代码等操作，生成并保存当前发布版或测试版；两名管理组成员联手，可以任免其他管理组成员，修改其他管理组成员代码，对其他管理组成员执行禁止访问、屏蔽代码等操作；三名管理组成员联手，可以将当前测试版与发布版交换（测试版变发布版），将某个历史版本统一设为测试版或发布版；三名管理组成员联手，可以将某管理组成员或信任组成员的程序代码加入信任列表（trusted list），信任列表内的程序不受权限检查限制。将程序加入信任列表相当于程序在内核模式运行，任何恶意操作或错误均危及整个系统安全。程序取消安全检查确实有助于大幅提高系统效率的，经过严格的审核后方可加入信任列表。
+<p>History文件夹存放各历史版本，其下以日期命名的文件夹存放生成保存的每个历史版本，每个版本按照实际文件路径存放。Code文件夹存放用户每次修改的文件，按照实际文件路径+修改时间存放文件，依据数据库中的权限设置决定当前登录用户是否有权限查看、修改、删除文件。在文件夹视图中，显示release版和beta版；点击文件可进入历史版本页。对于有修改权限的文件，用户可以添加新版本、删除历史版本、将某个版本设为release或beta版。添加的新版本自动成为beta版，方便调试。
+<p>所有程序文件的上传统一通过开发平台网页接口进行，并在上传时进行必要的安全检查。提供文件批量上传功能，方便本地开发。事实上，上传文件即为添加某个文件的新版本。将某个版本设为release或beta时，将code目录中的相应文件改名放入release或beta目录，直接解析访问，不再通过版本控制系统。
+<p class="note">Not completed.
+
+<h3 id="module-webpage-note">15.9 批注</h3>
+<p><dfn>批注</dfn>是用户在网页上书写的注释，类似读书笔记，只有作批注的用户本人能够看到。
+<p class="note">批注功能依赖于“用户相关属性”功能。
+<p>批注功能是针对对象设置的，实现原理是在用户访问已被加批注的页面时，添加几个absolute定位的div文本框。
+<p>一个对象开启批注功能时，
+<ol><li>在对象中创建一个“用户相关属性” user_note，是一段字符串，即加入的批注；
+<li>在对象的“读”事件中加入钩子，以在读取的HTML末尾加入批注；
+</ol>
+<p>要在对象中加入批注，需要浏览器调用批注js库，点击“批注”按钮，鼠标指针在屏幕上画出一块矩形区域作为文本框，然后在文本框内键入文字，并设置文本样式（字体、字号、颜色、粗细）和文本框的样式（边框、背景、透明、文本对齐方式）。选中文本框，可以移动文本框、点击“保存”，当前页面的所有批注通过ajax提交到服务器。
+<p class="note">目前的批注不能实现撤销操作、保存多个版本的批注。如有需要，可以结合“版本控制器”模块，并修改js库，保存操作步骤，并定期提交屏幕状态。
+<p>一个对象关闭批注功能时，删除user_note属性，并去除钩子。这意味着用户已经做的批注将全部删除。
+
+<h3 id="module-vote">15.10 投票</h3>
+<p><dfn>投票</dfn>是用户对一个或多个项目进行投票的功能。
+<p class="note">投票功能依赖于“用户相关属性”功能。
+<p>投票功能是针对对象设置的，本身不会产生对象。原理是统计选票，并记录每个用户的投票，以防重复投票。
+<p>一个对象开启投票功能时，建立选项数组vote_options、得票数组vote_votes、用户投票记录数组vote_log（用户相关属性）、限制投票选项数vote_limit、投票结果是否公开（vote_public，枚举类型，always（总是可见），aftervote（投票后可见），never（结果不可见））。
+<ul><li>限制投票选项数未设置（NULL），表示不限制；
+<li>限制投票选项数为正整数n，表示限制至多同时投n个不同选项；
+<li>限制投票选项数为其他值（包括0），表示停止投票。
+</ul>
+<p>修改选项时，直接修改vote_options。
+<p>对一个选项投票时，
+<ol><li>首先检查vote_log中是否有此用户的投票记录，
+<li>如果没有，则检查选择的选项数是否超过了限制投票选项数，
+<li>如果没有，将vote_votes中相应的option增加一票，并在vote_log中将这个用户记为已投票。
+</ol>
+<p class="note">目前版本的投票功能在每个对象中只能建立一个投票，且每个用户只能投票一次。如果需要一个对象中建立多个投票，可以先建立若干子对象，再在其中建立投票。
+<p class="example">投票功能用于“顶”“踩”等帖子评分操作：在帖子对象中建立两个投票选项“顶”“踩”，限制投票选项数为1即可。
+<p>一个对象关闭投票功能时，只需删除vote_options、vote_votes和vote_log三个数组。这意味着投票记录和选项将被全部删除。
+
+<h3 id="module-election">15.11 选举</h3>
+<p><dfn>选举</dfn>是组织管理中重要的民主形式，基本思想是由一定范围内的选民对给定的候选人进行投票，符合当选规则（如票数最高）的一人或多人当选。选举模块将这个过程形式化，方便组织推行民主机制。
+<p class="note">选举功能直接依赖于投票功能，间接依赖于“用户相关属性”功能。由于投票功能只允许同时进行一个投票，必须首先关闭同一对象中已有的投票才能开启选举功能。
+<p>一个对象开启选举功能时，
+<ol><li>开启投票功能；
+<li>在投票功能中加入若干候选人选项，并设置每人的最大票数为限制投票选项数；
+<li>在对象中建立election_finish_criteria属性，表示选举结束条件；建立election_select_method，表示当选规则。
+</ol>
+<p>选举结束条件包括：
+<ul><li>已投票人数百分比达到设定值；或
+<li>到达某个设定的投票截止日期；或
+<li>某个候选人的票数达到选民数的设定比例。
+</ul>
+<p>当选规则包括：
+<ul><li>票数最高的一个或多个候选人；或
+<li>票数达到总票数的百分比；或
+<li>票数达到总选民数的百分比。
+</ul>
+<p>每次投票时，将检查是否满足选举结束条件，一旦满足，立即终止投票，并按照当选规则计算当选人，保存在election_result（选举结果）属性中。
+<p>为保证选举不被人为操纵，选举功能在选举开始后、选举结束前不提供关闭或修改功能。选举开始前或结束后，可以关闭选举模块，此时将关闭投票模块并删除选举结束条件、当选规则、选举结果。由于投票模块是只能创建一个实例的应用，被选举模块独占，因此此处同时关闭投票模块是适当的。
+<p>为保证选举的公平性，暂不提供特定选民有多张选票，或选票加权的功能。如有需要，可以在本模块基础上二次开发或自行开发。
+
+<h3 id="module-questionaire">15.12 问卷调查</h3>
+<p><dfn>问卷调查</dfn>是比投票更高级的收集民意的方式。投票中只能对已有的选项进行单选或复选，而问卷可以填写更多的内容，且一个问卷中可以包含多个相互联系或独立的问题。
+<p class="note">问卷调查功能依赖于“用户相关属性”功能。
+<p>TODO
+
+<h3 id="module-debugger">15.13 调试器</h3>
+<p><dfn>调试器</dfn>是为了方便开发程序而设计的。如果使用了版本控制系统，将自动在非发布版本中启用调试器。在发布版本中，建议关闭调试功能，以提高效率。在beta版的调试过程中，可以在程序首部加入全局变量：$DEBUG_OFF = true; 则不再使用调试功能，与发布版相同。
+<ul><li>清空屏幕：$DEBUG->flushOutput()，清空输出缓存。
+<li>清空跟踪：$DEBUG->flushTrace()，清空所有跟踪信息重新记录。
+<li>调用跟踪：$DEBUG->trace()，将自动echo所有内核调用的文件、行号，和调用时间（以开始时为0），之后继续执行。若需达到最好的调试效果，最好结合使用清空屏幕，并在显示后退出程序，相当于断点。
+<li>变量记录：$DEBUG->record(varname)，以字符串方式传入变量名，会自动记录varname变量的值、调用文件和行号。若需记录多个变量，可多次调用此函数。不加任何参数，则只记录调用文件和行号，类似调用跟踪的功能。
+<li>记录显示：$DEBUG->showRecord(varname)，以字符串方式传入变量名，将自动echo所有记录过的varname变量值、调用文件和行号、调用时间。若需显示所有记录过的变量，不加任何参数即可。
+<li>显示所有：$DEBUG->halt()，先后执行flushOutput、trace、showRecord、exit。
+</ul>
+<p>结合使用调用跟踪和变量记录，既避免了单步执行的缓慢与复杂，又能尽快定位到问题所在。一般来说，每次调试一个模块，每次解决一个BUG是最合理的。BUG之间往往藕断丝连，最好在作出改动后重新调试，根据新的结果展开下一步调试。
+
+<h3 id="module-notice">15.14 提醒</h3>
+<p><dfn>提醒</dfn>模块是对象满足一定条件时自动将这个通知以站内消息的形式告知用户的功能。
+<p>提醒功能依赖系统内核的触发器（trigger），启用提醒功能时，向对象中插入一个触发器，监听需要的事件；当事件被触发时，触发器判断事件类型、当前状态并进行分发，最后把定制的消息采用内核调用发送给用户。
+<p>提醒模块依赖“用户相关属性”模块，将不同用户的触发条件和处理方式存放在notice_handler属性中。
+
+<h1 id="functions">Part III 功能</h1>
+
+<h2 id="user-management">16 用户管理</h2>
+<h3 id="user-overall-design">16.1 总体设计</h3>
+<p>用户机制是Web 2.0网站的核心，好的用户激励机制能够促进大家共同建设网站，积极参与到网站的各项活动中。格物致知网的用户机制需要：
+<ul><li>满足用户在不同环境下实名或匿名的需要；
+<li>方便地进行用户管理的各项基本操作；
+<li>满足用户按一定类别建立人际关系网络的需要；
+<li>鼓励为网站作出贡献的用户；
+<li>适当惩罚破坏网站氛围的用户；
+<li>让用户在网站上感到有尊严，自我价值得到实现。
+</ul>
+<p>为实现上述原则，格物网创新了一套具有浓厚理科色彩的用户体系和奖惩体系，但显得多而不乱，每项设置都有供普通用户使用的默认值，不希望过问用户体系的用户完全可以像使用普通网站那样使用格物网；高级用户则可以尽情发掘生动有趣的用户体系带给网络世界的活力。
+<p>每个用户有一个<dfn>登录名</dfn>，可以是手机号、QQ号、邮箱名等任何简单易记的字符串。登录名仅用于登录和找回密码。
+<p><dfn>用户唯一标识符</dfn>是用户的唯一身份标识。
+<ul><li>对于校内学生，用户唯一标识符由学校的英文缩写和校内的学号或老师编号构成，格式为“学校英文缩写-学号或老师编号”；
+<li>对于无法提供校园学号的用户，使用“姓名-重名索引”作为用户统一标识符，方便统一查找和管理。</ul>
+<p>用户可以设置自己的用户统一标识符对外的可见性，对于不可见的用户，使用“用户统一标识符”无法访问到该用户的空间，此时用户可以绑定其他不与用户统一标识符格式冲突的字符串作为空间地址。
+<p class="XXX">用户唯一标识符应当以何种形式存在留待讨论。一种简单的替代方案是直接采用顺序递增的UID。	
+<div class="history"><p>在对象体系中，曾经设想过对象统一顺序ID的方式，但这样将导致存在一个统一负责ID分配的位置，不仅不利于规模扩展，还容易导致单点故障，因此转而采用路径作为对象唯一标识符，每个对象独立管理其子对象的命名空间。
+<p>但在用户体系中，由于人的平等性和流动性，很难按照树形结构分配管理；另外，用户结构的变动和增加比对象不频繁得多，因此一个统一负责用户管理的中心是可行的。为了避免单点故障，提高可扩展性，采用主从复制技术，允许用户数据进行镜像，此时需要采用与对象镜像相同的权限控制机制。
+</div>
+<p>邀请注册的提成机制是格物网的重要创新之一。若用户A邀请用户B注册，或直接帮用户B注册，
+<ul><li>用户A与用户B将分别获得一定数额的一次性积分奖励；
+<li>用户B所获得积分的40%将奖励给用户A。（对用户B没有任何影响，相当于系统凭空生成了40%的奖励发放给A。）
+</ul>
+<p class="note">用户A所获提成是无条件的，即计算B的积分时包括了用户B从其他用户处获取的提成。根据上述机制，若用户A邀请用户B注册，用户B又邀请用户C注册，用户C所得积分的40%*40%=16%将奖励给用户A。因此，在一个邀请链中，一个用户所得积分给予上线的提成事实上构成了等比数列：40%, 16%, 6.4%, ...，其总和趋于66.7%，亦即系统实际付出积分与用户所获积分之比不超过5:3。
+
+<h3 id="register">16.2 注册</h3>
+<p>作为Web 2.0网站，用户注册与登录几乎成为网站各项行为的前提与基础。因此，需要在网站首页的显要位置添加用户登录框和注册链接，明确引导用户先加入这个大家庭再使用。
+<p>注册流程需要简明快速，即使对计算机不甚了解的初级用户也能不费力地完成。
+<ol><li>填写真实姓名、登录名、密码。未填写实名的，无法使用空间功能，因此强烈不建议。
+<li>选择目前身份（工作，教师，博士研究生，硕士研究生，本科生，高中，初中，其他），选择省份、城市、学校或单位，填写学号或教师编号（可选，已经工作的非教师用户，推荐填写在校期间的学号）。
+<li>学生选择班级，教师选择系别，选择好友。（可选）
+</ol>
+<p>为防止恶意注册，同一IP地址的注册次数每15分钟内不超过100次，每天不超过1000次。
+
+<h3 id="login">16.2 登录</h3>
+<p>首页的显著位置有登录框。网站登录显然是输入登录名和密码即可完成，登陆后默认进入的就是个人空间了，当然也可以选择其他模块作为登录后的默认模块。
+<p>为防止暴力破解密码，登录尝试有如下限制：
+<ul><li>在15分钟内，同一IP地址错误登录同一用户名达到3次（即第3次错误登录与第1次错误登录之时间差小于15分钟），禁止此IP登录此用户名15分钟。
+<li>在15分钟内，同一IP地址错误登录（包括用户名错误、密码错误）达到6次，禁止此IP登录任何用户15分钟。
+<li>在15分钟内，同一用户名被错误登录6次（有可能是攻击者恶意更换IP所致），禁止此用户登录15分钟，以保护此用户。
+<li>在24小时内，同一IP地址错误登录（包括用户名错误、密码错误）达到60次，禁止此IP登录24小时。
+</ul>
+<p class="XXX">关于攻击者恶意更换IP的防范，有可能被用于另一种攻击，即通过不断更换IP尝试同一用户，达到不允许特定用户登录的目的。
+<p>如果这个用户是其他用户使用“帮朋友注册”功能注册的，则第一次登录时会提示修改登录密码，并完善个人信息。
+
+<h3 id="forget-password">16.3 重置密码</h3>
+<p>如果用户忘记了登录名或登录密码，可以通过“重置密码”功能将密码重置。
+<p class="note">为保证密码信息安全，用户的密码并未直接存放在服务器上，而是用单向散列函数处理后保存的。因此，系统不可能“找回”原始密码，只能在验证身份后由用户重新设置原始密码。
+<p>重置密码有两种典型途径：密码重置邮件、人工申诉。
+<p>推荐的重置密码方法是密码重置邮件。输入登录名或个人资料中填写的电子邮件地址，系统将向个人资料中填写的电子邮箱发送一封含有重置密码链接的电子邮件，在收到信后24小时内点击此链接，填写真实姓名以进一步确认身份，即可重新设置密码。
+<p>如果填写的电子邮件地址无法正常收到信件，或者曾经填写的电子邮件地址有被他人劫持的风险，可以使用人工申诉。
+<p>人工申诉须填写申诉表单，包括：
+<ul><li>登录名
+<li>基本资料（姓名，详细地址，身份证号，当前身份）
+<li>电子邮件，用于通知申诉是否通过，如果通过将附带密码重置链接。
+<li>临时登录密码。可以用原有登录名和临时登录密码登录格物网，但通过此密码登陆后只能看到用户申诉最新进展，不能进行正常操作。
+<li>用过的密码
+<li>最常用格物网地点
+<li>在格物网曾经填写的未公开个人信息
+<li>其他说明文字
+</ul>
+<p>以上各项均非必填，但填写的项目越多，越有助于申诉成功。申诉是人工处理的，将根据资料完整性、真实度审核是否用户所有者本人。
+<p>人工申诉通过审核后，将暂时锁定账号，原有密码失效，防止可能的密码窃取者进一步破坏。只能使用临时登录密码登录此用户，并显示重置密码页面。
+<p>人工申诉的密码重置链接仅在通过审核后7天内有效，逾期需重新申请重置密码。
+
+<h3 id="nickname">16.4 昵称</h3>
+<p>为满足用户在社交网络中真实可信的需求与在公众讨论中保护隐私的需求，系统提供绑定昵称的功能。
+<p class="history">在第1版文档中，昵称（可以重复）和用户名（不能重复）每人只能有一个；在第2版文档中，取消了昵称的概念，而允许用户使用至多10个用户名，采用了较复杂的机制保证用户名的全局唯一性和取消绑定后方便重用。在第4版文档中，我们取消了用户名的概念，使用一个全局唯一的“登录名”仅用于登录，而昵称可以在不同的对象中任意设置，允许重复。这受到了尽量减少全局单点、增强局部性理念的影响。
+<p>昵称由于在各个对象中可能不同，是保存在对象所在服务器而非用户服务器上的。对象中采用“用户相关属性”保存不同用户的昵称。
+<p>每个昵称可以设置是否链接到个人主页，即在网站中点击这个昵称是否能够链接到他的个人主页。由此，可以设置一些昵称“断绝”与真实身份的联系，实现部分匿名。
+
+<h3 id="friend">16.5 好友</h3>
+<p><dfn>好友</dfn>是一种双向关系，与SNS中的好友意义相同。
+<p>一个用户希望添加另一个用户为好友，则发出一个添加好友申请，向对方发送一个消息，对方可以选择拒绝或同意。
+<p class="XXX">是否允许A是B的好友，但B不是A的好友？目前采用类似QQ的关系模式，允许单向好友，但推荐双向好友。
+<p><dfn>用户分组</dfn>：为了方便用户有条理的组织其他用户，用户可以对其他用户进行不同的分类，即将用户加入相应的用户组。一个用户可以属于不同的用户组。用户可以自己创建用户组，并设置其与其他用户组以及与标签的相互作用，比如用户可以创建用户组“男同学”和“女同学”，并且设置其他用户只能属于这两个用户组中的一个。
+<p><dfn>用户目录</dfn>：用户可以在任意用户组下创建目录及其子目录，以方便对一个用户组的用户进行进一步分类，这里的目录有点类似文件系统的目录，一个用户组中的用户只能同时属于一个目录。
+<p><dfn>标签</dfn>：用户可以为其他用户设置标签，方便管理，标签可以采用树形管理，即某个标签是其他标签的子标签。一个用户被加入子标签以后自动被隐式加入父标签，所有对父标签的权限控制自动应用于子标签。
+<p><dfn>权限控制标记</dfn>：权限控制标记实际上是一种特殊的标签，之所以说他特殊，在于它不会像其他标签一样在用户列表中显示，而是只是在设置页面显示。之所以把它同普通标签独立出来，是为了满足用户仅仅想对某些用户设置一定的权限，而又不想使用标签一面使得自己原有的分类显得混乱的需求。
+
+<p>用户组，标签以及权限控制标记的相互作用包括如下内容：
+<ul><li>不能属于（用户组）
+<li>必须属于（用户组）
+<li>必须具有（标签）
+<li>不能具有（标签）
+<li>必须具有（权限控制标记）
+<li>不能具有（权限控制标记）
+</ul>
+<p>相互作用冲突的否决，自动添加与自动放弃原则：
+<ol><li>名词解释：
+<ul><li>目标用户组：在添加到用户组操作中，要将某用户添加到的用户组
+<li>目标标签：在添加标签的操作中，要为某用户添加的标签
+<li>目标权限控制标记：在添加权限控制标记的操作中，要为某用户添加的权限控制标记
+<li>被操作用户：要添加到用户组，添加标签，或添加权限控制标记的用户
+<li>操作目标：目标用户组，目标标签以及目标权限控制标记的统称。
+</ul></li>
+<li>处理规则：
+<ul><li>若被操作用户属于目标的相互作用所设置的不能属于的用户组，或具有目标的相互作用所设置的不能具有的标签或权限控制标记，则操作被否决，并对用户作出相应提示。
+<li>若被操作用户属于的用户组，具有的标签或者权限控制符的相互作用设置要求不能属于目标用户组或具有目标标签或格式控制符，并且被操作用户不符合上一中情况，则提示用户是否自动放弃原有的相冲突的用户组，标签或格式控制标记。
+<li>若操作目标要求被操作用户属于特定用户组，或者具有特定标签或者格式控制符，并且被操作用户不符合上两种情况，则提示用户是否自动添加到相应用户组，添加相应标签以及相应权限控制标记。
+</ul></li></ol>
+<p>有如下用户组归系统管理，用户不能对其删除，修改，如果用户不使用此功能，可以将其设为隐藏：
+<ul><li>收藏夹：为了方便用户对可以将用户添加到收藏夹中，以便方便地与其进行交流，进入空间等操作，加入收藏夹不需要通过对方审核。
+<li>好友：加入好友后，就会接收到对方的新鲜事。只有加入好友，才能收到好友动态。
+</ul>
+<p>用户可以将其他用户添加为好友，用户添加其他用户为好友的时候需要对方审核，好友添加是单向的。为了防止用户加入好友的申请等待时间过长，用户加入别人为好友的时候，被加好友的人会自动成为我的好友用户组的成员，并标注上“等待验证”标签，该标签是系统标签，用户不可以手动删除。默认情况下，等待验证的好友的动态会被接受，如果用户不希望这样，可以更改设置。对方登录时将提示进行验证，并提示是否将对方加入自己的正式好友。若A已经将B加为好友，B再将A加为好友时不需A再次审核。一般来说，用户登录进行其他操作前，会先审核新加的好友，因此不会发生过多隐私问题。
+<p>同班同学自动成为好友，并发系统消息对涉及到的用户进行提示。
+<p>可以根据空间号、真实姓名、用户名三种方式查询好友，并申请加入。为保护隐私，用户可以分别设置本班级、本校、所有人能否通过真实姓名找到我。
+<p>黑名单：同一用户不可以同属于黑名单和好友，被加入黑名单的用户发的站内信，以及聊天会被自动屏蔽。
+
+<p>用户可以为其他用户填写自定义称谓，这就使得不熟悉的昵称更方便查找了，同时也推广了自定义称谓这个功能。
+<p>在发送短消息等页面，点击用户列表中的人名或组名可以将其加入收件人列表中。
+
+<h3 id="listen">16.6 关注</h3>
+<p><dfn>关注</dfn>是一个用户倾听另一用户的“广播”的单向交流方式。一个用户可以不经过另一用户审核地将此用户加关注。
+<p class="XXX">目前关注与好友在功能上存在一定冲突。解决方案是好友默认进入“等待验证”组，能收到此用户未加权限设置的动态。
+<p>“关注”功能主要用于个人用户与组织用户之间，能收到组织所发出信息的提醒。
+
+<h3 id="privilege-giving">16.7 权限授予</h3>
+<div class="history"><p>我们考虑过使用多个密码，并允许给除“主密码”外的每个密码设置不同权限。第1、2版文档中给出的解释是：
+<p>一些用户由于上网不便或其他因素，希望其他用户帮忙进行操作，但又不希望他看到或修改所有内容，因此有必要设置多个不同权限的密码，采用不同的密码加以识别。
+<p>事实上，向其他用户授予权限的操作不应该让其他用户退出自己的登录，再用一个其他密码登录进行操作。这样<ul><li>会导致密码体系的愈发混乱；<li>为了实现“辅助密码”的权限控制，必须在原有的权限机制之外加入新的权限机制，破坏了系统的概念完整性；<li>授予多密码的操作集中于用户中心，重要且常用的权限控制依赖于单点，不符合分布式系统的设计原则。</ul>
+</div>
+<p>一些用户希望将自己权限的一部分提供给他人，然而不希望他人看到或修改全部内容，因此有必要允许用户将自己的特定权限授予给其他用户。
+<p class="example">例如，学院信息发布平台的管理员希望开辟一个“学生会”栏目，由学生会的负责人管理，显然学生会负责人不应该有权限访问除“学生会”栏目外的信息，这就要求系统提供一种机制，允许管理员将这个子栏目的权限授予给另一个用户。
+<p class="example">又如，学院信息发布平台的管理员希望培训一些学生使用信息发布系统，这需要给这些学生权限以登录系统，但不希望他们对系统内的已有信息进行改动，那么管理员可以授予他们只读权限。
+<p class="example">再如，某个严肃的网站需要保留所有记录备查，这就要求网站内的信息一经发表不得修改或删除，那么这个网站的使用者应当被授予阅读、插入权限，但不应被授予修改、删除权限。
+<p>权限授予是系统内核支持的。权限授予的本质是修改对象的privilege属性。
+<p class="note">没有权限修改对象，或没有权限修改对象privilege属性的用户，亦即没有对象的完全控制权的用户，没有权限将自己（不完整的）权限授予给别人。这样做是有道理的，因为一个（比如说）只被授予只读权限的用户没有对象的完全控制权，也不应该在未经对象管理者允许的情况下，随意将自己的阅读权限授予给别人。
+
+<h3 id="invite-register">16.8 帮朋友注册</h3>
+<p>帮朋友注册是比传统的邀请码更进一步的邀请注册方式，其基本方式是已经注册的用户使用“帮用户注册”功能，在自己用户登录的状态下完成一个完整的注册新用户的流程。这样，老用户只需通过线上或线下的途径把登录名和密码告诉朋友，朋友就可以登录网站，成为网站的新用户了。
+<p>当然，朋友不可能对其个人信息完全了解，因此只需填写知道的项目，例如选择学校、班级，填写学号、邮箱，甚至选择好友、加入群组等，只要对不清楚的项目留空即可。帮朋友填写尽可能多的信息，就尽可能少地降低了朋友初来乍到时的进入门槛，众多的好友和群组将给新来者一种温馨的感觉。
+<p>帮朋友注册后，老用户将被给予一次性积分奖励，帮朋友填写的信息越多，奖励越高；新用户也将被给予一定量的一次性积分奖励。当然，老用户最大的收益还是邀请提成机制中，被邀请用户所得积分的持续提成奖励。
+<p>使用“帮朋友注册”功能注册的用户，在第一次登录时将被要求修改密码，并完善个人信息。
+
+<h3 id="credit-rule">16.9 积分规则</h3>
+
+<h3 id="punishment">16.10 处分条例</h3>
+
+
+<h2 id="group-management">17 组织管理</h2>
+<h3 id="group-overall-design">17.1 总体设计</h3>
+<p>格物网的核心创新之一是不再将用户视作孤立的用户，也不再将用户视作一个大朋友圈子里的用户，而是将用户视作各种真实存在的社会群组中的自然人。这里“群组”的概念类似QQ群，然而QQ群和其他网站的群组多是孤立的群组，群与群之间没有关系，人与群之间也只有单调的属于关系。这是与现实世界不符的。
+<p>格物网的核心创新之二是将群组视作“组织用户”，模仿“法人”的概念，使得群组与群组之间、群组与用户之间都可以存在隶属、关注等关系。详细的关系定义已经在系统说明的基本概念中给出。
+<p>组织管理系统为建立组织、维护组织关系的基本操作提供了方便的接口。
+<p>组织的基本操作包括：查看用户列表、添加用户、删除用户、查看子组织列表、添加子组织、删除子组织、代理组织、管理权限、注销组织。
+
+<h3 id="found-group">17.2 建立组织</h3>
+<p>建立一个组织，与注册一个用户的流程相似。
+<ol><li>填写组织的名称、类别、简介、是否开放（任何人均可加入、审核后加入（默认）、只允许手动加入）、管理权限（仅管理员有管理和审核的权限（默认）、所有成员都有管理和审核的权限）；
+<li>邀请好友加入组织（向好友发送邀请信息）。
+</ol>
+<p>为防止恶意建立过多的组织，每位用户每天至多只能建立5个组织。为防止垃圾信息泛滥，每个组织初次成立时可以发出不超过100个邀请，此后每天至多发出20个邀请。
+
+<h3 id="join-group">17.3 加入组织</h3>
+<p>若组织是任何人均可加入的，点击“加入组织”，并填写“新人报到”留言即可加入组织。留言将以“新人报到”分类发表在组织内部的公告板上。将向管理员发送一条消息，表示有新人加入了。
+<p>若组织是审核后才能加入的，点击“加入组织”，填写“新人报到”留言和“附加说明”，提交审核。有审核权限的成员根据留言和附加说明判定是否允许加入，将审核结果以重要消息形式通知用户。若审核通过，留言将以“新人报到”分类发表在组织内部的公告板上。
+<p>若组织是只允许手动加入的，“加入组织”按钮将变为不可用。此时只允许有权限的成员手工邀请。
+<p>组织不能直接加入用户，必须通过邀请，征得被邀请人同意方可加入。邀请以消息形式发送，是否重要由发送者决定。邀请时可以修改系统默认的消息内容。用户点击邀请链接，填写“新人报到”留言即可加入组织。留言将以“新人报到”分类发表在组织内部的公告板上。将向管理员和邀请人分别发送一条消息，表示有新人加入了。
+
+<h3 id="group-privilege">17.3 组织权限</h3>
+<p>组织内部的权限设置是重要的。开放的权限过少，可能导致独裁、操作不便；开放的权限过多，又可能导致失控、混乱。
+<p>组织数据采用对象树的存储结构，子组织、组织的成员都是对象，组织的子对象包括各子组织、成员等，当然也包括组织内的各种内容。
+<p>组织的权限控制与对象相当，分为管理员、用户、游客三级，此处对应的便是管理员、组织成员、其他所有人。查看用户列表、查看子组织列表是读（read）操作，添加用户、添加子组织是插入（insert）操作，删除用户、删除子组织是针对被删除者的写（write）操作，管理权限、注销组织是针对组织的写（write）操作。
+<p>按照对象权限规则，每个级别的权限都可以授予一个用户，或一个用户组。因此，组织的管理员如果需要多位用户，他们可以构成一个子组织，这个子组织当然只允许自身成员修改。
+<p>默认情况下，组织自身和子组织、成员对象只允许管理员、用户进行read操作，只允许管理员进行insert和delete操作。
+<p>由于用户对象不可能再有子对象，因此将其设置为叶子对象，即不能再对其进行insert操作。
+
+<h3 id="manage-group">17.4 组织内部管理</h3>
+<p>组织管理页面
+
+<h3 id="inter-group-relationship">17.5 组织对外关系</h3>
+<p>在组织的对外关系中，组织是以“组织用户”的形式出现的，而组织的行为是由属于该组织的用户代理的。
+<p>允许代理组织的用户如果不止一个，他们可以构成一个子组织。凡是在“允许代理组织”的用户列表中的用户，都可以代表这个组织进行操作。默认情况下，允许代理组织的用户（组）即为管理员（组）。如果需要，可以另建新的子组织并设置其为允许代理组织的用户组。
+<p>组织与其他组织关系页面
+
+<h2 id="user-center">18 用户中心</h2>
+<h3 id="ucenter-overall-design">18.1 格物桌面</h3>
+<p>格物网采用基于模块的统一的构架实现大部分功能，每个功能本质上都是一个模块。模块的载体是格物桌面，这类似于操作系统的桌面，用户可以把在桌面上添加各种小插件来实现一些功能，实际上web操作系统是一些人对web3.0的定义 。用户进入格物致知网就相当于进入了一个web操作系统的桌面，只是这个操作系统不是用于文件处理的，也不是用来娱乐的，他的一切核心在于：为所有数学、物理、计算机等科学的爱好着提供一个交流的平台，由于格物网秉承以用户为中心、创新每个人的设计理念，用户是网站的设计者，自然网站界面的决定权也就归用户，格物网的用户主界面犹如一个“桌面”，贯穿于整个网站，用户在网站的大部分功能都是在格物桌面中实现的。
+<p>格物桌面功能包括提供了一些系统模块，同时也对外开放API，支持用户自己开发API。格物桌面提供的系统模块有如下几个：
+<ul><li>好友列表：类似QQ的好友列表，采用类似资源管理器的树形模式，按照用户组对用户进行分类。
+<li>我的订阅
+<li>好友动态
+<li>主显模块：格物网的几大功能，采用页首主导航的模式，默认有首页，论坛，个人主页，百科，导学，组织等导航供用户切换。默认与当前所在导航不同的在新页面打开，用户可以更改设置。用户点击用户工具栏中的相应按钮，以及页底的发牢骚等均自动显示浮动窗口，在窗口内相应内容。
+<li>站内信
+<li>我的论坛
+<li>我的百科
+<li>我的导学
+<li>我的组织
+<li>今日热点
+<li>留言板
+<li>聊天大厦
+<li>小字报
+<li>漂流瓶
+</ul>
+<p>格物桌面是格物网的核心，用户对网站一切功能的访问均通过格物桌面，应当下最多的功夫予以优化。
+
+<div class="history">
+<p>这是第2版设计文档中的页面样式。
+<p>格物桌面的页头使用统一的简洁样式，从左至右包括网站LOGO（左上角）、主要功能导航（顶部）、用户工具箱（右上角）。
+<p>用户工具箱从左至右包括：用户名（点击进入个人中心）、用户组与积分（点击进入我的贡献）、我的空间（点击查看空间新提醒等）、我的论坛/百科（根据所处位置显示）。用户点击用户工具箱中的按钮或链接，自动在主显模块中创建新选项卡（如果已有，则自动切换到相应的选项卡，而不是新建选项卡）。
+<p>格物桌面的界面默认布局如表所示：
+<table>
+<tr><td colspan=2>页头</td></tr>
+<tr><td linespan=4>主显模块</td></tr>
+<tr><td>小字报</td></tr>
+<tr><td>好友动态</td></tr>
+<tr><td>我的论坛</td></tr>
+<tr><td>好友列表（浮动）</td></tr>
+<tr><td>页底</td></tr>
+</table>
+</div>
+
+<p>网站应尽量少用下载速度慢的图片，多用CSS等技术简洁明快地实现各类效果，不走网页复杂化、花哨化的老路，最大限度提升访问速度和简单便捷的用户体验，多给用户畅想与创造的空间。
+
+<p>格物网登录后的默认首页：
+<table>
+<tr><td colspan=3>页头(960px)</td></tr>
+<tr><td>导航(150px)</td><td>消息(600px)</td><td>右边栏(180px)</td></tr>
+<tr><td colspan=3>页脚(960px)</td></tr>
+</table>
+
+<h3>18.2 页头</h3>
+<table>
+<tr><td>LOGO</td><td>主导航</td><td>搜索框</td></tr>
+</table>
+
+<h3>18.3 页脚</h3>
+<p>在目前阶段，格物桌面底部左侧包括：版权信息、备案号；右侧包括：关于格物、提建议、举报、帮助、隐私。
+<p>格物桌面底部信息统一，均设置“提建议”，建议会自动提交到相关页面的管理团队。建议便于定位用户产生问题、感到不满的功能并加以改进，为用户提供了为网站发展出谋划策的便捷途径。
+<p>举报是针对页面所显示内容的，如果用户发现页面中存在不适宜的内容，随时可以点击“举报”向管理团队反馈。
+<p>建议和举报遵从逐级上报的原则，问题首先反馈到直接管理当前页面的负责人处，如果在24小时内未得到处理，将进一步反馈到此页面的上级对象的负责人处，以此类推。即使已经因超时而反馈到上级，下级管理员仍然可以处理此建议或举报。在建议和举报处理的全过程中，上级管理员可以随时监控下级管理员的行为。管理团队的答复将发送到用户。
+<p>例如：<ul>
+<li>好卡，一直登陆不上去……
+<li>论坛的搜索功能好难用……
+<li>XXX板块的图标太难看……
+</ul>
+<p class="history">在第2版设计文档中，“提建议”和“发牢骚”是两个独立的功能。此处本着真理的单点性原则，将其合二为一。增加了针对内容的“举报”。
+
+<h3>18.4 导航</h3>
+<table>
+<tr><td>个人功能</td></tr>
+<tr><td>我的组织</td></tr>
+<tr><td>我的论坛</td></tr>
+<tr><td>我的百科</td></tr>
+<tr><td>工具箱</td></tr>
+</table>
+<p>个人功能包括：
+<ul><li>我的动态：我的动态、发表动态
+<li>我的博客：我的博客、写博客
+<li>我的消息：用户间短消息记录、发送消息
+<li>我的文档：私密的文档空间
+</ul>
+
+<p>“我的”组织、论坛、百科显示的是我加入（订阅）的那些，采用类似邮件收件箱的体验，用粗体标明有新消息的导航项，点击进入后消息区切换成这个导航项的所有消息。
+<ul><li>“我的组织”是所加入社团、班级、组织及的最近更新和通知信息。组织可以通过发布公开或内部的信息来向成员发布动态、通知（见第8章）。
+<li>“我的论坛”是我加入关注的讨论区的更新和动态，及自己所发帖子的被回复、被执行管理操作的提醒，及自己加入收藏的论坛帖子。
+<li>“我的百科”是我加入关注的百科分类、百科词条的更新，及自己所参与编辑的百科词条被编辑的提醒。
+</ul>
+<p>“我的”组织、论坛、百科导航的本质是标签，即筛选符合标签条件的信息。用户可以设置进入标签的内容是否还在默认消息区域显示（默认是都显示）。如果某个标签的内容过多，严重干扰其他消息的阅读，则可以设置进入这个标签的内容不在默认消息区域显示。
+<p>所有标签都可以设置信息来源及何种类别的动态（新文章、新回复、管理操作）才“值得”推送给用户。用户当然也可以添加自定义的标签。
+
+<p>工具箱中的各类小工具在“辅助功能”一章中描述。小工具采用浮动窗口的形式显示。
+<p class="note">工具箱不同于实验室，工具箱内的应用可以是实验性的，也可以是成熟的，但都具有工具性质；实验室是各类尚未成熟的实验性应用（类似应用市场）。工具箱与实验室有交集。
+
+<h3>18.5 消息列表</h3>
+<p>消息列表中的消息分为重要与一般，重要的消息将置顶显示。由于用户的精力是有限的，新鲜事不允许设置为重要消息，组织、论坛、百科消息的发送者也应认真考虑，只有真正重要时才使用重要消息，尽量减少对用户的不必要干扰。
+<p>其他用户发来的短消息由于是其他用户亲自发来，默认是重要消息。在控制面板中可以设置。
+
+<h4>经典模式下的消息</h4>
+<table>
+<tr><td>发表新鲜事（输入框）</td></tr>
+<tr><td>快速筛选栏</td></tr>
+<tr><td>重要消息（相当于置顶的消息）</td></tr>
+<tr><td>好友与组织的新鲜事</td></tr>
+</table>
+<dl>
+<dt>消息列表</dt>
+<dd><p>经典模式的消息列表设计成单一列表，以方便用户的傻瓜化操作，将所有需要用户关注的消息集中于一处，减少四处寻找更新所耗费的时间。
+<p>经典模式的消息页面采用无限下拉体验，在鼠标滚动到页面底部后自动载入新内容，而无需点击翻页。为了方便返回页面顶部，右下角设有固定在屏幕上的返回按钮，点击即可返回页面顶部。</dd>
+
+<dt>新鲜事</dt>
+<dd><p>“好友新鲜事”是好友发表的最新动态、好友个人主页的最新文章。用户可以迅速与朋友共享自己的生活点滴。
+<p>“发表新鲜事”输入框有“高级”按钮，点击可设置目标用户名或用户组，标签，目录（好友列表中的分组），使得用户可以向指定的用户组中的每位成员发新鲜事。
+<p>发表新鲜事的输入框使用“简洁输入框”样式。
+<p class="XXX">目前为了方便用户，针对特定用户组发表新鲜事的功能被放在“高级功能”中。需要决定是否更显式地让用户选择目标用户组。</dd>
+
+<dt>快速筛选栏</dt>
+<dd><p>用户一般有多方面的信息来源，而在集中精力完成一项任务时可能希望只关注特定圈子的信息，忽略无关信息的干扰。页面左侧的导航已经列出了常见的筛选条件，但为了操作方便，将其中最常用的筛选条件集中于页面黄金位置的筛选排序按钮中。
+<p>快速筛选栏中的每个按钮按照一定规则对消息进行筛选或排序。筛选包括：显示全部（默认）、已加星标、只看好友、只看班级（包括班内好友的新鲜事和班级作为一个组织的动态）、只看组织、只看百科、只看论坛；排序包括：按发表时间降序排序（默认）、按关注度降序排序。
+<p>快速筛选栏的按钮被点击后，内容更新采用无刷新技术，方便用户有选择地查看信息。
+<p>快速筛选栏中的按钮可以在控制面板中自定义，用户可以将常用的筛选模式、排序模式放在筛选栏中。</dd>
+
+<dt>重要消息</dt>
+<dd><p>重要消息包括其他用户发来的短消息、部分系统消息、组织、论坛、百科的重要通知。
+<p>未读的重要消息位于所有其他消息之前，即“置顶”；在重要消息已读后，取消置顶，与普通消息平等参与排序。</dd>
+</dl>
+
+<h4>经典模式下的消息样式</h4>
+<p>消息由头像、作者、消息内容、发表时间、功能区、已有回复、回复框构成：
+<table>
+<tr><td>头像</td>
+<td>作者 消息内容<p>发表时间 功能区<p>已有回复<p>回复框</td></tr>
+</table>
+<ul>
+<li>作者：消息的来源，可以是用户，也可以是用户组。链接到用户或组织的主页。
+<li>消息内容取决于消息来源，系统不会作任何自动处理。
+<p class="note">消息是系统提示用户相应状态变更的便捷方式，也是用户之间相互交流的便捷方法，是用户最常使用的功能之一，人性化的消息提示能给用户带来好的体验，相反，不好的消息提示会使用户摸不着头脑。
+<li>发表时间，有两种时间格式：人性化时间(默认)、标准时间。人性化时间是“n秒前”“n分钟前”“n小时前”“n天前”，超过一周的显示实际日期。标准时间是“yyyy-mm-dd hh:mm:ss“形式的机读标准时间。用户可以在控制面板中选择时间格式。
+<li>功能区位于发表时间右侧，由几个横排链接构成，包括：“知道了”、星标、“+1”按钮、转发、发短消息、发起聊天。
+<ul><li>“知道了”仅出现在重要消息中，点击此消息将标记此消息为“已读”，进而取消置顶。
+<li>星标，用户可以点击星标将其“点亮”，也可以在已点亮的星标上再次点击将其关掉。星标的主要作用是方便用户标记重要的，或有特殊意义的信息。
+<li>“+1”按钮可将其评分（目前为+N）加1。采用无刷新方式，点击目前的+N后立即变成+(N+1)而无需刷新页面，+1命令通过ajax在后台异步传输。
+<li>转发：弹出转发浮动框。
+<li>发短消息：弹出发送短消息浮动框。
+<li>发起聊天：弹出即时聊天浮动框。
+</ul>
+<li>已有回复：显示现有的回复，若不超过2条，则全部显示；若大于等于3条，则只显示第一条回复和最后一条回复，在首末两条之间用“显示全部**条”链接分割，点击此链接载入并展开所有回复。
+<li>点击回复框，回复框自动扩大成填写和发表回复区域。
+</ul>
+<p class="history">在第2版设计文档中，每条消息前面设一个红绿图标，使用不刺眼的红色表示未读，绿色表示已读，在用户点击消息后自动变为已读，用户也可以点击图标直接切换未读和已读的状态。但是，此处的信息并非电子邮件类每条必读的信息，未读与已读的刻意区别容易使用户患上“消灭所有未读”的“强迫症”。
+
+<h4>专家模式下的消息</h4>
+<table>
+<tr><td>我的好友</td><td>我的组织</td></tr>
+<tr><td>我的论坛</td><td>我的百科</td></tr>
+</table>
+<p>每个“我的”栏目顶部第一栏为栏目导航，如“我的组织”的栏目导航为加入的若干组织名称，点击即可只查看这个组织的消息。
+<p>顶部第二栏为搜索框，可以使用普通的关键词搜索，也可以使用SQL查询语句，充分满足专家用户有选择地分类查看信息的需要。
+<p>栏目导航与搜索框的下面，默认显示10条信息。专家模式的显示十分简洁，只有星标、作者（姓名/组织）（链接）和信息标题，类似门户网站的新闻列表，头像、评论等都不显示，需要点击消息才能以浮动窗口显示详细信息。不过对于一般的通知或动态，如此简单的标题式摘要已经足够了，可以加快专家用户浏览信息的速度。
+<p>与经典模式类似，每条消息前面设一个星标，用户可以点击星标将其“点亮”，也可以在已点亮的星标上再次点击将其关掉。星标的主要作用是方便用户标记重要的，或有特殊意义的信息。
+<p>对于重要消息，点击消息视为已读，以后将取消置顶。
+<p>经典模式和专家模式的最大区别在于：专家模式的每个“我的”栏目区域大小固定，显示条目固定，采用翻页的方式查看之后内容。当然翻页采用的也是无刷新技术，只改变当前栏目区域的内容。专家模式的所有窗格均位于同一屏幕内（对于主流屏幕分辨率），不需要鼠标滚轮。
+
+
+<h3>18.6 右边栏</h3>
+<table>
+<tr><td>组织导航</td></tr>
+<tr><td>论坛导航(默认不显示)</td></tr>
+<tr><td>百科导航(默认不显示)</td></tr>
+<tr><td>小字报</td></tr>
+<tr><td>系统推荐</td></tr>
+<tr><td>今日热点</td></tr>
+<tr><td>好友列表(默认不显示)</td></tr>
+</table>
+
+<p>组织、论坛、百科导航使得用户可以设置一些常用区域的快速链接。组织导航默认包括所属班级、院系、学校和加入的社团组织；论坛导航默认是论坛的一级分类；百科导航默认是所属学校百科。
+
+<p>本着由用户选择的精神，边栏上的所有模块都可以添加、移动、改变大小、删除，犹如一个个显示在桌面上的对话框。为完善用户体验，模块采用JavaScript + Ajax技术构建，减少刷屏和数据流量。
+
+<div class="history">第1、2版文档中的系统消息格式。目前消息的内容完全由发送者决定，系统不判断消息类型，也不对消息内容作任何修改。
+<ul><li>用户组升级：您的用户组升级为<a href=用户组页面>小学一年级</a>  联系管理员（链接，给管理员发消息）
+<li>短消息：<a href=boj的个人空间>boj</a>对你说： 短消息内容
+<li>好友发表日志：<a href=boj的个人空间>boj</a>发表了日志<a href=日志链接>格物致知网</a>  与他聊天（链接）
+<li>帖子或词条被管理操作：您的帖子<a href=帖子链接>帖子名称</a>被<a href=版主的个人空间>版主用户名</a>加为精华，操作理由：原创内容  给他发消息（链接）我要上诉（如果是删帖关闭等负面操作，链接，给上一级版主或管理员发信息）
+<li>网站举行活动：活动说明 + 查看详情（链接）
+<li>好友申请：<a href =XXX的资料>XXX</a>申请添加你为好友，同意，拒绝，拒绝并加入黑名单（三个链接）
+<li>审核通过：您的<a href=帖子链接>帖子名称</a>已通过审核，审核人：<a href=版主的个人空间>版主用户名</a> 给他发消息（链接）
+<li>审核拒绝：您的<a href=帖子链接>帖子名称</a>没有通过审核，审核人：<a href=版主的个人空间>版主用户名</a> ，理由：XXXXXX   给他发消息（链接） 我要上诉 （链接）
+<li>评论： <a href=boj的个人空间>boj</a>对你的日志<a href=日志链接>日志名称</a>发表了评论：XXXXXXXX  去看看（链接）   与他聊天 （链接）
+<li>C语言online judge状态更改：您对<a href=问题页>XXX问题</a>提交的程序测评结果：<a href=结果页面>XXXXXX</a>  排名：<a href=排名页面，注意跳转到自己位置所在的页面，而不是第一页>XXXXX</a>（针对不同项目进行的排名各做一个链接）
+</ul>
+<p>点击消息出现相应详细内容，如用户组升级消息，点击进入积分界面；网站活动通告，点击进入活动页面。消息提供相关链接：比如联系管理员，联系版主（版主帖子操作的时候，谁操作的联系谁）。
+</div>
+
+<h3 id="control-panel">18.7 控制面板</h3>
+<p>由于格物网采用了“个性化网站”的设计理念，用户有着大量的个性化设置，但这也为设置的管理带来了不便。
+<p>控制面板是集中修改系统各种设置的场所，提供了修改系统常用设置的统一平台。
+<p class="note">系统设置仍然是分布式保存在各对象中的。根据对象平等原则，不存在系统设置的“控制中心”，控制面板仅仅是提供了修改设置的统一平台，其本身也是一种应用，在系统中没有任何特权地位。
+
+<dl>
+<dt>用户账户</dt>
+<dd>设置用户的密码、昵称、个人资料等信息；查看用户的活动记录</dd>
+<dt>权限</dt>
+<dd>设置各项个人资料的访问权限；查看在系统各部分的权限；将权限授予给其他用户</dd>
+<dt>消息</dt>
+<dd>设置消息的显示方式，如默认使用经典模式还是专家模式、每页显示多少条等；<p>可以设置消息的过滤条件，即将何种类型的消息不再显示而自动归类为垃圾消息。</dd>
+<dt>个性化</dt>
+<dd>选择页面风格（主题）；修改桌面各模块的显示位置（模块内部的具体设置在“应用”中）</dd>
+<dt>桌面应用</dt>
+
+<dd>列出了所有启用的桌面应用，修改各桌面应用的设置，这类似Windows的“添加和删除程序”。各桌面应用可以遵从控制面板接口，提供一些配置选项及必要的说明。<p>可以从所有应用中搜索、查找应用，类似Linux中的“软件包管理器”，但此处的应用不需要安装和卸载，只要启用和关闭即可。</dd>
+</dl>
+
+<h4>控制面板接口</h4>
+<p>桌面应用的本质是对象，采用“用户相关属性”保存所有用户的信息，这样每个用户使用时看到的就是自己的信息。
+<p>要使用控制面板实现统一的配置管理，需要建立一个属性（数组）control_panel_info，数组的每个元素索引为所控制的属性名，值为一个数组：
+<ul><li>name：名称，属性在自然语言中的名称，语言相关属性
+<li>description：描述，对属性的补充说明，语言相关属性(optional)
+<li>datatype：数据类型
+<li>range：可接受的数据范围，其格式据数据类型而定(optional)
+</ul>
+<p>这样，控制面板可以读取数组，根据数据类型和可接受的数据范围生成设置页面，并根据用户提交的设置更新原对象的相应属性。
+<p>如果开发者不希望使用控制面板自动的配置管理方式，不要建立数组control_panel_info，而注册一个事件control_panel。控制面板如果检测不到control_panel_info数组，就会触发control_panel事件，其输入输出均在浮动窗口内进行，开发者可以随意控制设置界面。如果control_panel事件也未被注册，则触发了一个空事件，浮动窗口内容为空，这是不推荐的。
+
+<h4>备份与还原</h4>
+<p>备份：用户可以对整个网站或某一模块的设置进行备份，创建还原点。
+<p>还原：用户可以将整个网站或某一模块的设置恢复到包含相应模块的任一还原点。例如对整个网站进行了备份，可以只把某个论坛的相应设置恢复到这个还原点，而保持其他模块设置不变。
+<p>恢复默认设置：用户可以将整个网站或某一模块的设置恢复到系统默认状态。
+<p>为防止误还原，在还原或恢复默认设置前将提示用户是否备份当前设置，并要求用户输入密码。
+
+<p>允许备份和还原的“独立模块”包括：
+<ul><li>一个相对独立的论坛
+<li>一个相对独立的百科
+<li>一个相对独立的导学
+<li>一个组织主页
+<li>个性化首页（即导航中的“首页”，用户入口和操作核心）
+<li>个人主页
+<li>聊天大厦
+</ul>
+
+<h3 id="chatting-building">18.8 聊天大厦</h3>
+<p>空间中设立专门的“聊天大厦”，楼层数为基本分类，如学术、科技、人文等；所开的聊天室即为房间号，按照开放顺序自动分配。只有在聊天大厦中显示的聊天室才拥有房间号。
+<p>聊天室有四种开放形式：
+<ul><li>开放，所有人可以任意加入讨论；
+<li>加入需审核，所有人都可以看到讨论内容但发言前需先经聊天室管理员审核加入此聊天室，这是默认创建的类型；
+<li>旁观需审核，欲看到并加入讨论必须经过聊天室管理员审核；
+<li>私密，对外不可见，也不在聊天大厦中显示，只通过聊天室管理员手工邀请。
+</ul>
+<p>聊天大厦模块首页犹如一座夜间灯火通明的大厦，每个方块象征一个聊天室（房间），凡是有人正在其中参与讨论的显示为点亮。方块内注明聊天室名称、人数和简介。
+<p>创建聊天室，必须填写聊天室名称，选择聊天室所属分类和开放形式，选择聊天室是否在聊天大厦中显示，可以填写聊天室简介作为聊天第一帖和聊天室名称的补充说明。
+<p>聊天室的创建者自动成为聊天室的管理员。聊天室的管理员可以设置其他人为管理员，同样两名聊天室管理员也可以联名免除一名聊天室管理员。若被免除的聊天室管理员为聊天室的创建者，操作需要管理员审核。
+<p>聊天室采用Ajax技术构建，力求简洁、方便，在不刷屏的前提下达到最好的聊天体验。
+<p>聊天室的聊天内容可由聊天室管理员推送至论坛，当然在推送时可以选择聊天发言的一部或全部予以发表，选择时可使用发表人、长度、关键字等过滤规则，左侧是全部发言，右侧是选中发言，鼠标拖放筛选希望推送至论坛的聊天记录。
+<p>一个人新进入聊天室时，默认显示最近10条聊天记录，当然聊天室管理员可以修改这个默认选项，进入聊天室的新人也可以显示更多的聊天记录。
+<p>聊天室管理员有权在聊天进行的任意时刻屏蔽之前的部分或全部发言，这个功能适用于讨论到某些私密问题而不希望以后新来的人看到的情况。
+<p>聊天室是一个可扩展性很强的应用，例如每个公告通知、好友新鲜事，都附带一个开放、在聊天大厦中不显示的聊天室，创建人是公告通知或新鲜事的发表者。
+
+<p>尽管聊天大厦的设计目的是公用聊天的场所，但若要实现点对点的二人聊天，也可以使用聊天大厦得“私密”功能，只邀请对方加入就行了。为方便常用的二人聊天，点击好友列表中的一个人，默认动作就是与他聊天，在其他模块的用户名上停留，也会出现进入空间、查看个人资料、与TA聊天等选项。
+
+<h3 id="user-announcements">18.9 小字报</h3>
+<p>网络的传播快速性能够让一件奇闻轶事在一夜间迅速走红，这种放大效应是传统媒体所不具备的。格物致知网进一步利用网络的放大效应，专门开辟了“小字报”模块，默认在网站所有页面的右边栏显示，所有用户都可以将最值得分享的内容发上“小字报”与全站浏览者共享。
+<p>默认情况下，小字报模块显示最新10条小字报，小字报的字数限制在25字以下，若需更多解释，可以发表详细内容，浏览者点击小字报链接可进入查看。点击小字报，可进入相应的评论区对这条小字报发表评论。
+<p>小字报采用循环滚动方式显示，默认每10秒滚动一条。为防止滥发小字报，限制发表小字报的时间间隔不能短于1分钟，同时处于循环滚动列表的小字报不能超过10条。
+<p>发表小字报时，可以选择循环滚动的三种方式：只显示一次，累计播出若干次（不超过100次），自发表之时起累计播出若干小时（不超过24小时）。达到次数或时间限制后，小字报退出循环滚动列表。
+<p>发表小字报可以选择投放范围，目前包括整个网站、全校两个选项，默认为全校。
+<p>今后访问量较大后，可以对发表小字报进行权限和积分上的必要限制。
+<p>在技术实现上，小字报采用循环链表，指针指向当前位置，每10秒下移一格。添加新小字报时，插入到当前位置与下一小字报之间。
+<p>为防止访问冲突，采用了数据库互斥锁和忙等待的策略，在添加和删除小字报时进入Critical Section，防止链表指针冲突。
+<p>每次调用小字报时，获取Last_Display，若差值大于10秒，则当前位置指针移动至下一个小字报，并更新Last_Display。若下一小字报已经过期，则删除过期的小字报。位置指针的循环滚动与添加删除小字报之间不会发生严重冲突。
+<p>由于小字报是全站相对稳定（每10秒更新一次）的内容，访问量巨大，采用缓存技术，当不需要更新时直接读取缓存。今后将采用服务器端Daemon的方式，由持续运行的守护进程负责小字报列表的维护，降低数据库压力。
+<p>小字报内容由负责版主监管，未来人数较多后，发表小字报可以加入权限限制，须经审核。
+
+<h3 id="today-headline">18.10 今日热点</h3>
+<p>一些共同关注的话题因讨论人数众多，容易引起大家积极参与的兴趣。因此格物致知网管理团队每天选择一个热点事件设为今日热点，以开放聊天室的形式供大家自由交流。
+<p>今日热点默认在全站首页、个人空间、聊天大厦显示，当然其他应用也可以添加这个模块。
+<p>今日热点一般选择有一定争论性的话题，选材非常广泛，可以设置正反双方或开放投票以激起大家兴趣。
+
+<h3 id="floating-bottle">18.11 漂流瓶</h3>
+<p>为满足同学们随机交友的愿望，格物致知网开通了“漂流瓶”功能，可以给指定范围内的一个随机用户发去一条消息。
+<p>可以指定的范围包括：学校（默认是同校），班级，性别，家乡，兴趣爱好。这样，只要对方在个人中心填写了相关个人信息且对外开放且开启了漂流瓶功能，就有机会接收到漂流瓶，进而找到与自己志同道合的人。
+
+<h3 id="confession">18.12 表白</h3>
+<p>有时用户Alice希望向另一个用户Bob说某些话，但又存在某些顾忌，此时可以使用“表白”功能，即将要说的话存入系统，系统会严格保密；直到某时刻Bob也向Alice表白，此时系统将立即提示双方，并发送对方的表白语言，一次表白成功。
+
+<h3 id="auto-forwarding">18.13 自动转发</h3>
+<p>自动转发功能可以是用户自行设置，也可以是信息中携带的标记。
+<p>用户自行设置自动转发，可以将符合一定规则（如特定信息来源）的信息以新鲜事的形式自动转发给所有好友，或者特定类别的好友。
+<p>组织可以设置其消息为自动转发，则收到消息的用户将自动以新鲜事的形式转发之。
+<p>为避免“消息爆炸”，自动转发的消息在转发一次后不允许再次自动转发，也会被取消“重要消息”属性（如果被转发前是的话）。此外，如果一条消息被已经被直接收到或自动转发到，则其他人转发的同一条消息将被自动屏蔽，以避免大量的重复转发消息。
+
+<h3 id="event-noticing">18.14 事件提醒</h3>
+<p>事件提醒功能依赖于系统的事件提醒模块，指定的事件一旦发生，就会发消息提醒用户。
+<p>事件提醒中可以设置是否为重要消息，也可以设置是否自动转发。
+
+<h3 id="content-recommendation">18.15 内容推荐</h3>
+<p>内容推荐依赖后台的数据挖掘系统，将按照一定规则自动向用户推荐可能喜欢的内容。与关注（订阅）系统不同的是，关注系统的规则是显式地在被关注的对象中声明的，当满足条件时，由被关注的对象将信息发送到用户；而内容推荐系统是在后台按一定周期扫描信息索引，找到相似度大于一定阈值的内容就会推荐过来，其规则是隐式的。
+
+<h3 id="schedule">18.16 日程安排</h3>
+<p>日程安排本质上是日历功能，可以在日历项中填写一些事件，类似Google Calendar。可以设置一些事件为到时自动提醒的，例如会议事件到来的前一小时发消息提醒，期末考试前一天发消息提醒。
+
+<h2 id="publishing-platform">19 发布平台</h2>
+<h3 id="blog-cms-wiki">19.1 博客，CMS，百科的结合</h3>
+
+<h3 id="leveled-management-system">19.2 分级管理系统</h3>
+
+<h3 id="tag-tree">19.3 标签树</h3>
+
+<h3 id="article-content-type">19.4 文章内容类型</h3>
+
+<h3 id="content-and-comment">19.5 内容与评论</h3>
+
+<h3 id="sidebar">19.6 边栏</h3>
+
+<h3 id="directory">19.7 分类目录</h3>
+
+<h3 id="protect-and-approve">19.8 保护与审核</h3>
+
+<h3 id="edit-conflict">19.9 编辑冲突</h3>
+
+<h3 id="history-versions">19.10 历史版本</h3>
+
+<h3 id="page-redirection">19.11 页面重定向</h3>
+
+<h3 id="subscribe">19.12 订阅</h3>
+
+<h3 id="user-panel">19.13 用户平台</h3>
+
+<h3 id="backend-management">19.14 后台管理</h3>
+
+<h3 id="online-activities">19.15 在线活动</h3>
+
+
+<h2 id="group-platform">20 组织合作平台</h2>
+<h3 id="group-platform-overall-design">20.1 总体设计</h3>
+
+<h3 id="leveled-management">20.2 分级管理</h3>
+
+<h3 id="task-status">20.3 任务状态</h3>
+
+<h3 id="whiteboard">20.4 白板</h3>
+
+<h3 id="discuss-group">20.5 讨论组</h3>
+
+<h3 id="table-generation">20.6 表格生成</h3>
+
+<h3 id="document-logging">20.7 档案存储</h3>
+
+<h3 id="group-event-noticing">20.8 事件提醒</h3>
+
+<h2 id="public-forum">21 公共论坛</h2>
+<h3 id="forum-overall-design">21.1 与合作平台的区别</h3>
+
+<h3 id="moderators">21.2 版主</h3>
+
+<h3 id="medal">21.3 勋章</h3>
+
+<h3 id="property">21.4 道具</h3>
+
+<h2 id="assistance-functions">22 辅助功能</h2>
+<h3 id="assistance-overall-design">22.1 总体设计</h3>
+
+<h3 id="simple-textarea">22.2 简洁输入框</h3>
+<dl>
+<dt>点名功能</dt>
+<dd>@好友姓名 在发布后会自动被识别为点名链接，链接指向此用户的个人主页。被点名的好友也会收到一条被点名的提醒信息：“好友姓名 提到了你：原信息内容”</dd>
+</dl>
+
+<h3 id="advanced-textarea">22.3 高级输入框</h3>
+
+<h3 id="wysiwyg-webpage">22.4 可视化网页编辑</h3>
+
+<h3 id="document-preview">22.5 文档在线预览</h3>
+
+<h3 id="math-online-edit">22.6 公式在线编辑</h3>
+
+<h3 id="math-online-view">22.7 公式在线显示</h3>
+
+<h3 id="online-draw">22.8 在线简单画图</h3>
+
+<h3 id="online-math-draw">22.9 在线数学作图</h3>
+
+<h3 id="online-physics-draw">22.10 在线物理作图</h3>
+
+<h3 id="online-dictionary">22.11 在线小词典</h3>
+
+<h3 id="cheatsheet">22.12 速查手册</h3>
+
+<h3 id="math-calculator">22.13 数学计算器</h3>
+
+<h2 id="learning-system">23 导学系统</h2>
+<h3 id="learn-overall-design">23.1 总体设计</h3>
+
+<h3 id="learn-problem-set">23.2 题库</h3>
+
+<h3 id="learn-problems">23.3 题目</h3>
+
+<h3 id="learn-evaluating">23.4 评测</h3>
+
+<h3 id="smart-evaluating">23.5 智能评分</h3>
+
+<h3 id="learn-level-mode">23.6 关卡模式</h3>
+
+<h3 id="learn-test">23.7 模拟考试</h3>
+
+<h3 id="learn-directions">23.8 研发方向</h3>
+
+<h2 id="backend-analysis-system">24 后台分析系统</h2>
+
+
+<h2 id="search-engine">25 搜索系统</h2>
+<h3 id="search-overall-design">25.1 总体设计</h3>
+<p>在全站页面顶端，统一设置搜索框并设两个按钮“搜索××”“搜索全站”，其中××指当前所处区域，如论坛、百科等。
+<p>结果页面显示方面，模仿百度就可以了。查询语法采用国际通行语法，可以采用AND、OR、NOT等简单逻辑。 
+<p>面对海量的数据，每次都搜索一遍全部数据库显然是不现实的，必须建立快速索引。
+<p>站内搜索引擎由分词器、索引器、查询器构成：
+<ul><li>分词器，将连续的中文自动分解成具有语言意义的词。
+<li>索引器，将网站内发生改变的页面按照一定算法计算其对每个关键词的权值，并记录到索引中以便快速搜索。
+<li>查询器，根据用户的查询找到索引中最具相关性的条目显示出来。</ul>
+<p>每个查询分为四个步骤：
+<ul><li>分词，将查询句子分为若干有语义的关键词；
+<li>查找索引，取出每个关键词排名靠前的索引内容
+<li>合并索引，将不同关键词的索引内容进行归并排序
+<li>显示，将搜索到的条目按照一定格式（如高亮关键字）生成HTML</ul>
+
+<h3 id="word-segmentation">25.2 中文分词</h3>
+<p>中文分词的主要困难在于分词歧义。在第1版设计文档中，采用了准确率和速度都可以接受的最大逆向匹配法，辅以未登录词自动收入词典、自动识别出人名。
+<p>但是，中文存在大量的人名、地名、组织名、缩略语，对于以本地搜索为主的引擎，这些不在词典中的词难以被正确分词，大大降低了分词算法的准确率。
+<p>因此，第4版设计文档采用了最简单的bigram，事实上就是不分词，尽管分得的词数较多，但多数无意义词重合的概率很低，对排名不构成很大影响。
+<!-- reference: ictclas.org -->
+
+<h3 id="ranking-algorithm">25.3 排名算法</h3>
+<p>排名算法是搜索引擎的核心技术。
+<p>页面相对于某个关键词的权值 =（页面权值 × 新鲜度 + 用户得分）×关键词权值
+关键词权值
+页面权值
+用户得分
+
+<p><dfn>关键词权值</dfn>：太大众化的关键词意义不大，因此权值要低一些；越是专业化的关键词越受到重视。在多个关键词的联合搜索中有效。
+<p><dfn>PageRank</dfn>：暂时用常数的方法指定，如百科词条的PageRank大于论坛帖子的PageRank。
+<p><dfn>页面权值中的常数c</dfn>：过短的内容可能关键词频率很高，但一般价值不会很大，这里进行了平滑处理。
+<p><dfn>新鲜度</dfn>：由上次更新距当前时间而定，以鼓励新内容。今天有更新的为1，1天历史的为0.95，2天历史的为0.9，……，1年以上的为0.5，采用近似log的函数，控制影响因子不能太大。
+<p><dfn>用户得分</dfn>：反映了用户在搜索结果中点击的偏好，是一个小的修正项。对新加入的内容昨天用户得分可设为平均值（而不是0）以平衡新内容未被点击过的弱势。
+<p><dfn>页面区域权值</dfn>：针对不同的区域设置不同的重要度，如标题、标签、分类中关键字的权值大于正文的权值，正文中开头的权值大于中间部分的权值。标签>标题>摘要>正文>评论。
+<p><dfn>字体权值</dfn>：正文中相对较大字体的权值大于普通字体的权值。加粗、一二级标题、特殊HTML标记等也按照特殊权值计算。
+<p><dfn>区域加权长度</dfn>：区域每个字与字体权值之积的和。因为字体是相对而言的，一个通篇都是大字体的文章并不比通篇小字体的文章重要。
+采用不同区域加权的方式是为了避免一个区域影响权值过大，如“标题党”。
+
+<h3 id="indexing-algorithm">25.4 索引算法</h3>
+<p>针对每个关键词建立一个索引表，包括页面地址、最后更新时间、页面权值、用户得分、总权值，用MySQL对总权值建立索引，以便高效排序。
+<p>发表或更新内容时，对发生改变区域的所有关键词进行重新评分，新评分 = 旧评分 – 原有内容的评分 + 现有内容的评分。之所以不直接计算整个页面的评分是为了提高效率，例如添加一条评论就没有必要把整个文章重新评分。
+<p>同时更新最后更新时间，以新鲜度为1重新计算总权值。
+<p>每日凌晨2:00，根据24小时内搜索引擎点击情况，计算所有页面和关键字的用户得分；根据最后更新时间判断新鲜度，计算新的页面总权值。
+<p>查询时，采用分词算法将查询语句分成若干关键词，分别取出索引表中的前10条，再按各关键词之和归并排序，取其中前10条作为最终结果。当然，如果要查询第10~20条，则取出各索引表中的前20条归并排序，取其中11~20条作为最终结果，以此类推。
+<p>由于多数用户查询只是针对1或2个关键词，因此句子各处相关性问题并不突出。语义匹配问题有待研究新算法。
+
+<h2 id="recommending-system">26 推荐系统</h2>
+
+<h2 id="virtual-currency">27 虚拟货币</h2>
+
+<h1 id="promotion">Part IV 运营</h1>
+
+
+<h2 id="appendix">附录</h2>
+<h3 id="appendix-refence">A 参考文献</h3>
+<h3 id="appendix-background">B 背景</h3>
+<p>建立格物网的初始念头可以追溯到2010年12月。那时，刚建立不足两个月的格物致知论坛（gewu.ustc.edu.cn）已经不能满足同学们日益增长的学术讨论需求。数学公式在线编辑、文档在线查看、更方便的协同工作、更精细的权限控制等对学术讨论（其他应用亦然）很有价值的功能只能在数十万行的Discuz!X源代码中苦苦寻觅、修改而来。由于代码并没有提供一个完整的抽象，$_G全局数组遍布，权限控制不够底层，添加功能可谓步履维艰。于是，渐渐萌生了自行编写代码的想法，意欲将论坛的各种无序和混乱统一到一个严格而完善的抽象。
+<p>正是在这个阶段，USTC LUG（Linux User Group，校Linux用户协会）邮件列表中出现了希望模仿外校，建立校园wiki的提议，但很快被几位大佬以“学校不允许自建论坛”的理由搁置了。当时初入协会的我自然不敢多言，但认为校园百科确实是一个不错的想法。想当年报考科大时，费了多少时间在网络上寻找各类校园信息——它们太零散了。官方网站只是一些很正式的公告通知，远远不能满足局外人深入理解科大的学习生活的需求。校园百科的需求是客观存在的；而从同学们的积极性来看，瀚海星云BBS总是一千多人同时在线，版务团队都不辞劳苦，大家很愿意交流校内的学习生活情况。但是，各大高校的BBS是从telnet时代继承来的，界面上、功能上都远远落后于时代。尽管可能存在各种行政命令的障碍，但信息交流的需求是近似“刚性”的。
+<p>带着这种建立校园百科的期许，首先调研了鼎鼎大名的MediaWiki开源程序，经过自定义后确实编辑功能强大，但权限管理方面较为薄弱，而且内置的语法很难学习，不利于普通用户加入编辑。尽管可以在其内核基础上自行开发一套完全自定义的系统，但这样做的工作量并不比完全自主开发一套wiki程序少多少。与其总是使用别人的产品拼拼凑凑，不如自己开发一个集成论坛、百科等功能的统一系统，以实现最大程度的代码复用，保证系统作为整体的概念完整性，同时也拥有了自主知识产权，不再受制于人。
+<p>期末考试<b>期间</b>，我们详细讨论了校园百科的建立计划，形成了
+<p class="note">Not Completed.
+
+<h3 id="appendix-revisions">C 各版本改动记录</h3>
+<dl><dt>Revision 8: To Be Determined</dt>
+<dd><ul><li>发布完整的说明文档、源代码；<li>运营：开放注册阶段。</ul></dd>
+<dt>Revision 7: To Be Determined</dt>
+<dd><ul><li>完全实现存储引擎、脚本；<li>辅助功能、导学系统、后台分析系统、优化的搜索系统和推荐系统；<li>运营：向多校推广阶段。</ul></dd>
+<dt>Revision 6: To Be Determined</dt>
+<dd><ul><li>通信协议、基本存储引擎、规则表、基本实现脚本；<li>基本辅助功能、基本搜索系统、基本推荐系统、虚拟货币；<li>运营：校内发展阶段。</ul></dd>
+<dt>Revision 5: 2011-08-05 ~ WE ARE HERE</dt>
+<dd><ul><li>用户组与对象的统一；<li>发布平台、组织合作平台、公共论坛；<li>全面修订设计文档中的细节问题；<li>运营提上日程。</ul></dd>
+<dt>Revision 4: 2011-06-18 ~ 2011-07-26</dt>
+<dd><ul><li>更新的理念，代码规范、用户界面规范；<li>完整的系统架构，标记语言细节、系统模块；<li>重新划分并统一的功能模块，用户管理、组织管理、用户中心；<li>设计文档框架。</ul></dd>
+<dt>Revision 3: 2011-04-30 ~ 2011-05-08</dt>
+<dd>这是一篇技术文档：<ul><li>完整的对象抽象、总体技术架构；<li>规则表、显示模板、脚本语言；<li>前后端核心模块；<li>Web OS核心架构。</ul></dd>
+<dt>Revision 2: 2011-01-25 ~ 2011-02-13</dt>
+<dd><ul><li>增强的用户系统；<li>功能模块的部分合并、导学功能提出；<li>显示模板和规则表萌芽。</ul></dd>
+<dt>Revision 1: 2011-01-10 ~ 2011-01-23</dt>
+<dd><ul><li>核心理念；<li>主要功能（个人中心、博客、组织主页、论坛、百科、搜索）；<li>对象抽象萌芽。</ul></dd>
+</dl>
+
+<h3 id="appendix-checklist">D 需求检查列表</h3>
+<p>格物致知网的设计目标是面向大中学生和科教工作者的一站式网络服务平台。
+<p>用户群的需求包括：
+<ul><li>很多学生组织希望建立网络上的主页，拥有一套组织内外信息发布的便捷平台，但缺乏技术实力；
+<li>大中学校的信息发布平台多为官方主办，信息的组织性、完整性、群众参与性都远远没有满足校内外人士获取详细、真实校园信息的需要；
+<li>大中学生、科教工作者希望有一套功能完善的网络导学系统，但如今这样的导学系统价格昂贵，且属于单向灌输，缺乏互动与交流；
+<li>希望在网络上方便地输入和传输数学、物理、化学等自然科学的公式、图像等；
+<li>希望在网络上建立属于自己的结构化主页，但不拘泥于博客的简单形式；
+<li>希望以更加真实和可信的形象出现在社交网络中，但希望以更加匿名的方式参与公众话题讨论；
+<li>高级用户希望切身参与到网站的开发中去，而不仅仅是被动的使用者；
+<li>组织与个人希望从网络中不仅获取精神上的自我实现，还能获得适当的物质利益。
+</ul>
+<p>为解决网民日益增长的网络交流需要与现有网站结构与运营方式僵化之间的矛盾，格物致知网大胆采取开放开发的战略：
+<ul><li>以用户为主线串联网站各大功能；
+<li>普通用户能够方便地定制个性化主页与功能；
+<li>组织可以方便地创建和个性化自己的网站；
+<li>允许高级用户参与开发网站新功能。
+</ul>
+<p>为方便这个程序项目的开发，格物致知网底层需要一套完善的公共管理机制：
+<ul><li>为各功能模块的数据结构提供一种统一而又可扩展的定义和控制机制；
+<li>提供统一的安全访问机制；
+<li>在无需修改已有系统代码的情况下，加入新的功能模块；
+<li>提供一组标准的API来对对象执行各种操作；
+<li>提供一组方便的系统函数实现常用的逻辑功能；
+<li>提供一种模板以分离逻辑和显示；
+<li>方便地使用国际化语言包；
+<li>强大、方便的程序调试系统；
+<li>方便的版本控制系统；
+<li>一份详尽、易读的开发文档和使用说明文档。
+</ul>
+<p class="note">本节是2011年1月文档第1版提出的基本需求，供后续设计参考与反思。</p>
+
+<h3 id="appendix-contact">D 联系我们</h3>
+
+<h3 id="appendix-copyright">E 版权声明</h3>
+
+<h3 id="appendix-index">F 索引</h3>
+
+</body>
+</html>

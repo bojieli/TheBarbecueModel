@@ -1,0 +1,223 @@
+<h2 id="contents">目录</h2>
+<ol class="nav">
+ <li><a href="#introduction">1 引言</a>
+  <ol>
+   <li><a href="#structure-of-specification">1.1 本说明结构</a></li>
+   <li><a href="#how-to-read">1.2 如何阅读本说明</a></li>
+   <li><a href="#convensions">1.3 约定</a></li>
+  </ol></li>
+ <li><a href="#priciples">Part I 理念</a></li>
+ <li><a href="#design-priciples">2 设计理念</a>
+  <ol>
+   <li><a href="#web-development-history">2.1 纵观Web发展</a></li>
+   <li><a href="#current-web-product-difficulties">2.2 现有Web产品的本质困难</a></li>
+   <li><a href="#free-from-restrictions">2.3 从必然王国到自由王国</a></li>
+   <li><a href="#barbecue-model">2.4 烧烤模式</a></li>
+   <li><a href="#smart-network">2.5 智能网络畅想</a></li>
+   <li><a href="#creative-everyone">2.6 创新每个人</a></li>
+   <li><a href="#profit-assignment">2.7 利益分配机制</a></li>
+  </ol></li>
+ <li><a href="#software-engineering">3 软件工程</a>
+  <ol>
+   <li><a href="#concept-integrity">3.1 概念完整性</a></li>
+   <li><a href="#surgery-team">3.2 外科手术团队</a></li>
+   <li><a href="#think-twice-cut-once">3.3 三思而后行</a></li>
+   <li><a href="#iterative-development">3.4 迭代式开发</a></li>
+   <li><a href="#software-testing">3.5 测试与审查</a></li>
+   <li><a href="#maintainance-and-feedback">3.6 维护与反馈</a></li>
+  </ol></li>
+ <li><a href="#coding-recommendation">4 代码规范</a>
+  <ol>
+   <li><a href="#KISS">4.1 KISS原则</a></li>
+   <li><a href="#modulization">4.2 模块化</a></li>
+   <li><a href="#text-stream-interface">4.3 面向文本流的接口</a></li>
+   <li><a href="#information-hidding">4.4 信息隐藏</a></li>
+   <li><a href="#self-explaining-code">4.5 自解释代码</a></li>
+   <li><a href="#defensive-programming">4.6 防御式编程</a></li>
+  </ol></li>
+ <li><a href="#user-interface">5 用户界面</a>
+  <ol>
+   <li><a href="#usability-vs-functionality">5.1 易用性与功能性</a></li>
+   <li><a href="#perceivable">5.2 可获取性</a></li>
+   <li><a href="#operable">5.3 可操作性</a></li>
+   <li><a href="#understandable">5.4 可理解性</a></li>
+   <li><a href="#robust">5.5 健壮性</a></li>
+   <li><a href="#CRAP">5.6 CRAP原则</a>
+    <ol>
+	 <li><a href="#proximity">5.6.1 亲密性</a></li>
+	 <li><a href="#alignment">5.6.2 对齐</a></li>
+	 <li><a href="#repeatation">5.6.3 重复</a></li>
+	 <li><a href="#contrast">5.6.4 对比</a></li>
+	</ol></li>
+  </ol></li>
+ <li><a href="#specification">Part II 系统说明</a></li>
+ <li><a href="#basic-concepts">6 基本概念</a>
+  <ol>
+   <li><a href="#basic-principles">6.1 基本原则</a></li>
+   <li><a href="#object-model">6.2 对象模型</a></li>
+   <li><a href="#user-group-class">6.3 用户、组织、群体</a></li>
+  </ol></li>
+ <li><a href="#executing-mechanism">7 运行机制</a>
+  <ol>
+   <li><a href="#privilege-mechanism">7.1 权限机制</a></li>
+   <li><a href="#attributes-calculation">7.2 属性计算</a></li>
+   <li><a href="#event-mechanism">7.3 事件机制</a></li>
+   <li><a href="#message-mechanism">7.4 消息机制</a></li>
+  </ol></li>
+ <li><a href="#transfer-protocol">8 通信协议</a>
+  <ol>
+    <li><a href="#client-server">8.1 客户机、服务器</a></li>
+	<li><a href="#message-format">8.2 通信格式</a></li>
+	<li><a href="#connections">8.3 连接</a></li>
+	<li><a href="#method-definition">8.4 方法定义</a></li>
+	<li><a href="#status-code-definition">8.5 状态码定义</a></li>
+	<li><a href="#locationing">8.6 寻址</a></li>
+	<li><a href="#caching">8.7 缓存</a></li>
+	<li><a href="#prefetch">8.8 预取</a></li>
+	<li><a href="#combine-fetch">8.9 合取</a></li>
+	<li><a href="#mirroring">8.10 镜像</a></li>
+	<li><a href="#header-definition">8.11 头部定义</a></li>
+	<li><a href="#authentication">8.12 安全认证</a></li>
+  </ol></li>
+ <li><a href="#storage-engine">9 存储引擎</a>
+ </li>
+ <li><a href="#system-attributes">10 系统属性</a>
+ </li>
+ <li><a href="#system-functions">11 系统函数</a>
+ </li>
+ <li><a href="#rule-list">12 规则表</a>
+ </li>
+ <li><a href="#markup-language">13 标记语言</a>
+ </li>
+ <li><a href="#script">14 脚本</a>
+ </li>
+ <li><a href="#system-modules">15 系统模块</a>
+  <ol>
+   <li><a href="#version-control">15.1 版本控制</a></li>
+   <li><a href="#recycler">15.2 回收站</a></li>
+   <li><a href="#content-censoring">15.3 内容审核</a></li>
+   <li><a href="#draft-box">15.4 草稿箱</a></li>
+   <li><a href="#feedback-box">15.5 意见箱</a></li>
+   <li><a href="#webpage-note">15.6 批注</a></li>
+   <li><a href="#vote">15.7 投票</a></li>
+   <li><a href="#election">15.8 选举</a></li>
+   <li><a href="#questionaire">15.9 调查</a></li>
+  </ol></li>
+ <li><a href="#functions">Part III 功能</a></li>
+ <li><a href="#user-management">16 用户管理</a>
+  <ol>
+   <li><a href="#user-overall-design">16.1 总体设计</a></li>
+   <li><a href="#register">16.2 注册</a></li>
+   <li><a href="#login">16.2 登录</a></li>
+   <li><a href="#forget-password">16.3 找回密码</a></li>
+   <li><a href="#nickname">16.4 昵称</a></li>
+   <li><a href="#friend">16.5 好友</a></li>
+   <li><a href="#listen">16.6 关注</a></li>
+   <li><a href="#privilege-giving">16.7 权限授予</a></li>
+   <li><a href="#credit-rule">16.8 积分规则</a></li>
+   <li><a href="#punishment">16.9 处分条例</a></li>
+  </ol></li>
+ <li><a href="#group-management">17 组织管理</a>
+  <ol>
+   <li><a href="#group-overall-design">17.1 总体设计</a></li>
+  </ol></li>
+ <li><a href="#user-center">18 用户中心</a>
+  <ol>
+   <li><a href="#ucenter-overall-design">18.1 总体设计</a></li>
+   <li><a href="#control-panel">18.2 控制面板</a></li>
+   <li><a href="#chatting-building">18.3 聊天大厦</a></li>
+   <li><a href="#user-announcements">18.4 小字报</a></li>
+   <li><a href="#today-headline">18.5 今日热点</a></li>
+   <li><a href="#floating-bottle">18.6 漂流瓶</a></li>
+   <li><a href="#event-noticing">18.7 事件提醒</a></li>
+   <li><a href="#content-recommendation">18.8 内容推荐</a></li>
+   <li><a href="#schedule">18.9 日程安排</a></li>
+   <li><a href="#user-defined-modules">18.10 自定义模块</a></li>
+  </ol></li>
+ <li><a href="#publishing-platform">19 发布平台</a>
+  <ol>
+   <li><a href="#blog-cms-wiki">19.1 博客，CMS，百科的结合</a></li>
+   <li><a href="#leveled-management-system">19.2 分级管理系统</a></li>
+   <li><a href="#tag-tree">19.3 标签树</a></li>
+   <li><a href="#article-content-type">19.4 文章内容类型</a></li>
+   <li><a href="#content-and-comment">19.5 内容与评论</a></li>
+   <li><a href="#sidebar">19.6 边栏</a></li>
+   <li><a href="#directory">19.7 分类目录</a></li>
+   <li><a href="#protect-and-approve">19.8 保护与审核</a></li>
+   <li><a href="#edit-conflict">19.9 编辑冲突</a></li>
+   <li><a href="#history-versions">19.10 历史版本</a></li>
+   <li><a href="#page-redirection">19.11 页面重定向</a></li>
+   <li><a href="#subscribe">19.12 订阅</a></li>
+   <li><a href="#user-panel">19.13 用户平台</a></li>
+   <li><a href="#backend-management">19.14 后台管理</a></li>
+   <li><a href="#online-activities">19.15 在线活动</a></li>
+  </ol></li>
+ <li><a href="#group-platform">20 组织合作平台</a>
+  <ol>
+   <li><a href="#group-platform-overall-design">20.1 总体设计</a></li>
+   <li><a href="#leveled-management">20.2 分级管理</a></li>
+   <li><a href="#task-status">20.3 任务状态</a></li>
+   <li><a href="#whiteboard">20.4 白板</a></li>
+   <li><a href="#discuss-group">20.5 讨论组</a></li>
+   <li><a href="#table-generation">20.6 表格生成</a></li>
+   <li><a href="#document-logging">20.7 档案存储</a></li>
+   <li><a href="#group-event-noticing">20.8 事件提醒</a></li>
+  </ol></li>
+ <li><a href="#public-forum">21 公共论坛</a>
+  <ol>
+   <li><a href="#forum-overall-design">21.1 与合作平台的区别</a></li>
+   <li><a href="#moderators">21.2 版主</a></li>
+   <li><a href="#medal">21.3 勋章</a></li>
+   <li><a href="#property">21.4 道具</a></li>
+  </ol></li>
+ <li><a href="#assistance-functions">22 辅助功能</a>
+  <ol>
+   <li><a href="#assistance-overall-design">22.1 总体设计</a></li>
+   <li><a href="#wysiwyg-document">22.2 可视化文档编辑</a></li>
+   <li><a href="#wysiwyg-page">22.3 可视化网页编辑</a></li>
+   <li><a href="#document-preview">22.4 文档在线预览</a></li>
+   <li><a href="#math-online-edit">22.5 公式在线编辑</a></li>
+   <li><a href="#math-online-view">22.6 公式在线显示</a></li>
+   <li><a href="#online-draw">22.7 在线画图</a></li>
+   <li><a href="#online-math-draw">22.8 在线数学作图</a></li>
+   <li><a href="#online-physics-draw">22.9 在线物理作图</a></li>
+   <li><a href="#online-dictionary">22.10 在线小词典</a></li>
+   <li><a href="#cheatsheet">22.11 速查手册</a></li>
+   <li><a href="#math-calculator">22.12 数学计算器</a></li>
+  </ol></li>
+ <li><a href="#learning-system">23 导学系统</a>
+  <ol>
+   <li><a href="#learn-overall-design">23.1 总体设计</a></li>
+   <li><a href="#learn-problem-set">23.2 题库</a></li>
+   <li><a href="#learn-problems">23.3 题目</a></li>
+   <li><a href="#learn-evaluating">23.4 评测</a></li>
+   <li><a href="#smart-evaluating">23.5 智能评分</a></li>
+   <li><a href="#learn-level-mode">23.6 关卡模式</a></li>
+   <li><a href="#learn-test">23.7 模拟考试</a></li>
+   <li><a href="#learn-directions">23.8 研发方向</a></li>
+  </ol></li>
+ <li><a href="#backend-analysis-system">24 后台分析系统</a>
+ </li>
+ <li><a href="#search-engine">25 搜索系统</a>
+  <ol>
+   <li><a href="#search-overall-design">25.1 总体设计</a></li>
+   <li><a href="#word-segmentation">25.2 中文分词</a></li>
+   <li><a href="#ranking-algorithm">25.3 排名算法</a></li>
+   <li><a href="#indexing-algorithm">25.4 索引算法</a></li>
+  </ol></li>
+ <li><a href="#recommending-system">26 推荐系统</a>
+ </li>
+ <li><a href="#virtual-currency">27 虚拟货币</a>
+ </li>
+ <li><a href="#promotion">Part VI 运营</a></li>
+ <li><a href="#appendix">附录</a>
+  <ol>
+   <li><a href="#appendix-refence">A 参考文献</a></li>
+   <li><a href="#appendix-background">B 背景</a></li>
+   <li><a href="#appendix-revisions">C 各版本改动记录</a></li>
+   <li><a href="#appendix-checklist">D 需求检查列表</a></li>
+   <li><a href="#appendix-contact">E 联系我们</a></li>
+   <li><a href="#appendix-copyright">F 版权声明</a></li>
+   <li><a href="#appendix-index">G 索引</a></li>
+  </ol></li>
+</ol><!-- END of Table of Contents -->
